@@ -1,0 +1,28 @@
+{
+  "name": "publish-report-annotations",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "compile": "tsc",
+    "package": "ncc build src/main.ts -o dist -m --license licenses.txt --source-map",
+    "lint": "eslint .",
+    "prettier:check": "prettier --check .",
+    "check": "npm run lint && npm run prettier:check",
+    "build": "npm run compile && npm run package && npm run check"
+  },
+  "dependencies": {
+    "@actions/core": "^1.9.1",
+    "@actions/glob": "^0.3.0",
+    "fast-xml-parser": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^18.7.15",
+    "@typescript-eslint/eslint-plugin": "^5.36.2",
+    "@typescript-eslint/parser": "^5.36.2",
+    "@vercel/ncc": "^0.34.0",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.2"
+  }
+}
