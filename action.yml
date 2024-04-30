@@ -1,0 +1,20 @@
+name: "Publish Reports"
+description: "Annotates files feeding from JUnit/AndroidLint/Checkstyle XML reports"
+inputs:
+  reports:
+    description: "A multiline list of glob paths to report XML files"
+    required: true
+  warningsAsErrors:
+    description: "Treat warnings as errors"
+    required: false
+    default: "false"
+  failOnError:
+    description: "Fail the action if any errors are found"
+    required: false
+    default: "false"
+runs:
+  using: node20
+  main: dist/index.js
+branding:
+  color: blue
+  icon: check-square
