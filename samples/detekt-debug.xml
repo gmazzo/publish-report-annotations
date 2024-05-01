@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="4.3">
+<file name="src/main/kotlin/org/test/sample/App.kt">
+	<error line="3" column="11" severity="warning" message="The file src/main/kotlin/org/test/sample/App.kt is not ending with a new line." source="detekt.NewLineAtEndOfFile" />
+</file>
+</checkstyle>

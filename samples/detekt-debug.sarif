@@ -10,43 +10,21 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:../android-jacoco-aggregated-demo/demo-project/domain/src/main/kotlin/MyUseCase.kt"
+                  "uri": "file://src/main/kotlin/org/test/sample/App.kt"
                 },
                 "region": {
-                  "endColumn": 27,
-                  "endLine": 1,
-                  "startColumn": 1,
-                  "startLine": 1
+                  "endColumn": 11,
+                  "endLine": 3,
+                  "startColumn": 11,
+                  "startLine": 3
                 }
               }
             }
           ],
           "message": {
-            "text": "The package declaration does not match the actual file location."
+            "text": "The file src/main/kotlin/org/test/sample/App.kt is not ending with a new line."
           },
-          "ruleId": "detekt.naming.InvalidPackageDeclaration"
-        },
-        {
-          "level": "warning",
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "file:../android-jacoco-aggregated-demo/demo-project/domain/src/main/kotlin/MyUseCase.kt"
-                },
-                "region": {
-                  "endColumn": 20,
-                  "endLine": 5,
-                  "startColumn": 9,
-                  "startLine": 5
-                }
-              }
-            }
-          ],
-          "message": {
-            "text": "doSomething is returning a constant. Prefer declaring a constant instead."
-          },
-          "ruleId": "detekt.style.FunctionOnlyReturningConstant"
+          "ruleId": "detekt.style.NewLineAtEndOfFile"
         }
       ],
       "tool": {

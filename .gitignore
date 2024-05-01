@@ -1,4 +1,7 @@
 .idea/
+.gradle/
 node_modules/
 dist/
 lib/
+build/
+local.properties

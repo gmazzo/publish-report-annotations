@@ -1,0 +1,118 @@
+{
+    "$schema" : "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+    "version" : "2.1.0",
+    "runs" : [
+        {
+            "tool": {
+                "driver": {
+                    "name": "Android Lint",
+                    "fullName": "Android Lint (in gradle)",
+                    "version": "8.3.0",
+                    "semanticVersion": "8.3.0",
+                    "organization": "Google",
+                    "informationUri": "https://developer.android.com/studio/write/lint",
+                    "fullDescription": {
+                        "text": "Static analysis originally for Android source code but now performing general analysis"
+                    },
+                    "language": "en-US",
+                    "rules": [
+                        {
+                            "id": "GradleDependency",
+                            "shortDescription": {
+                                "text": "Obsolete Gradle Dependency"
+                            },
+                            "fullDescription": {
+                                "text": "This detector looks for usages of libraries where the version you are using is not the current stable release. Using older versions is fine, and there are cases where you deliberately want to stick with an older version. However, you may simply not be aware that a more recent version is available, and that is what this lint check helps find."
+                            },
+                            "defaultConfiguration": {
+                                "level": "warning",
+                                "rank": 70
+                            },
+                            "properties": {
+                                "tags": [
+                                    "Correctness"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "originalUriBaseIds": {
+                "%SRCROOT%": {
+                    "uri": "file://"
+                }
+            },
+            "results": [
+                {
+                    "ruleId": "GradleDependency",
+                    "ruleIndex": 0,
+                    "message": {
+                        "text": "A newer version of compileSdkVersion than 33 is available: 34",
+                        "markdown": "A newer version of `compileSdkVersion` than 33 is available: 34"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uriBaseId": "%SRCROOT%",
+                                    "uri": "build.gradle.kts"
+                                },
+                                "region": {
+                                    "startLine": 14,
+                                    "startColumn": 5,
+                                    "endLine": 14,
+                                    "endColumn": 20,
+                                    "charOffset": 371,
+                                    "charLength": 15,
+                                    "snippet": {
+                                        "text": "compileSdk = 33"
+                                    }
+                                },
+                                "contextRegion": {
+                                    "startLine": 12,
+                                    "endLine": 17,
+                                    "snippet": {
+                                        "text": "android {\n    namespace = \"org.test.sample\"\n    compileSdk = 33\n"
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "fixes": [
+                        {
+                            "description": {
+                                "text": "Set compileSdkVersion to 34"
+                            },
+                            "artifactChanges": [
+                                {
+                                    "artifactLocation": {
+                                        "uriBaseId": "%SRCROOT%",
+                                        "uri": "build.gradle.kts"
+                                    },
+                                    "replacements": [
+                                        {
+                                            "deletedRegion": {
+                                                "startLine": 14,
+                                                "startColumn": 18,
+                                                "charOffset": 384,
+                                                "endLine": 14,
+                                                "endColumn": 20,
+                                                "charLength": 2
+                                            },
+                                            "insertedContent": {
+                                                "text": "34\n"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "partialFingerprints": {
+                        "sourceContext/v1": "a65e5df4efdecfca"
+                    }
+                }
+            ]
+        }
+    ]
+}
