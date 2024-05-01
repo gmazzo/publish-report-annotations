@@ -1,5 +1,7 @@
-import {Parser} from "./parser";
+import {ParsedAnnotation, Parser} from "./parser";
 import {readFile} from "./readFile";
+import {asArray} from "./utils";
+import {resolveFile} from "./resolveFile";
 
 type TestCase = {
     _attrs: {
@@ -28,20 +30,26 @@ export const junitParser: Parser = {
         const data: JunitData = await readFile(filepath)
 
         if (data?.testsuite) {
-            const cases = Array.isArray(data.testsuite.testcase) ? data.testsuite.testcase : [data.testsuite.testcase]
-            return cases.flatMap(annotation => {
-                if (annotation.failure) {
-                    return {
+            const result: ParsedAnnotation[] = []
+
+            for (const testcase of asArray(data.testsuite.testcase)) {
+                if (testcase.failure) {
+                    const filePath = testcase._attrs.file ?
+                        await resolveFile(testcase._attrs.file) :
+                        await resolveFile(testcase._attrs.classname.replace('.', '/'), 'java', 'kt', 'groovy')
+
+                    result.push({
+                        file: filePath,
                         type: 'failure',
-                        title: annotation._attrs.name,
-                        message: annotation.failure.message,
-                        raw_details: annotation.failure._text,
-                        startLine: annotation._attrs.line,
-                        endLine: annotation._attrs.line,
-                    }
+                        title: testcase._attrs.name,
+                        message: testcase.failure.message,
+                        raw_details: testcase.failure._text,
+                        startLine: testcase._attrs.line,
+                        endLine: testcase._attrs.line,
+                    })
                 }
-                return []
-            })
+            }
+            return result
         }
         return null;
     }

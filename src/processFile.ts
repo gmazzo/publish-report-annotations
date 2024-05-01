@@ -1,8 +1,10 @@
 import * as core from "@actions/core";
 import {junitParser} from "./parsers/junit";
+import {checkstyleParser} from "./parsers/checkstyle";
 
 const parsers = [
-    junitParser
+    junitParser,
+    checkstyleParser,
 ]
 
 export async function processFile(filepath: string) {
