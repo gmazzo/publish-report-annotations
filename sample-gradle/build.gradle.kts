@@ -13,10 +13,7 @@ android {
     namespace = "org.test.sample"
     compileSdk = 33
 
-    lint {
-        abortOnError = false
-        sarifReport = true
-    }
+    lint.abortOnError = false
 }
 
 detekt.ignoreFailures = true
@@ -30,8 +27,8 @@ tasks {
 
     val exportSamples by registering(Sync::class) {
         from(named<Test>("testDebugUnitTest").map { it.reports.junitXml.outputLocation }) { include("**.xml") }
-        from(named<Detekt>("detektDebug").map { listOf(it.reports.xml.outputLocation, it.reports.sarif.outputLocation) }) { rename { "detekt-$it" } }
-        from(named<AndroidLintTask>("lintReportDebug").map { listOf(it.xmlReportOutputFile, it.sarifReportOutputFile) })
+        from(named<Detekt>("detektDebug").map { it.reports.xml.outputLocation }) { rename { "detekt-$it" } }
+        from(named<AndroidLintTask>("lintReportDebug").map { it.xmlReportOutputFile })
         into(layout.projectDirectory.dir("../samples"))
         filter { it.replace("$rootDir/", "") }
     }
