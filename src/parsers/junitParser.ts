@@ -12,46 +12,48 @@ type TestCase = {
     }
     skipped?: boolean,
     failure?: {
-        message: string,
-        type: string,
+        _attrs: {
+            message: string,
+            type: string,
+        }
         _text: string,
     }
-}
+};
 
-type JunitData = {
+type Data = {
     testsuite?: {
         testcase: TestCase | TestCase[],
     }
-}
+};
 
 export const junitParser: Parser = {
 
     async parse(filepath: string) {
-        const data: JunitData = await readFile(filepath)
+        const data: Data = await readFile(filepath);
 
         if (data?.testsuite) {
-            const result: ParsedAnnotation[] = []
+            const result: ParsedAnnotation[] = [];
 
             for (const testcase of asArray(data.testsuite.testcase)) {
                 if (testcase.failure) {
                     const filePath = testcase._attrs.file ?
                         await resolveFile(testcase._attrs.file) :
-                        await resolveFile(testcase._attrs.classname.replace('.', '/'), 'java', 'kt', 'groovy')
+                        await resolveFile(testcase._attrs.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
 
                     result.push({
                         file: filePath,
-                        type: 'failure',
+                        type: 'error',
                         title: testcase._attrs.name,
-                        message: testcase.failure.message,
+                        message: testcase.failure._attrs.message,
                         raw_details: testcase.failure._text,
-                        startLine: testcase._attrs.line,
-                        endLine: testcase._attrs.line,
-                    })
+                        startLine: testcase._attrs.line || 0,
+                        endLine: testcase._attrs.line || 0,
+                    });
                 }
             }
-            return result
+            return result;
         }
         return null;
     }
 
-}
+};

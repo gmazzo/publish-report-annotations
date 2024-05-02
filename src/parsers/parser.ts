@@ -2,12 +2,12 @@ import {AnnotationProperties} from "@actions/core";
 
 export type ParsedAnnotation = {
     message: string
-    type: 'failure' | 'warning' | 'notice'
+    type: 'error' | 'warning' | 'notice'
     raw_details?: string
-} & AnnotationProperties
+} & AnnotationProperties;
 
 export interface Parser {
 
-    parse(filepath: string): Promise<ParsedAnnotation[] | null>
+    parse(this: void, filepath: string): Promise<ParsedAnnotation[] | null>
 
 }

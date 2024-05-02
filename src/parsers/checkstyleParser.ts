@@ -3,7 +3,9 @@ import {readFile} from "./readFile";
 import {asArray} from "./utils";
 import {resolveFile} from "./resolveFile";
 
-type CheckstyleFile = {
+type Severity = 'error' | 'warning' | 'info' | 'ignore';
+
+type File = {
     _attrs: {
         name: string,
     }
@@ -11,33 +13,33 @@ type CheckstyleFile = {
         _attrs: {
             line: number,
             column: number,
-            severity: 'error' | 'warning' | 'info' | 'ignore',
+            severity: Severity,
             message: string,
             source: string,
         }
     }
-}
+};
 
-type CheckstyleData = {
+type Data = {
     checkstyle?: {
-        file: CheckstyleFile | CheckstyleFile[],
+        file: File | File[],
     }
-}
+};
 
 export const checkstyleParser: Parser = {
 
     async parse(filepath: string) {
-        const data: CheckstyleData = await readFile(filepath)
+        const data: Data = await readFile(filepath);
 
         if (data?.checkstyle) {
-            const result: ParsedAnnotation[] = []
+            const result: ParsedAnnotation[] = [];
 
             for (const file of asArray(data.checkstyle.file)) {
                 for (const error of asArray(file.error)) {
-                    const type = computeType(error._attrs.severity)
+                    const type = computeType(error._attrs.severity);
 
                     if (type) {
-                        const filePath = await resolveFile(file._attrs.name)
+                        const filePath = await resolveFile(file._attrs.name);
 
                         result.push({
                             type,
@@ -48,24 +50,24 @@ export const checkstyleParser: Parser = {
                             endLine: error._attrs.line,
                             startColumn: error._attrs.column,
                             endColumn: error._attrs.column,
-                        })
+                        });
                     }
                 }
             }
-            return result
+            return result;
         }
         return null;
     }
 
-}
+};
 
-function computeType(severity: CheckstyleFile['error']['_attrs']['severity']) {
+function computeType(severity: Severity) {
     switch (severity) {
         case 'error':
-            return 'failure'
+            return 'error';
         case 'warning':
-            return 'warning'
+            return 'warning';
         case 'info':
-            return 'notice'
+            return 'notice';
     }
 }

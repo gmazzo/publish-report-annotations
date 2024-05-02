@@ -3,10 +3,12 @@ import {readFile} from "./readFile";
 import {asArray} from "./utils";
 import {resolveFile} from "./resolveFile";
 
+type Severity = 'fatal' | 'error' | 'warning' | 'informational';
+
 type Issue = {
     _attrs: {
         id: string,
-        severity: 'fatal' | 'error' | 'warning' | 'informational',
+        severity: Severity,
         message: string,
         category: string,
         summary: string,
@@ -19,27 +21,27 @@ type Issue = {
             column: number,
         }
     }
-}
+};
 
-type AndroidLintData = {
+type Data = {
     issues?: {
         issue: Issue | Issue[],
     }
-}
+};
 
-export const androidLint: Parser = {
+export const androidLintParser: Parser = {
 
     async parse(filepath: string) {
-        const data: AndroidLintData = await readFile(filepath)
+        const data: Data = await readFile(filepath);
 
         if (data?.issues) {
-            const result: ParsedAnnotation[] = []
+            const result: ParsedAnnotation[] = [];
 
             for (const testcase of asArray(data.issues.issue)) {
-                const type = computeType(testcase._attrs.severity)
+                const type = computeType(testcase._attrs.severity);
 
                 if (type) {
-                    const file = await resolveFile(testcase.location._attrs.file)
+                    const file = await resolveFile(testcase.location._attrs.file);
 
                     result.push({
                         file,
@@ -51,23 +53,23 @@ export const androidLint: Parser = {
                         endLine: testcase.location._attrs.line,
                         startColumn: testcase.location._attrs.column,
                         endColumn: testcase.location._attrs.column,
-                    })
+                    });
                 }
             }
-            return result
+            return result;
         }
         return null;
     }
 
-}
+};
 
-function computeType(severity: Issue['_attrs']['severity']) {
+function computeType(severity: Severity) {
     switch (severity.toLowerCase()) {
         case 'error':
-            return 'failure'
+            return 'error';
         case 'warning':
-            return 'warning'
+            return 'warning';
         case 'informational':
-            return 'notice'
+            return 'notice';
     }
 }

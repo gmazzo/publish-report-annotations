@@ -14,5 +14,5 @@
   "rules": {
     "@typescript-eslint/semi": "error"
   },
-  "ignorePatterns": ["dist/**", "lib/**", "node_modules/**"]
+  "ignorePatterns": ["dist/**", "lib/**", "node_modules/**", "jest.config.js", "sample-gradle/**"]
 }

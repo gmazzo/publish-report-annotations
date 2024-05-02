@@ -6,6 +6,7 @@
     "compile": "tsc",
     "package": "ncc build src/main.ts -o dist -m --license licenses.txt --source-map",
     "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "test": "jest",
     "prettier:check": "prettier --check .",
     "check": "npm run test && npm run lint && npm run prettier:check",

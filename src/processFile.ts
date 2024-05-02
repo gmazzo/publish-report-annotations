@@ -1,36 +1,38 @@
 import * as core from "@actions/core";
-import {junitParser} from "./parsers/junit";
-import {checkstyleParser} from "./parsers/checkstyle";
+import {junitParser} from "./parsers/junitParser";
+import {checkstyleParser} from "./parsers/checkstyleParser";
+import {androidLintParser} from "./parsers/androidLintParser";
 
 const parsers = [
-    junitParser,
+    androidLintParser,
     checkstyleParser,
-]
+    junitParser,
+];
 
 export async function processFile(filepath: string) {
-    const totals = {errors: 0, warnings: 0, notices: 0}
+    const totals = {errors: 0, warnings: 0, notices: 0};
 
     for (const parser of parsers) {
-        const annotations = await parser.parse(filepath)
+        const annotations = await parser.parse(filepath);
 
         if (annotations) {
             for (const annotation of annotations) {
 
                 switch (annotation.type) {
-                    case 'failure':
-                        core.error(annotation.message, annotation)
-                        totals.errors++
-                        break
+                    case 'error':
+                        core.error(annotation.message, annotation);
+                        totals.errors++;
+                        break;
                     case 'warning':
-                        core.warning(annotation.message, annotation)
-                        totals.warnings++
-                        break
+                        core.warning(annotation.message, annotation);
+                        totals.warnings++;
+                        break;
                     default:
-                        core.notice(annotation.message, annotation)
-                        totals.notices++
+                        core.notice(annotation.message, annotation);
+                        totals.notices++;
                 }
             }
         }
     }
-    return totals
+    return totals;
 }
