@@ -1,0 +1,10 @@
+name: 'Setup Host'
+description: 'Configures the host runner to run the build'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        cache: 'npm'

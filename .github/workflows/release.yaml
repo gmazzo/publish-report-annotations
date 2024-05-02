@@ -1,0 +1,27 @@
+name: Release
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/build.yaml
+
+  release:
+    name: Release ${{ github.event_name == 'pull_request' && '(dry-run)' || '' }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup host
+        uses: ./.github/actions/setup-host
+      - name: Release ${{ github.event_name == 'pull_request' && '(dry-run)' || '' }}
+        run: |
+          npx semantic-release ${{ github.event_name == 'pull_request' && '--dry-run' || '' }} 
+            --branches main
+            --plugins semantic-release-major-tag
