@@ -1,12 +1,17 @@
 import * as glob from "@actions/glob";
 import * as core from "@actions/core";
-import {relative} from "path";
+import {isAbsolute, relative} from "path";
 import process from "process";
+import {existsSync} from "node:fs";
 
 export async function resolveFile(filepath: string, ...possibleExtensions: string[]) {
-    const paths =
-        possibleExtensions.length == 0 ? [filepath] :
-        possibleExtensions.map(ext => `${filepath}.${ext}`)
+    if (isAbsolute(filepath) || existsSync(filepath)) {
+        return filepath
+    }
+
+    const paths = possibleExtensions.length > 0 ?
+        possibleExtensions.map(ext => `${filepath}.${ext}`) :
+        [filepath]
 
     const globber = await glob.create(paths.join('\n'));
     const {value: file} = await globber.globGenerator().next()

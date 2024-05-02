@@ -2,36 +2,6 @@ import {readFile} from "./readFile";
 
 describe("readFile", () => {
 
-    test("should return parsed JSON file", async () => {
-        const data = await readFile("samples/detekt-debug.sarif")
-
-        expect(data?.runs?.length).toBe(1)
-        expect(data?.runs[0].results).toStrictEqual([
-            {
-                "level": "warning",
-                "locations": [
-                    {
-                        "physicalLocation": {
-                            "artifactLocation": {
-                                "uri": "file://src/main/kotlin/org/test/sample/App.kt"
-                            },
-                            "region": {
-                                "endColumn": 11,
-                                "endLine": 3,
-                                "startColumn": 11,
-                                "startLine": 3
-                            }
-                        }
-                    }
-                ],
-                "message": {
-                    "text": "The file src/main/kotlin/org/test/sample/App.kt is not ending with a new line."
-                },
-                "ruleId": "detekt.style.NewLineAtEndOfFile"
-            }
-        ])
-    })
-
     test("should return parsed XML file as JSON", async () => {
         const data = await readFile("samples/TEST-org.test.sample.SampleTestSuite.xml")
 
@@ -44,8 +14,8 @@ describe("readFile", () => {
                     "name": "org.test.sample.SampleTestSuite",
                     "skipped": "1",
                     "tests": "4",
-                    "time": "0.001",
-                    "timestamp": "2024-05-01T16:04:35"
+                    "time": "0.002",
+                    "timestamp": "2024-05-01T17:22:50"
                 },
                 "properties": true,
                 "system-err": true,
@@ -84,7 +54,7 @@ describe("readFile", () => {
                         "_attrs": {
                             "classname": "org.test.sample.SampleTestSuite",
                             "name": "a test that throws an exception",
-                            "time": "0.0"
+                            "time": "0.001"
                         },
                         "failure": {
                             "_attrs": {

@@ -59,7 +59,7 @@ export const checkstyleParser: Parser = {
 
 }
 
-function computeType(severity: 'error' | 'warning' | 'info' | 'ignore') {
+function computeType(severity: CheckstyleFile['error']['_attrs']['severity']) {
     switch (severity) {
         case 'error':
             return 'failure'
