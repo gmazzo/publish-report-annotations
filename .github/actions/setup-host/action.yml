@@ -8,3 +8,6 @@ runs:
       uses: actions/setup-node@v4
       with:
         cache: 'npm'
+    - name: Install NPM dependencies
+      shell: bash
+      run: npm ci
