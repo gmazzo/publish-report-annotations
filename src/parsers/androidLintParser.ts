@@ -6,7 +6,7 @@ import {resolveFile} from "./resolveFile";
 type Severity = 'fatal' | 'error' | 'warning' | 'informational';
 
 type Issue = {
-    _attrs: {
+    _attributes: {
         id: string,
         severity: Severity,
         message: string,
@@ -15,7 +15,7 @@ type Issue = {
         explanation: string,
     }
     location: {
-        _attrs: {
+        _attributes: {
             file: string,
             line: number,
             column: number,
@@ -38,21 +38,21 @@ export const androidLintParser: Parser = {
             const result: ParsedAnnotation[] = [];
 
             for (const testcase of asArray(data.issues.issue)) {
-                const type = computeType(testcase._attrs.severity);
+                const type = computeType(testcase._attributes.severity);
 
                 if (type) {
-                    const file = await resolveFile(testcase.location._attrs.file);
+                    const file = await resolveFile(testcase.location._attributes.file);
 
                     result.push({
                         file,
                         type,
-                        title: `${testcase._attrs.category}: ${testcase._attrs.summary}`,
-                        message: testcase._attrs.message,
-                        raw_details: testcase._attrs.explanation,
-                        startLine: testcase.location._attrs.line,
-                        endLine: testcase.location._attrs.line,
-                        startColumn: testcase.location._attrs.column,
-                        endColumn: testcase.location._attrs.column,
+                        title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
+                        message: testcase._attributes.message,
+                        raw_details: testcase._attributes.explanation,
+                        startLine: testcase.location._attributes.line,
+                        endLine: testcase.location._attributes.line,
+                        startColumn: testcase.location._attributes.column,
+                        endColumn: testcase.location._attributes.column,
                     });
                 }
             }

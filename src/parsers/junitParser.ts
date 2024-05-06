@@ -4,7 +4,7 @@ import {asArray} from "./utils";
 import {resolveFile} from "./resolveFile";
 
 type TestCase = {
-    _attrs: {
+    _attributes: {
         name: string,
         classname: string,
         file?: string,
@@ -12,7 +12,7 @@ type TestCase = {
     }
     skipped?: boolean,
     failure?: {
-        _attrs: {
+        _attributes: {
             message: string,
             type: string,
         }
@@ -36,18 +36,18 @@ export const junitParser: Parser = {
 
             for (const testcase of asArray(data.testsuite.testcase)) {
                 if (testcase.failure) {
-                    const filePath = testcase._attrs.file ?
-                        await resolveFile(testcase._attrs.file) :
-                        await resolveFile(testcase._attrs.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
+                    const filePath = testcase._attributes.file ?
+                        await resolveFile(testcase._attributes.file) :
+                        await resolveFile(testcase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
 
                     result.push({
                         file: filePath,
                         type: 'error',
-                        title: testcase._attrs.name,
-                        message: testcase.failure._attrs.message,
+                        title: testcase._attributes.name,
+                        message: testcase.failure._attributes.message,
                         raw_details: testcase.failure._text,
-                        startLine: testcase._attrs.line || 0,
-                        endLine: testcase._attrs.line || 0,
+                        startLine: testcase._attributes.line || 0,
+                        endLine: testcase._attributes.line || 0,
                     });
                 }
             }
