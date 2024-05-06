@@ -27,7 +27,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Publish Test Report
-        uses: .
+        uses: ./.
         if: always()
       - name: Coverage report
         uses: codecov/codecov-action@v4
