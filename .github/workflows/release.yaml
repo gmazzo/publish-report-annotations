@@ -4,10 +4,17 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+
 jobs:
   release:
     name: Release ${{ github.event_name == 'pull_request' && '(dry-run)' || '' }}
     runs-on: ubuntu-latest
+    env:
+      RELEASE_BRANCH: ${{ github.event_name == 'pull_request' && github.head_ref || 'main' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -16,7 +23,19 @@ jobs:
       - name: Setup host
         uses: ./.github/actions/setup-host
       - name: Release ${{ github.event_name == 'pull_request' && '(dry-run)' || '' }}
+        shell: bash
         run: |
-          npx semantic-release ${{ github.event_name == 'pull_request' && '--dry-run' || '' }} \
-            --branches main \
+          RELEASE_OPTS=()
+          
+          if ${{ github.event_name == 'pull_request' }}; then
+            git checkout "$RELEASE_BRANCH"
+          
+            # shellcheck disable=SC2034
+            GITHUB_REF=$RELEASE_BRANCH  
+          
+            RELEASE_OPTS+=(--dry-run --no-ci)
+          fi
+          
+          npx semantic-release "${RELEASE_OPTS[@]}" \
+            --branches "$RELEASE_BRANCH" \
             --plugins semantic-release-major-tag
