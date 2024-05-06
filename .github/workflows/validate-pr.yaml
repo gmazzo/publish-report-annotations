@@ -14,3 +14,16 @@ jobs:
       - name: PR title matches `${{ env.REGEX }}`
         shell: bash
         run: if [[ ! $TITLE =~ $REGEX ]]; then exit 1; fi
+
+  actionlint:
+    name: Validate Workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download actionlint
+        shell: bash
+        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+      - name: Check workflow files
+        shell: bash
+        run: ./actionlint -color -format '{{range $err := .}}::error file={{$err.Filepath}},line={{$err.Line}},col={{$err.Column}}::{{$err.Message}}%0A```%0A{{replace $err.Snippet "\\n" "%0A"}}%0A```\n{{end}}' -ignore 'SC2016:' -ignore 'SC2215:'
