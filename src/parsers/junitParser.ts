@@ -20,10 +20,15 @@ type TestCase = {
     }
 };
 
+type TestSuite = {
+    testcase: TestCase | TestCase[],
+};
+
 type Data = {
-    testsuite?: {
-        testcase: TestCase | TestCase[],
-    }
+    testsuites?: {
+        testsuite: TestSuite | TestSuite[],
+    },
+    testsuite?: TestSuite
 };
 
 export const junitParser: Parser = {
@@ -31,10 +36,11 @@ export const junitParser: Parser = {
     async parse(filepath: string) {
         const data: Data = await readFile(filepath);
 
-        if (data?.testsuite) {
+        if (data?.testsuite || data?.testsuites) {
             const result: ParsedAnnotation[] = [];
 
-            for (const testcase of asArray(data.testsuite.testcase)) {
+            for (const suite of asArray(data.testsuites?.testsuite || data.testsuite)) {
+            for (const testcase of asArray(suite.testcase)) {
                 if (testcase.failure) {
                     const filePath = testcase._attributes.file ?
                         await resolveFile(testcase._attributes.file) :
@@ -44,13 +50,13 @@ export const junitParser: Parser = {
                         file: filePath,
                         type: 'error',
                         title: testcase._attributes.name,
-                        message: testcase.failure._attributes.message,
+                        message: testcase.failure._attributes?.message || testcase.failure._text,
                         raw_details: testcase.failure._text,
                         startLine: testcase._attributes.line || 0,
                         endLine: testcase._attributes.line || 0,
                     });
                 }
-            }
+            }}
             return result;
         }
         return null;
