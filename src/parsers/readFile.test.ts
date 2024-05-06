@@ -7,7 +7,7 @@ describe("readFile", () => {
 
         expect(data).toStrictEqual({
             "testsuite": {
-                "_attrs": {
+                "_attributes": {
                     "errors": "0",
                     "failures": "2",
                     "hostname": "gmazzola-mac.lan",
@@ -17,33 +17,33 @@ describe("readFile", () => {
                     "time": "0.002",
                     "timestamp": "2024-05-01T17:22:50"
                 },
-                "properties": true,
-                "system-err": true,
-                "system-out": true,
+                "properties": {},
+                "system-err": {},
+                "system-out": {},
                 "testcase": [
                     {
-                        "_attrs": {
+                        "_attributes": {
                             "classname": "org.test.sample.SampleTestSuite",
                             "name": "a test skipped",
                             "time": "0.0"
                         },
-                        "skipped": true
+                        "skipped": {}
                     },
                     {
-                        "_attrs": {
+                        "_attributes": {
                             "classname": "org.test.sample.SampleTestSuite",
                             "name": "a test that passes",
                             "time": "0.0"
                         }
                     },
                     {
-                        "_attrs": {
+                        "_attributes": {
                             "classname": "org.test.sample.SampleTestSuite",
                             "name": "a test that fails",
                             "time": "0.001"
                         },
                         "failure": {
-                            "_attrs": {
+                            "_attributes": {
                                 "message": "java.lang.AssertionError: this test has failed",
                                 "type": "java.lang.AssertionError"
                             },
@@ -51,13 +51,13 @@ describe("readFile", () => {
                         }
                     },
                     {
-                        "_attrs": {
+                        "_attributes": {
                             "classname": "org.test.sample.SampleTestSuite",
                             "name": "a test that throws an exception",
                             "time": "0.001"
                         },
                         "failure": {
-                            "_attrs": {
+                            "_attributes": {
                                 "message": "java.io.IOException: has been an I/O error",
                                 "type": "java.io.IOException"
                             },

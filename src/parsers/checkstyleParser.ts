@@ -6,11 +6,11 @@ import {resolveFile} from "./resolveFile";
 type Severity = 'error' | 'warning' | 'info' | 'ignore';
 
 type File = {
-    _attrs: {
+    _attributes: {
         name: string,
     }
     error?: {
-        _attrs: {
+        _attributes: {
             line: number,
             column: number,
             severity: Severity,
@@ -36,20 +36,20 @@ export const checkstyleParser: Parser = {
 
             for (const file of asArray(data.checkstyle.file)) {
                 for (const error of asArray(file.error)) {
-                    const type = computeType(error._attrs.severity);
+                    const type = computeType(error._attributes.severity);
 
                     if (type) {
-                        const filePath = await resolveFile(file._attrs.name);
+                        const filePath = await resolveFile(file._attributes.name);
 
                         result.push({
                             type,
                             file: filePath,
-                            title: error._attrs.source,
-                            message: error._attrs.message,
-                            startLine: error._attrs.line,
-                            endLine: error._attrs.line,
-                            startColumn: error._attrs.column,
-                            endColumn: error._attrs.column,
+                            title: error._attributes.source,
+                            message: error._attributes.message,
+                            startLine: error._attributes.line,
+                            endLine: error._attributes.line,
+                            startColumn: error._attributes.column,
+                            endColumn: error._attributes.column,
                         });
                     }
                 }

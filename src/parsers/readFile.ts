@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import {parseStringPromise} from "xml2js";
+import {xml2js} from "xml-js";
 
 export async function readFile<Type>(filepath: string) {
     const extension = filepath.split('.').pop();
@@ -10,12 +10,7 @@ export async function readFile<Type>(filepath: string) {
             return JSON.parse(await data) as Type;
 
         case "xml":
-            return parseStringPromise(await data, {
-                attrkey: '_attrs',
-                charkey: '_text',
-                emptyTag: () => true,
-                explicitArray: false,
-            }) as Type;
+            return xml2js(await data, { compact: true, nativeType: true, ignoreDeclaration: true }) as Type;
 
         default:
             throw `Unsupported file type: ${extension || '<none>'}`;
