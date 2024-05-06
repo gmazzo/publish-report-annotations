@@ -21,9 +21,13 @@ jobs:
         uses: ./.github/actions/setup-host
       - name: Build
         run: npm run build
-      - name: Publish Test Report
+      - name: Report to PR
         uses: ./.
         if: always()
+        with:
+          reports: |
+            lib/*-junit.xml
+            samples/
       - name: Coverage report
         uses: codecov/codecov-action@v4
         with:

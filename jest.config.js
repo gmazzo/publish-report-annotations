@@ -6,6 +6,6 @@ module.exports = {
     clearMocks: true,
     reporters: [
         "default",
-        [ "jest-junit", { outputFile: 'lib/TEST-jest.xml' } ],
+        [ "jest-junit", { outputFile: 'lib/jest-junit.xml' } ],
     ],
 };
