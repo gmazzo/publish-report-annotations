@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
 import * as glob from "@actions/glob";
-import {reports} from "./config";
+import {failOnError, reports, warningsAsErrors} from "./config";
 import {processFile} from "./processFile";
 
 export default async function main() {
@@ -24,4 +24,8 @@ export default async function main() {
 - errors: ${totals.errors}
 - warnings: ${totals.warnings}
 - notices: ${totals.notices}`);
+
+    if (failOnError && (totals.errors > 0 || (totals.warnings > 0 && warningsAsErrors))) {
+        core.setFailed(`Found ${totals.errors} errors and ${totals.warnings} warnings.`);
+    }
 }

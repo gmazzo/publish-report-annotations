@@ -1,6 +1,7 @@
 const coreNotice = jest.fn();
 const coreStartGroup = jest.fn();
 const coreEndGroup = jest.fn();
+const coreSetFailed = jest.fn();
 const globCreate = jest.fn().mockImplementation(() => ({
     glob: jest.fn().mockReturnValue(["file1", "file2"])
 }));
@@ -13,20 +14,29 @@ jest.mock("@actions/glob", () => ({
 jest.mock("@actions/core", () => ({
     notice: coreNotice,
     startGroup: coreStartGroup,
-    endGroup: coreEndGroup
+    endGroup: coreEndGroup,
+    setFailed: coreSetFailed
 }));
 
 jest.mock("./processFile", () => ({
     processFile
 }));
 
-jest.mock("./config", () => ({
-    reports: ["path1", "path2"]
-}));
+const config = {
+    reports: ["path1", "path2"],
+    warningsAsErrors: false,
+    failOnError: false
+};
+jest.mock("./config", () => (config));
 
 import main from "./main";
 
 describe("main", () => {
+
+    beforeEach(() => {
+        config.warningsAsErrors = false;
+        config.failOnError = false;
+    });
 
     test("delegates to parsers and reports results", async () => {
         await main();
@@ -38,6 +48,26 @@ describe("main", () => {
         expect(processFile).toHaveBeenCalledWith("file1");
         expect(processFile).toHaveBeenCalledWith("file2");
         expect(coreNotice).toHaveBeenCalledWith("Processed 2 files with:\n- errors: 6\n- warnings: 4\n- notices: 2");
+        expect(coreSetFailed).not.toHaveBeenCalled();
+    });
+
+    test("if error and should fail, expect to fail", async () => {
+        config.failOnError = true;
+         processFile.mockResolvedValue({errors: 3, warnings: 0, notices: 1});
+
+        await main();
+
+        expect(coreSetFailed).toHaveBeenCalledWith("Found 6 errors and 0 warnings.");
+    });
+
+    test("if warnings and should fail, expect to fail", async () => {
+        config.warningsAsErrors = true;
+        config.failOnError = true;
+        processFile.mockResolvedValue({errors: 0, warnings: 2, notices: 1});
+
+        await main();
+
+        expect(coreSetFailed).toHaveBeenCalledWith("Found 0 errors and 4 warnings.");
     });
 
 });
