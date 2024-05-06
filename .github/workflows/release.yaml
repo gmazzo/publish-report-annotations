@@ -17,6 +17,6 @@ jobs:
         uses: ./.github/actions/setup-host
       - name: Release ${{ github.event_name == 'pull_request' && '(dry-run)' || '' }}
         run: |
-          npx semantic-release ${{ github.event_name == 'pull_request' && '--dry-run' || '' }} 
-            --branches main
+          npx semantic-release ${{ github.event_name == 'pull_request' && '--dry-run' || '' }} \
+            --branches main \
             --plugins semantic-release-major-tag
