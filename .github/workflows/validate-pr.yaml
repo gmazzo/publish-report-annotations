@@ -1,0 +1,16 @@
+name: Validate PR
+on:
+  pull_request:
+    types: [ opened, edited, reopened, synchronize ]
+
+jobs:
+  pr-title:
+    name: PR title follows convention
+    runs-on: ubuntu-latest
+    env:
+      TITLE: ${{ github.event.pull_request.title }}
+      REGEX: '^(fix|feat|chore): .{3,}$'
+    steps:
+      - name: PR title matches `${{ env.REGEX }}`
+        shell: bash
+        run: if [[ ! $TITLE =~ $REGEX ]]; then exit 1; fi
