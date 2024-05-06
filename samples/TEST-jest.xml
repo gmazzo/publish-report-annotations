@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="18" failures="1" errors="0" time="4.149">
+  <testsuite name="asArray" errors="0" failures="0" skipped="0" timestamp="2024-05-06T15:18:58" time="1.197" tests="3">
+    <testcase classname="asArray when single element, returns it as an array" name="asArray when single element, returns it as an array" time="0.003">
+    </testcase>
+    <testcase classname="asArray when multiple elements, returns the same" name="asArray when multiple elements, returns the same" time="0">
+    </testcase>
+    <testcase classname="asArray when not a value, returns an empty array" name="asArray when not a value, returns an empty array" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="main" errors="0" failures="0" skipped="0" timestamp="2024-05-06T15:18:58" time="1.651" tests="3">
+    <testcase classname="main delegates to parsers and reports results" name="main delegates to parsers and reports results" time="0.047">
+    </testcase>
+    <testcase classname="main if error and should fail, expect to fail" name="main if error and should fail, expect to fail" time="0">
+    </testcase>
+    <testcase classname="main if warnings and should fail, expect to fail" name="main if warnings and should fail, expect to fail" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="readFile" errors="0" failures="0" skipped="0" timestamp="2024-05-06T15:18:58" time="1.72" tests="1">
+    <testcase classname="readFile should return parsed XML file as JSON" name="readFile should return parsed XML file as JSON" time="0.018">
+    </testcase>
+  </testsuite>
+  <testsuite name="processFile" errors="0" failures="0" skipped="0" timestamp="2024-05-06T15:18:58" time="1.738" tests="1">
+    <testcase classname="processFile delegates to parsers and reports results" name="processFile delegates to parsers and reports results" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="junitParser" errors="0" failures="1" skipped="0" timestamp="2024-05-06T15:18:58" time="1.773" tests="3">
+    <testcase classname="junitParser given junit xml should obtain annotations" name="junitParser given junit xml should obtain annotations" time="0.007">
+    </testcase>
+    <testcase classname="junitParser given another junit xml should obtain annotations" name="junitParser given another junit xml should obtain annotations" time="0.001">
+    </testcase>
+    <testcase classname="junitParser given a jest junit xml should obtain annotations" name="junitParser given a jest junit xml should obtain annotations" time="0.002">
+      <failure>Error: expect(received).toStrictEqual(expected) // deep equality
+
+Expected: null
+Received: []
+    at /Users/gmazzola/Documents/publish-report-annotations/src/parsers/junitParser.test.ts:45:22
+    at Generator.next (&lt;anonymous&gt;)
+    at fulfilled (/Users/gmazzola/Documents/publish-report-annotations/src/parsers/junitParser.test.ts:5:58)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="androidLintParser" errors="0" failures="0" skipped="0" timestamp="2024-05-06T15:18:58" time="2.801" tests="1">
+    <testcase classname="androidLintParser given lint xml should obtain annotations" name="androidLintParser given lint xml should obtain annotations" time="1.021">
+    </testcase>
+  </testsuite>
+  <testsuite name="checkstyleParser" errors="0" failures="0" skipped="0" timestamp="2024-05-06T15:18:58" time="2.806" tests="1">
+    <testcase classname="checkstyleParser given detekt xml should obtain annotations" name="checkstyleParser given detekt xml should obtain annotations" time="1.04">
+    </testcase>
+  </testsuite>
+  <testsuite name="resolveFile" errors="0" failures="0" skipped="0" timestamp="2024-05-06T15:18:58" time="3.985" tests="5">
+    <testcase classname="resolveFile when is absolute path, just returns itself" name="resolveFile when is absolute path, just returns itself" time="0.002">
+    </testcase>
+    <testcase classname="resolveFile when file exists, just returns itself" name="resolveFile when file exists, just returns itself" time="0">
+    </testcase>
+    <testcase classname="resolveFile when looking for a file, it returns a match" name="resolveFile when looking for a file, it returns a match" time="1.031">
+    </testcase>
+    <testcase classname="resolveFile when looking for a file with possible extensions, it returns a match" name="resolveFile when looking for a file with possible extensions, it returns a match" time="0.617">
+    </testcase>
+    <testcase classname="resolveFile when looking for a file but extension does not matches, it returns the same" name="resolveFile when looking for a file but extension does not matches, it returns the same" time="0.568">
+    </testcase>
+  </testsuite>
+</testsuites>

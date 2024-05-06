@@ -39,4 +39,20 @@ describe("junitParser", () => {
         expect(data).toStrictEqual([]);
     });
 
+    test("given a jest junit xml should obtain annotations", async () => {
+        const data = await junitParser.parse("samples/TEST-jest.xml");
+
+        expect(data).toStrictEqual([
+            {
+                "endLine": 0,
+                "file": "<projectTestSrc>/junitParser given a jest junit xml should obtain annotations.kt",
+                "message": "Error: expect(received).toStrictEqual(expected) // deep equality\n\nExpected: null\nReceived: []\n    at /Users/gmazzola/Documents/publish-report-annotations/src/parsers/junitParser.test.ts:45:22\n    at Generator.next (<anonymous>)\n    at fulfilled (/Users/gmazzola/Documents/publish-report-annotations/src/parsers/junitParser.test.ts:5:58)",
+                "raw_details": "Error: expect(received).toStrictEqual(expected) // deep equality\n\nExpected: null\nReceived: []\n    at /Users/gmazzola/Documents/publish-report-annotations/src/parsers/junitParser.test.ts:45:22\n    at Generator.next (<anonymous>)\n    at fulfilled (/Users/gmazzola/Documents/publish-report-annotations/src/parsers/junitParser.test.ts:5:58)",
+                "startLine": 0,
+                "title": "junitParser given a jest junit xml should obtain annotations",
+                "type": "error"
+            }
+        ]);
+    });
+
 });

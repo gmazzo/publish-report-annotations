@@ -4,4 +4,8 @@ module.exports = {
     testEnvironment: 'node',
     testMatch: ['**/*.test.ts'],
     clearMocks: true,
+    reporters: [
+        "default",
+        [ "jest-junit", { outputFile: 'lib/TEST-jest.xml' } ],
+    ],
 };

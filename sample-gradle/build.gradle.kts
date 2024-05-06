@@ -25,7 +25,7 @@ dependencies {
 tasks {
     withType<AbstractTestTask>().configureEach { ignoreFailures = true }
 
-    val exportSamples by registering(Sync::class) {
+    val exportSamples by registering(Copy::class) {
         from(named<Test>("testDebugUnitTest").map { it.reports.junitXml.outputLocation }) { include("**.xml") }
         from(named<Detekt>("detektDebug").map { it.reports.xml.outputLocation }) { rename { "detekt-$it" } }
         from(named<AndroidLintTask>("lintReportDebug").map { it.xmlReportOutputFile })
