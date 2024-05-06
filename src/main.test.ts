@@ -1,3 +1,4 @@
+const coreDebug = jest.fn();
 const coreNotice = jest.fn();
 const coreStartGroup = jest.fn();
 const coreEndGroup = jest.fn();
@@ -12,6 +13,7 @@ jest.mock("@actions/glob", () => ({
 }));
 
 jest.mock("@actions/core", () => ({
+    debug: coreDebug,
     notice: coreNotice,
     startGroup: coreStartGroup,
     endGroup: coreEndGroup,
@@ -41,7 +43,7 @@ describe("main", () => {
     test("delegates to parsers and reports results", async () => {
         await main();
 
-        expect(coreNotice).toHaveBeenCalledWith("Found 2 files to process matching: path1, path2");
+        expect(coreDebug).toHaveBeenCalledWith("Found 2 files to process matching: path1, path2");
         expect(coreStartGroup).toHaveBeenCalledWith("Processing file `file1`");
         expect(coreStartGroup).toHaveBeenCalledWith("Processing file `file2`");
         expect(coreEndGroup).toHaveBeenCalledTimes(2);

@@ -4,9 +4,9 @@ import {failOnError, reports, warningsAsErrors} from "./config";
 import {processFile} from "./processFile";
 
 export default async function main() {
-    const globber = await glob.create(reports.join('\n'));
+    const globber = await glob.create(reports.join('\n'), { implicitDescendants: true , matchDirectories: false });
     const files = await globber.glob();
-    core.notice(`Found ${files.length} files to process matching: ${reports.join(', ')}`);
+    core.debug(`Found ${files.length} files to process matching: ${reports.join(', ')}`);
 
     const totals = {errors: 0, warnings: 0, notices: 0};
 
