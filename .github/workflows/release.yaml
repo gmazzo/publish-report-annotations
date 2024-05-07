@@ -13,8 +13,6 @@ jobs:
   release:
     name: Release ${{ github.event_name == 'pull_request' && '(dry-run)' || '' }}
     runs-on: ubuntu-latest
-    env:
-      RELEASE_BRANCH: ${{ github.event_name == 'pull_request' && github.head_ref || 'main' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,6 +22,9 @@ jobs:
         uses: ./.github/actions/setup-host
       - name: Release ${{ github.event_name == 'pull_request' && '(dry-run)' || '' }}
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          RELEASE_BRANCH: ${{ github.event_name == 'pull_request' && github.head_ref || 'main' }}
         run: |
           RELEASE_OPTS=()
           
@@ -36,6 +37,4 @@ jobs:
             RELEASE_OPTS+=(--dry-run --no-ci)
           fi
           
-          npx semantic-release "${RELEASE_OPTS[@]}" \
-            --branches "$RELEASE_BRANCH" \
-            --plugins semantic-release-major-tag
+          npx semantic-release "${RELEASE_OPTS[@]}" --branches "$RELEASE_BRANCH"
