@@ -1,7 +1,8 @@
-import {ParsedAnnotation, Parser} from "./parser";
 import {readFile} from "./readFile";
-import {asArray, join} from "./utils";
+import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
+import {Parser} from "./parser";
+import ParsedAnnotations from "../ParsedAnnotations";
 
 type TestCase = {
     _attributes: {
@@ -37,7 +38,7 @@ export const junitParser: Parser = {
         const data: Data = await readFile(filepath);
 
         if (data?.testsuite || data?.testsuites) {
-            const result: ParsedAnnotation[] = [];
+            const result = new ParsedAnnotations();
 
             for (const suite of asArray(data.testsuites?.testsuite || data.testsuite)) {
             for (const testcase of asArray(suite.testcase)) {
@@ -46,15 +47,12 @@ export const junitParser: Parser = {
                         await resolveFile(testcase._attributes.file) :
                         await resolveFile(testcase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
 
-                    const message = testcase.failure._text.startsWith(testcase.failure._attributes?.message) ?
-                        testcase.failure._text :
-                        join(testcase.failure._attributes?.message, testcase.failure._text);
-
-                    result.push({
+                    result.add({
                         file: filePath,
                         type: 'error',
                         title: testcase._attributes.name,
-                        message,
+                        message: testcase.failure._attributes?.message || testcase.failure._text,
+                        rawDetails: testcase.failure._text,
                         startLine: testcase._attributes.line || 0,
                         endLine: testcase._attributes.line || 0,
                     });

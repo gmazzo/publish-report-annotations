@@ -1,7 +1,8 @@
-import {ParsedAnnotation, Parser} from "./parser";
+import {Parser} from "./parser";
 import {readFile} from "./readFile";
-import {asArray, join} from "./utils";
+import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
+import ParsedAnnotations from "../ParsedAnnotations";
 
 type Severity = 'fatal' | 'error' | 'warning' | 'informational';
 
@@ -35,7 +36,7 @@ export const androidLintParser: Parser = {
         const data: Data = await readFile(filepath);
 
         if (data?.issues) {
-            const result: ParsedAnnotation[] = [];
+            const result = new ParsedAnnotations();
 
             for (const testcase of asArray(data.issues.issue)) {
                 const type = computeType(testcase._attributes.severity);
@@ -43,11 +44,12 @@ export const androidLintParser: Parser = {
                 if (type) {
                     const file = await resolveFile(testcase.location._attributes.file);
 
-                    result.push({
+                    result.add({
                         file,
                         type,
                         title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
-                        message: join(testcase._attributes.message, testcase._attributes.explanation),
+                        message: testcase._attributes.message,
+                        rawDetails: testcase._attributes.explanation,
                         startLine: testcase.location._attributes.line,
                         endLine: testcase.location._attributes.line,
                         startColumn: testcase.location._attributes.column,

@@ -1,3 +1,5 @@
+import ParsedAnnotations from "./ParsedAnnotations";
+
 const coreDebug = jest.fn();
 const coreInfo = jest.fn();
 const coreNotice = jest.fn();
@@ -7,7 +9,9 @@ const coreSetFailed = jest.fn();
 const globCreate = jest.fn().mockImplementation(() => ({
     glob: jest.fn().mockReturnValue(["file1", "file2"])
 }));
-const processFile = jest.fn().mockResolvedValue({errors: 3, warnings: 2, notices: 1});
+const processFile = jest.fn().mockReturnValue(new ParsedAnnotations({
+    totals: {errors: 3, warnings: 2, notices: 1}
+}));
 
 jest.mock("@actions/glob", () => ({
     create: globCreate
@@ -49,15 +53,17 @@ describe("main", () => {
         expect(coreStartGroup).toHaveBeenCalledWith("Processing `file1`");
         expect(coreStartGroup).toHaveBeenCalledWith("Processing `file2`");
         expect(coreEndGroup).toHaveBeenCalledTimes(2);
-        expect(processFile).toHaveBeenCalledWith("file1");
-        expect(processFile).toHaveBeenCalledWith("file2");
-        expect(coreInfo).toHaveBeenCalledWith("Processed 2 files: 6 error(s), 4 warning(s) and 2 notice(s)");
+        expect(processFile).toHaveBeenCalledWith("file1", true);
+        expect(processFile).toHaveBeenCalledWith("file2", true);
+        expect(coreNotice).toHaveBeenCalledWith("Processed 2 files: 6 errors, 4 warnings and 2 notices");
         expect(coreSetFailed).not.toHaveBeenCalled();
     });
 
     test("if error and should fail, expect to fail", async () => {
         config.failOnError = true;
-         processFile.mockResolvedValue({errors: 3, warnings: 0, notices: 1});
+        processFile.mockResolvedValue(new ParsedAnnotations({
+            totals: {errors: 3, warnings: 0, notices: 1}
+        }));
 
         await main();
 
@@ -67,7 +73,9 @@ describe("main", () => {
     test("if warnings and should fail, expect to fail", async () => {
         config.warningsAsErrors = true;
         config.failOnError = true;
-        processFile.mockResolvedValue({errors: 0, warnings: 2, notices: 1});
+        processFile.mockResolvedValue(new ParsedAnnotations({
+            totals: {errors: 0, warnings: 2, notices: 1}
+        }));
 
         await main();
 

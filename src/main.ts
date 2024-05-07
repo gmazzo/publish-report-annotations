@@ -1,8 +1,11 @@
 import * as core from "@actions/core";
 import * as glob from "@actions/glob";
-import {failOnError, reports, warningsAsErrors} from "./config";
+import {checkName, failOnError, reports, warningsAsErrors} from "./config";
 import {processFile} from "./processFile";
 import {relative} from "path";
+import ParsedAnnotations from "./ParsedAnnotations";
+import {publishCheck} from "./publishCheck";
+import {shouldFail, summaryOf} from "./utils";
 
 export default async function main() {
     const globber = await glob.create(reports.join('\n'), { implicitDescendants: true , matchDirectories: false });
@@ -10,26 +13,28 @@ export default async function main() {
     core.debug(`Found ${files.length} files to process matching: ${reports.join(', ')}`);
 
     const currentDir = process.cwd();
-    const totals = {errors: 0, warnings: 0, notices: 0};
+    const all = new ParsedAnnotations();
 
     for (const file of files) {
         const relativePath = relative(currentDir, file);
 
         core.startGroup(`Processing \`${relativePath}\``);
-        const {errors, warnings, notices} = await processFile(file);
-        if (errors == 0 && warnings == 0 && notices == 0) {
-            core.notice('No issues found');
+        const result = await processFile(file, checkName != '');
+        if (result) {
+            all.add(result);
+        }
+        if (!result || result.annotations.length == 0) {
+            core.info('No issues found');
         }
         core.endGroup();
-
-        totals.errors += errors;
-        totals.warnings += warnings;
-        totals.notices += notices;
     }
 
-    core.info(`Processed ${files.length} files: ${totals.errors} error(s), ${totals.warnings} warning(s) and ${totals.notices} notice(s)`);
+    core.notice(`Processed ${files.length} files: ${summaryOf(all)}`);
 
-    if (failOnError && (totals.errors > 0 || (totals.warnings > 0 && warningsAsErrors))) {
-        core.setFailed(`Found ${totals.errors} errors and ${totals.warnings} warnings.`);
+    if (checkName) {
+        await publishCheck(all);
+    }
+    if (failOnError && shouldFail(all, warningsAsErrors)) {
+        core.setFailed(`Found ${all.totals.errors} errors and ${all.totals.warnings} warnings.`);
     }
 }
