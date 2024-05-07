@@ -1,4 +1,4 @@
-import {asArray} from "./utils";
+import {asArray, join} from "./utils";
 
 describe("asArray", () => {
 
@@ -18,6 +18,22 @@ describe("asArray", () => {
         const result = asArray(undefined);
 
         expect(result).toStrictEqual([]);
+    });
+
+});
+
+describe("join", () => {
+
+    test("joins multiple non black elements", () => {
+        const result = join("text1", "   text2", "text3   ");
+
+        expect(result).toBe(`text1\n   text2\ntext3   `);
+    });
+
+    test("joins multiple non black elements, when some are empty or undefined", () => {
+        const result = join("text1", null, "   text2", undefined, "", "text3   ");
+
+        expect(result).toBe(`text1\n   text2\ntext3   `);
     });
 
 });

@@ -1,6 +1,6 @@
 import {ParsedAnnotation, Parser} from "./parser";
 import {readFile} from "./readFile";
-import {asArray} from "./utils";
+import {asArray, join} from "./utils";
 import {resolveFile} from "./resolveFile";
 
 type TestCase = {
@@ -46,12 +46,15 @@ export const junitParser: Parser = {
                         await resolveFile(testcase._attributes.file) :
                         await resolveFile(testcase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
 
+                    const message = testcase.failure._text.startsWith(testcase.failure._attributes?.message) ?
+                        testcase.failure._text :
+                        join(testcase.failure._attributes?.message, testcase.failure._text);
+
                     result.push({
                         file: filePath,
                         type: 'error',
                         title: testcase._attributes.name,
-                        message: testcase.failure._attributes?.message || testcase.failure._text,
-                        raw_details: testcase.failure._text,
+                        message,
                         startLine: testcase._attributes.line || 0,
                         endLine: testcase._attributes.line || 0,
                     });

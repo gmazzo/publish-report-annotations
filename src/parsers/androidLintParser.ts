@@ -1,6 +1,6 @@
 import {ParsedAnnotation, Parser} from "./parser";
 import {readFile} from "./readFile";
-import {asArray} from "./utils";
+import {asArray, join} from "./utils";
 import {resolveFile} from "./resolveFile";
 
 type Severity = 'fatal' | 'error' | 'warning' | 'informational';
@@ -47,8 +47,7 @@ export const androidLintParser: Parser = {
                         file,
                         type,
                         title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
-                        message: testcase._attributes.message,
-                        raw_details: testcase._attributes.explanation,
+                        message: join(testcase._attributes.message, testcase._attributes.explanation),
                         startLine: testcase.location._attributes.line,
                         endLine: testcase.location._attributes.line,
                         startColumn: testcase.location._attributes.column,
