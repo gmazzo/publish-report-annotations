@@ -1,4 +1,5 @@
 const coreDebug = jest.fn();
+const coreInfo = jest.fn();
 const coreNotice = jest.fn();
 const coreStartGroup = jest.fn();
 const coreEndGroup = jest.fn();
@@ -15,6 +16,7 @@ jest.mock("@actions/glob", () => ({
 jest.mock("@actions/core", () => ({
     debug: coreDebug,
     notice: coreNotice,
+    info: coreInfo,
     startGroup: coreStartGroup,
     endGroup: coreEndGroup,
     setFailed: coreSetFailed
@@ -44,12 +46,12 @@ describe("main", () => {
         await main();
 
         expect(coreDebug).toHaveBeenCalledWith("Found 2 files to process matching: path1, path2");
-        expect(coreStartGroup).toHaveBeenCalledWith("Processing file `file1`");
-        expect(coreStartGroup).toHaveBeenCalledWith("Processing file `file2`");
+        expect(coreStartGroup).toHaveBeenCalledWith("Processing `file1`");
+        expect(coreStartGroup).toHaveBeenCalledWith("Processing `file2`");
         expect(coreEndGroup).toHaveBeenCalledTimes(2);
         expect(processFile).toHaveBeenCalledWith("file1");
         expect(processFile).toHaveBeenCalledWith("file2");
-        expect(coreNotice).toHaveBeenCalledWith("Processed 2 files with:\n- errors: 6\n- warnings: 4\n- notices: 2");
+        expect(coreInfo).toHaveBeenCalledWith("Processed 2 files: 6 error(s), 4 warning(s) and 2 notice(s)");
         expect(coreSetFailed).not.toHaveBeenCalled();
     });
 
