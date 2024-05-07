@@ -7,7 +7,7 @@ jobs:
   pr-title:
     name: PR title follows convention
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login != 'dependabot'
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
     env:
       TITLE: ${{ github.event.pull_request.title }}
       REGEX: '^(fix|feat|chore): .{3,}$'
