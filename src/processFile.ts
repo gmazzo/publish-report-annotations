@@ -1,38 +1,40 @@
-import * as core from "@actions/core";
 import {junitParser} from "./parsers/junitParser";
 import {checkstyleParser} from "./parsers/checkstyleParser";
 import {androidLintParser} from "./parsers/androidLintParser";
+import {join} from "./utils";
+import * as core from "@actions/core";
 
 const parsers = [
-    androidLintParser,
-    checkstyleParser,
     junitParser,
+    checkstyleParser,
+    androidLintParser,
 ];
 
-export async function processFile(filepath: string) {
-    const totals = {errors: 0, warnings: 0, notices: 0};
-
+export async function processFile(filepath: string, doNotAnnotate: boolean) {
     for (const parser of parsers) {
-        const annotations = await parser.parse(filepath);
+        const result = await parser.parse(filepath);
 
-        if (annotations) {
-            for (const annotation of annotations) {
+        if (result) {
+            for (const annotation of result.annotations) {
+                const message = doNotAnnotate ?
+                    annotation.message :
+                    annotation.rawDetails?.startsWith(annotation.message) ?
+                    annotation.rawDetails :
+                    join(annotation.message, annotation.rawDetails);
 
                 switch (annotation.type) {
                     case 'error':
-                        core.error(annotation.message, annotation);
-                        totals.errors++;
+                        core.error(message, doNotAnnotate ? undefined : annotation);
                         break;
                     case 'warning':
-                        core.warning(annotation.message, annotation);
-                        totals.warnings++;
+                        core.warning(message, doNotAnnotate ? undefined : annotation);
                         break;
                     default:
-                        core.notice(annotation.message, annotation);
-                        totals.notices++;
+                        core.notice(message, doNotAnnotate ? undefined : annotation);
                 }
             }
+            return result;
         }
     }
-    return totals;
+    return null;
 }

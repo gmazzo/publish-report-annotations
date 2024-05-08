@@ -1,7 +1,8 @@
-import {ParsedAnnotation, Parser} from "./parser";
 import {readFile} from "./readFile";
-import {asArray} from "./utils";
+import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
+import {Parser} from "./parser";
+import ParsedAnnotations from "../ParsedAnnotations";
 
 type Severity = 'error' | 'warning' | 'info' | 'ignore';
 
@@ -32,7 +33,7 @@ export const checkstyleParser: Parser = {
         const data: Data = await readFile(filepath);
 
         if (data?.checkstyle) {
-            const result: ParsedAnnotation[] = [];
+            const result = new ParsedAnnotations();
 
             for (const file of asArray(data.checkstyle.file)) {
                 for (const error of asArray(file.error)) {
@@ -41,7 +42,7 @@ export const checkstyleParser: Parser = {
                     if (type) {
                         const filePath = await resolveFile(file._attributes.name);
 
-                        result.push({
+                        result.add({
                             type,
                             file: filePath,
                             title: error._attributes.source,
