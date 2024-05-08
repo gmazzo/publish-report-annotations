@@ -9,13 +9,16 @@ Reports JUnit, Android Lint, Detekt and any other CheckStyle compatible XML repo
 Mostly targeting Gradle builds
 
 #### JUnit's reports
-![image](https://github.com/gmazzo/publish-report-annotations/assets/513566/63fd2a86-2585-4c49-bb79-9b9dc88007fd)
+![junit](https://github.com/gmazzo/publish-report-annotations/assets/513566/63fd2a86-2585-4c49-bb79-9b9dc88007fd)
 
 #### Checkstyle (and compatibles, like Detekt)s reports
-![image](https://github.com/gmazzo/publish-report-annotations/assets/513566/10979561-f1d3-48ef-a168-d416d866f2cc)
+![checkstyle/detekt](https://github.com/gmazzo/publish-report-annotations/assets/513566/10979561-f1d3-48ef-a168-d416d866f2cc)
 
 #### Android Lint's reports
-![image](https://github.com/gmazzo/publish-report-annotations/assets/513566/cedf8726-0633-43d4-ae6a-3371362f3e8c)
+![android lint](https://github.com/gmazzo/publish-report-annotations/assets/513566/cedf8726-0633-43d4-ae6a-3371362f3e8c)
+
+#### Detailed logs
+![logs](https://github.com/gmazzo/publish-report-annotations/assets/513566/4d2a3224-c326-4948-bf58-6aec18715818)
 
 ## Usage
 On your workflow file add:
