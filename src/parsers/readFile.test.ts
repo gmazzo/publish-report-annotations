@@ -8,13 +8,13 @@ describe("readFile", () => {
         expect(data).toStrictEqual({
             "testsuite": {
                 "_attributes": {
-                    "errors": "0",
-                    "failures": "2",
+                    "errors": 0,
+                    "failures": 2,
                     "hostname": "gmazzola-mac.lan",
                     "name": "org.test.sample.SampleTestSuite",
-                    "skipped": "1",
-                    "tests": "4",
-                    "time": "0.002",
+                    "skipped": 1,
+                    "tests": 4,
+                    "time": 0.002,
                     "timestamp": "2024-05-01T17:22:50"
                 },
                 "properties": {},
@@ -25,7 +25,7 @@ describe("readFile", () => {
                         "_attributes": {
                             "classname": "org.test.sample.SampleTestSuite",
                             "name": "a test skipped",
-                            "time": "0.0"
+                            "time": 0.0
                         },
                         "skipped": {}
                     },
@@ -33,14 +33,14 @@ describe("readFile", () => {
                         "_attributes": {
                             "classname": "org.test.sample.SampleTestSuite",
                             "name": "a test that passes",
-                            "time": "0.0"
+                            "time": 0.0
                         }
                     },
                     {
                         "_attributes": {
                             "classname": "org.test.sample.SampleTestSuite",
                             "name": "a test that fails",
-                            "time": "0.001"
+                            "time": 0.001
                         },
                         "failure": {
                             "_attributes": {
@@ -54,7 +54,7 @@ describe("readFile", () => {
                         "_attributes": {
                             "classname": "org.test.sample.SampleTestSuite",
                             "name": "a test that throws an exception",
-                            "time": "0.001"
+                            "time": 0.001
                         },
                         "failure": {
                             "_attributes": {

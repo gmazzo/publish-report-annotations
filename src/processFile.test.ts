@@ -3,7 +3,7 @@ import {Parser} from "./parsers/parser";
 const junitParser: Parser = {
     parse: jest.fn().mockImplementation(file => {
         if (file == 'junit.xml') {
-            return new ParsedAnnotations({
+            return new ParseResults({
                 annotations: [{
                     type: "error",
                     message: "junit test failed"
@@ -11,7 +11,7 @@ const junitParser: Parser = {
                 totals: {
                     errors: 1,
                     warnings: 0,
-                    notices: 0
+                    others: 0
                 }
             });
         }
@@ -21,7 +21,7 @@ const junitParser: Parser = {
 const checkstyleParser: Parser = {
     parse: jest.fn().mockImplementation(file => {
         if (file == 'checkstyle.xml') {
-            return new ParsedAnnotations({
+            return new ParseResults({
                 annotations: [{
                     type: "error",
                     message: "checkstyle error"
@@ -35,7 +35,7 @@ const checkstyleParser: Parser = {
                 totals: {
                     errors: 1,
                     warnings: 1,
-                    notices: 1
+                    others: 1
                 }
             });
         }
@@ -45,7 +45,7 @@ const checkstyleParser: Parser = {
 const androidLintParser: Parser = {
     parse: jest.fn().mockImplementation(file => {
         if (file == 'lint.xml') {
-            return new ParsedAnnotations({
+            return new ParseResults({
                 annotations: [{
                     type: "error",
                     message: "android failure 1"
@@ -56,7 +56,7 @@ const androidLintParser: Parser = {
                 totals: {
                     errors: 2,
                     warnings: 0,
-                    notices: 0
+                    others: 0
                 }
             });
         }
@@ -86,14 +86,14 @@ jest.mock("@actions/core", () => ({
 }));
 
 import {processFile} from "./processFile";
-import ParsedAnnotations from "./ParsedAnnotations";
+import {ParseResults} from "./types";
 
 describe("processFile", () => {
 
     test.each([[true],[false]])("for a junit file", async (doNotAnnotate) => {
         const all = await processFile("junit.xml", doNotAnnotate);
 
-        expect(all).toStrictEqual(new ParsedAnnotations({
+        expect(all).toStrictEqual(new ParseResults({
             annotations: [{
                 type: "error",
                 message: "junit test failed"
@@ -101,7 +101,7 @@ describe("processFile", () => {
             totals: {
                 errors: 1,
                 warnings: 0,
-                notices: 0
+                others: 0
             }
         }));
 
@@ -117,7 +117,7 @@ describe("processFile", () => {
     test.each([[true],[false]])("for a checkstyle file", async (doNotAnnotate) => {
         const all = await processFile("checkstyle.xml", doNotAnnotate);
 
-        expect(all).toStrictEqual(new ParsedAnnotations({
+        expect(all).toStrictEqual(new ParseResults({
             annotations: [{
                 type: "error",
                 message: "checkstyle error"
@@ -131,7 +131,7 @@ describe("processFile", () => {
             totals: {
                 errors: 1,
                 warnings: 1,
-                notices: 1
+                others: 1
             }
         }));
 
@@ -148,7 +148,7 @@ describe("processFile", () => {
     test.each([[true],[false]])("for a android lint file", async (doNotAnnotate) => {
         const all = await processFile("lint.xml", doNotAnnotate);
 
-        expect(all).toStrictEqual(new ParsedAnnotations({
+        expect(all).toStrictEqual(new ParseResults({
             annotations: [{
                 type: "error",
                 message: "android failure 1"
@@ -159,7 +159,7 @@ describe("processFile", () => {
             totals: {
                 errors: 2,
                 warnings: 0,
-                notices: 0
+                others: 0
             }
         }));
 

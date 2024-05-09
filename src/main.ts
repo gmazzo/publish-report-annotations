@@ -3,7 +3,7 @@ import * as glob from "@actions/glob";
 import {checkName, failOnError, reports, warningsAsErrors} from "./config";
 import {processFile} from "./processFile";
 import {relative} from "path";
-import ParsedAnnotations from "./ParsedAnnotations";
+import {ParseResults} from "./types";
 import {publishCheck} from "./publishCheck";
 import {shouldFail, summaryOf} from "./utils";
 
@@ -13,7 +13,7 @@ export default async function main() {
     core.debug(`Found ${files.length} files to process matching: ${reports.join(', ')}`);
 
     const currentDir = process.cwd();
-    const all = new ParsedAnnotations();
+    const all = new ParseResults();
 
     for (const file of files) {
         const relativePath = relative(currentDir, file);
@@ -21,7 +21,7 @@ export default async function main() {
         core.startGroup(`Processing \`${relativePath}\``);
         const result = await processFile(file, checkName != '');
         if (result) {
-            all.add(result);
+            all.mergeWith(result);
         }
         if (!result || result.annotations.length == 0) {
             core.info('No issues found');
@@ -29,12 +29,16 @@ export default async function main() {
         core.endGroup();
     }
 
-    core.notice(`Processed ${files.length} files: ${summaryOf(all)}`);
+    core.notice(`Processed ${files.length} files: ${summaryOf(all.totals)}`);
 
     if (checkName) {
         await publishCheck(all);
     }
-    if (failOnError && shouldFail(all, warningsAsErrors)) {
+    if (failOnError && shouldFail(all.totals, warningsAsErrors)) {
         core.setFailed(`Found ${all.totals.errors} errors and ${all.totals.warnings} warnings.`);
     }
+
+    core.setOutput('tests', all.tests.totals);
+    core.setOutput('checks', all.checks.totals);
+    core.setOutput('total', all.totals);
 }

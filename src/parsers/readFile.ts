@@ -10,7 +10,13 @@ export async function readFile<Type>(filepath: string) {
             return JSON.parse(await data) as Type;
 
         case "xml":
-            return xml2js(await data, { compact: true, nativeType: true, ignoreDeclaration: true }) as Type;
+            return xml2js(await data, {
+                compact: true,
+                nativeType: true,
+                // @ts-expect-error TODO `nativeTypeAttributes` is a valid option, but not yet in the types
+                nativeTypeAttributes: true,
+                ignoreDeclaration: true
+            }) as Type;
 
         default:
             throw `Unsupported file type: ${extension || '<none>'}`;
