@@ -1,8 +1,7 @@
 name: Release
 on:
+  workflow_dispatch:
   pull_request:
-  push:
-    branches: [ main ]
 
 concurrency: release
 
