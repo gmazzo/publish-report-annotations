@@ -41,26 +41,48 @@ export const junitParser: Parser = {
             const result = new ParsedAnnotations();
 
             for (const suite of asArray(data.testsuites?.testsuite || data.testsuite)) {
-            for (const testcase of asArray(suite.testcase)) {
-                if (testcase.failure) {
-                    const filePath = testcase._attributes.file ?
-                        await resolveFile(testcase._attributes.file) :
-                        await resolveFile(testcase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
+                for (const testcase of asArray(suite.testcase)) {
+                    if (testcase.failure) {
+                        const filePath = testcase._attributes.file ?
+                            await resolveFile(testcase._attributes.file) :
+                            await resolveFile(testcase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
 
-                    result.add({
-                        file: filePath,
-                        type: 'error',
-                        title: testcase._attributes.name,
-                        message: testcase.failure._attributes?.message || testcase.failure._text,
-                        rawDetails: testcase.failure._text,
-                        startLine: testcase._attributes.line || 0,
-                        endLine: testcase._attributes.line || 0,
-                    });
+                        const line = getLine(testcase);
+
+                        result.add({
+                            file: filePath,
+                            type: 'error',
+                            title: testcase._attributes.name,
+                            message: testcase.failure._attributes?.message || testcase.failure._text,
+                            rawDetails: testcase.failure._text,
+                            startLine: line,
+                            endLine: line,
+                        });
+                    }
                 }
-            }}
+            }
             return result;
         }
         return null;
     }
 
 };
+
+function getLine(testcase: TestCase): number | undefined {
+    if (testcase._attributes.line) {
+        return testcase._attributes.line;
+    }
+
+    const className = testcase._attributes.classname;
+    const method = testcase._attributes.name;
+    const stackTrace = testcase.failure?._text;
+
+    if (className && method && stackTrace) {
+        const singleName = className.split('.').pop();
+        const match = new RegExp(`\\s*at\\s+${className}\\.${method}\\(${singleName}\\.\\w+:(\\d+)\\)`).exec(stackTrace);
+
+        if (match) {
+            return Number(match[1]);
+        }
+    }
+}
