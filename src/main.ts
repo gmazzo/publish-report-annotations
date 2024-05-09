@@ -6,7 +6,7 @@ import {relative} from "path";
 import {ParseResults} from "./types";
 import {publishCheck} from "./publishCheck";
 import {shouldFail} from "./utils";
-import {summaryOf} from "./summary";
+import {summaryOf, summaryTableOf} from "./summary";
 
 export default async function main() {
     const globber = await glob.create(reports.join('\n'), { implicitDescendants: true , matchDirectories: false });
@@ -34,6 +34,10 @@ export default async function main() {
 
     if (checkName) {
         await publishCheck(all);
+
+    } else {
+        core.summary.addRaw(summaryTableOf(all));
+        await core.summary.write();
     }
     if (failOnError && shouldFail(all.totals, warningsAsErrors)) {
         core.setFailed(`Found ${all.totals.errors} errors and ${all.totals.warnings} warnings.`);

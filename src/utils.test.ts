@@ -1,5 +1,4 @@
 import {asArray, join, shouldFail} from "./utils";
-import {ParseResults} from "./types";
 
 describe("asArray", () => {
 

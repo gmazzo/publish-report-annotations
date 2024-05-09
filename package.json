@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "compile": "tsc",
-    "package": "ncc build src/index.ts -o dist -m --license licenses.txt --source-map",
+    "package": "ncc build src/index.ts -o dist -m",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest --coverage",
