@@ -17,7 +17,7 @@ export async function publishCheck(results: ParseResults) {
         status: 'completed' as const,
         conclusion: getConclusion(results),
         output: {
-            title: summaryOf(results.totals),
+            title: summaryOf(results),
             summary: "",
             annotations: results.annotations.slice(0, 50).map(annotation => ({
                 path: annotation.file || '',
@@ -45,7 +45,7 @@ export async function publishCheck(results: ParseResults) {
         octokit.rest.checks.update({ ...params, check_run_id: checkRunId }) :
         octokit.rest.checks.create(params));
 
-    core.notice(`Check \`${checkName}\` reported at ${html_url}`);
+    core.info(`Check \`${checkName}\` reported at ${html_url}`);
 
     if (results.annotations.length != params.output.annotations.length) {
         core.warning(`Due GitHub limitation, only ${params.output.annotations.length} of ${results.annotations.length} were reported.\nhttps://github.com/orgs/community/discussions/26680`);

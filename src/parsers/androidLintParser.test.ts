@@ -30,6 +30,7 @@ describe("androidLintParser", () => {
                     }
                 ],
                 totals: {
+                    count: 1,
                     errors: 0,
                     others: 0,
                     warnings: 1

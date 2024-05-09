@@ -73,7 +73,7 @@ describe("junitParser", () => {
                     }
                 ],
                 totals: {
-                    tests: 4,
+                    count: 4,
                     passed: 1,
                     errors: 0,
                     failed: 2,
@@ -135,7 +135,7 @@ describe("junitParser", () => {
                     failed: 0,
                     passed: 4,
                     skipped: 0,
-                    tests: 4
+                    count: 4
                 }
             }
         }));
@@ -360,7 +360,7 @@ describe("junitParser", () => {
                     failed: 1,
                     passed: 17,
                     skipped: 0,
-                    tests: 18
+                    count: 18
                 }
             },
             totals: {
