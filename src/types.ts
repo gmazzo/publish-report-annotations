@@ -10,7 +10,7 @@ export type TestCase = {
     name: string
     time?: number
     failure?: string
-    skipped: boolean
+    skipped?: boolean
 };
 
 export type TestSuite = {
@@ -27,7 +27,7 @@ export type TestSuite = {
 export type TestResult = {
     suites: TestSuite[]
     totals: {
-        tests: number
+        count: number
         passed: number
         errors: number
         failed: number
@@ -45,6 +45,7 @@ export type CheckSuite = {
 export type ChecksResult = {
     checks: CheckSuite[]
     totals: {
+        count: number,
         errors: number
         warnings: number
         others: number
@@ -55,9 +56,9 @@ export class ParseResults {
 
     annotations: Annotation[] = [];
 
-    tests: TestResult = {suites: [], totals: {tests: 0, passed: 0, errors: 0, failed: 0, skipped: 0}};
+    tests: TestResult = {suites: [], totals: {count: 0, passed: 0, errors: 0, failed: 0, skipped: 0}};
 
-    checks: ChecksResult = {checks: [], totals: {errors: 0, warnings: 0, others: 0}};
+    checks: ChecksResult = {checks: [], totals: {count: 0, errors: 0, warnings: 0, others: 0}};
 
     totals = {errors: 0, warnings: 0, others: 0};
 
@@ -85,7 +86,7 @@ export class ParseResults {
 
     addTestSuite(suite: TestSuite) {
         this.tests.suites.push(suite);
-        this.tests.totals.tests += suite.tests;
+        this.tests.totals.count += suite.tests;
         this.tests.totals.passed += suite.passed;
         this.tests.totals.errors += suite.errors;
         this.tests.totals.failed += suite.failed;
@@ -94,6 +95,7 @@ export class ParseResults {
 
     addCheckSuite(suite: CheckSuite) {
         this.checks.checks.push(suite);
+        this.checks.totals.count++;
         this.checks.totals.errors += suite.errors;
         this.checks.totals.warnings += suite.warnings;
         this.checks.totals.others += suite.others;
@@ -103,7 +105,7 @@ export class ParseResults {
         this.annotations.push(...results.annotations);
 
         this.tests.suites.push(...results.tests.suites);
-        this.tests.totals.tests += results.tests.totals.tests;
+        this.tests.totals.count += results.tests.totals.count;
         this.tests.totals.failed += results.tests.totals.failed;
         this.tests.totals.passed += results.tests.totals.passed;
         this.tests.totals.skipped += results.tests.totals.skipped;
@@ -119,6 +121,7 @@ export class ParseResults {
                 this.checks.checks.push(check);
             }
         }
+        this.checks.totals.count += results.checks.totals.count;
         this.checks.totals.errors += results.checks.totals.errors;
         this.checks.totals.warnings += results.checks.totals.warnings;
         this.checks.totals.others += results.checks.totals.others;

@@ -29,7 +29,7 @@ export default async function main() {
         core.endGroup();
     }
 
-    core.notice(`Processed ${files.length} files: ${summaryOf(all.totals)}`);
+    core.notice(`Processed ${files.length} files: ${summaryOf(all)}`);
 
     if (checkName) {
         await publishCheck(all);

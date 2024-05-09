@@ -29,6 +29,7 @@ describe("checkstyleParser", () => {
                     }
                 ],
                 totals: {
+                    count: 1,
                     errors: 0,
                     warnings: 1,
                     others: 0
