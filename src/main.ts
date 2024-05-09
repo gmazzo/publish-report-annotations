@@ -5,7 +5,8 @@ import {processFile} from "./processFile";
 import {relative} from "path";
 import {ParseResults} from "./types";
 import {publishCheck} from "./publishCheck";
-import {shouldFail, summaryOf} from "./utils";
+import {shouldFail} from "./utils";
+import {summaryOf} from "./summary";
 
 export default async function main() {
     const globber = await glob.create(reports.join('\n'), { implicitDescendants: true , matchDirectories: false });

@@ -2,7 +2,8 @@ import * as github from "@actions/github";
 import * as core from "@actions/core";
 import {checkName, githubToken, warningsAsErrors} from "./config";
 import {ParseResults} from "./types";
-import {shouldFail, summaryOf} from "./utils";
+import {shouldFail} from "./utils";
+import {summaryOf} from "./summary";
 
 export async function publishCheck(results: ParseResults) {
     const octokit = github.getOctokit(githubToken);
