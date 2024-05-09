@@ -41,15 +41,15 @@ describe("join", () => {
 describe("summaryOf", () => {
 
     test("singular values", () => {
-        const result = summaryOf({errors: 1, warnings: 1, notices: 1});
+        const result = summaryOf({errors: 1, warnings: 1, others: 1});
 
-        expect(result).toBe("1 error, 1 warning and 1 notice");
+        expect(result).toBe("1 error, 1 warning and 1 other");
     });
 
     test("other values", () => {
-        const result = summaryOf({errors: 3, warnings: 2, notices: 0});
+        const result = summaryOf({errors: 3, warnings: 2, others: 0});
 
-        expect(result).toBe("3 errors, 2 warnings and 0 notices");
+        expect(result).toBe("3 errors, 2 warnings and 0 others");
     });
 
 });
@@ -57,25 +57,25 @@ describe("summaryOf", () => {
 describe("shouldFail", () => {
 
     test("if error, then true", () => {
-        const result = shouldFail({errors: 3, warnings: 2, notices: 1}, false);
+        const result = shouldFail({errors: 3, warnings: 2, others: 1}, false);
 
         expect(result).toBe(true);
     });
 
     test("if only warnings, then false", () => {
-        const result = shouldFail({errors: 0, warnings: 2, notices: 1}, false);
+        const result = shouldFail({errors: 0, warnings: 2, others: 1}, false);
 
         expect(result).toBe(false);
     });
 
     test("if only warnings and counting as errors, then true", () => {
-        const result = shouldFail({errors: 0, warnings: 2, notices: 1}, true);
+        const result = shouldFail({errors: 0, warnings: 2, others: 1}, true);
 
         expect(result).toBe(true);
     });
 
-    test("if only notices, then false", () => {
-        const result = shouldFail({errors: 0, warnings: 2, notices: 1}, false);
+    test("if only others, then false", () => {
+        const result = shouldFail({errors: 0, warnings: 2, others: 1}, false);
 
         expect(result).toBe(false);
     });

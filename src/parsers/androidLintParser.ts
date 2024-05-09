@@ -2,11 +2,11 @@ import {Parser} from "./parser";
 import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
-import ParsedAnnotations from "../ParsedAnnotations";
+import {CheckSuite, ParseResults} from "../types";
 
 type Severity = 'fatal' | 'error' | 'warning' | 'informational';
 
-type Issue = {
+type LintIssue = {
     _attributes: {
         id: string,
         severity: Severity,
@@ -24,19 +24,20 @@ type Issue = {
     }
 };
 
-type Data = {
+type LintData = {
     issues?: {
-        issue: Issue | Issue[],
+        issue: LintIssue | LintIssue[],
     }
 };
 
 export const androidLintParser: Parser = {
 
     async parse(filepath: string) {
-        const data: Data = await readFile(filepath);
+        const data: LintData = await readFile(filepath);
 
         if (data?.issues) {
-            const result = new ParsedAnnotations();
+            const result = new ParseResults();
+            const suite: CheckSuite = {name: 'Android Lint', errors: 0, warnings: 0, others: 0};
 
             for (const testcase of asArray(data.issues.issue)) {
                 const type = computeType(testcase._attributes.severity);
@@ -44,7 +45,7 @@ export const androidLintParser: Parser = {
                 if (type) {
                     const file = await resolveFile(testcase.location._attributes.file);
 
-                    result.add({
+                    result.addAnnotation({
                         file,
                         type,
                         title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
@@ -54,9 +55,11 @@ export const androidLintParser: Parser = {
                         endLine: testcase.location._attributes.line,
                         startColumn: testcase.location._attributes.column,
                         endColumn: testcase.location._attributes.column,
-                    });
+                    }, suite);
                 }
             }
+
+            result.addCheckSuite(suite);
             return result;
         }
         return null;

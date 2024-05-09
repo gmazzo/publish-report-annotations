@@ -1,10 +1,10 @@
 import * as github from "@actions/github";
 import * as core from "@actions/core";
 import {checkName, githubToken, warningsAsErrors} from "./config";
-import ParsedAnnotations from "./ParsedAnnotations";
+import {ParseResults} from "./types";
 import {shouldFail, summaryOf} from "./utils";
 
-export async function publishCheck(annotations: ParsedAnnotations) {
+export async function publishCheck(results: ParseResults) {
     const octokit = github.getOctokit(githubToken);
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -15,11 +15,11 @@ export async function publishCheck(annotations: ParsedAnnotations) {
         name: checkName,
         head_sha: commit,
         status: 'completed' as const,
-        conclusion: getConclusion(annotations),
+        conclusion: getConclusion(results),
         output: {
-            title: summaryOf(annotations),
+            title: summaryOf(results.totals),
             summary: "",
-            annotations: annotations.annotations.slice(0, 50).map(annotation => ({
+            annotations: results.annotations.slice(0, 50).map(annotation => ({
                 path: annotation.file || '',
                 start_line: annotation.startLine || 0,
                 end_line: annotation.endLine || 0,
@@ -47,16 +47,16 @@ export async function publishCheck(annotations: ParsedAnnotations) {
 
     core.notice(`Check \`${checkName}\` reported at ${html_url}`);
 
-    if (annotations.annotations.length != params.output.annotations.length) {
-        core.warning(`Due GitHub limitation, only ${params.output.annotations.length} of ${annotations.annotations.length} were reported.\nhttps://github.com/orgs/community/discussions/26680`);
+    if (results.annotations.length != params.output.annotations.length) {
+        core.warning(`Due GitHub limitation, only ${params.output.annotations.length} of ${results.annotations.length} were reported.\nhttps://github.com/orgs/community/discussions/26680`);
     }
 }
 
-function getConclusion(value: ParsedAnnotations): 'success' | 'failure' {
-    return shouldFail(value, warningsAsErrors) ? "failure" : "success";
+function getConclusion(results: ParseResults): 'success' | 'failure' {
+    return shouldFail(results.totals, warningsAsErrors) ? "failure" : "success";
 }
 
-function getAnnotationType(value: ParsedAnnotations['annotations'][0]['type']): 'notice' | 'warning' | 'failure' {
+function getAnnotationType(value: ParseResults['annotations'][0]['type']): 'notice' | 'warning' | 'failure' {
     switch (value) {
         case 'error':
             return 'failure';

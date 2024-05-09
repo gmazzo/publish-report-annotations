@@ -31,10 +31,19 @@ steps:
 ```
 
 ### Configuration
-| option             | usage                                                                                                                      | default                                                                                                                                                     |
-|--------------------|----------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `token`            | The GitHub token to use to create a check (with `checks: write` permission).<br/><sub>Only required if `checkName` is also set</sub> | `github.token`                                                                                                                                              |
-| `checkName`        | The name of the check to create. <br/><sub>If not set, no check will be created and annotations will be reported to the workflow run</sub> | None (reports to workflow run)                                                                                                                             |
-| `reports`          | A multiple line list of `glob`s pattern to look for reports                                                                | `**/build/test-results/**/TEST-*.xml`<br/>`**/build/reports/checkstyle/*.xml`<br/>`**/build/reports/lint-results-*.xml`<br/>`**/build/reports/detekt/*.xml` |
-| `warningsAsErrors` | If any warning is reported should count as an error. Mostly used in conjunction with `failOnError`                         | `false`                                                                                                                                                     |
-| `failOnError`      | If the action should fail if any error is reported                                                                         | `false`                                                                                                                                                     |
+| option             | usage                                                                                                                                      | default                                                                                                                                                     |
+|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `token`            | The GitHub token to use to create a check (with `checks: write` permission).<br/><sub>Only required if `checkName` is also set</sub>       | `github.token`                                                                                                                                              |
+| `checkName`        | The name of the check to create. <br/><sub>If not set, no check will be created and annotations will be reported to the workflow run</sub> | None (reports to workflow run)                                                                                                                              |
+| `reports`          | A multiple line list of `glob`s pattern to look for reports                                                                                | `**/build/test-results/**/TEST-*.xml`<br/>`**/build/reports/checkstyle/*.xml`<br/>`**/build/reports/lint-results-*.xml`<br/>`**/build/reports/detekt/*.xml` |
+| `warningsAsErrors` | If any warning is reported should count as an error. Mostly used in conjunction with `failOnError`                                         | `false`                                                                                                                                                     |
+| `failOnError`      | If the action should fail if any error is reported                                                                                         | `false`                                                                                                                                                     |
+
+### Outputs
+The action will output the number of errors and warnings found in the reports, aggregated by `tests`, `checks` and totals:
+
+| output   | description            | example                                                     |
+|----------|------------------------|-------------------------------------------------------------|
+| `tests`  | The totals of `tests`  | `{ tests: 8, passed: 4, errors: 0, skipped: 2, failed: 2 }` |
+| `checks` | The totals of `checks` | `{ checks: 8, errors: 0, warnings: 2 }`                     |
+| `total`  | The aggregated totals  | `{ errors: 0, warnings: 2, others: 12 }`                    |

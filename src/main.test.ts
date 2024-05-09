@@ -1,4 +1,4 @@
-import ParsedAnnotations from "./ParsedAnnotations";
+import {ParseResults} from "./types";
 
 const coreDebug = jest.fn();
 const coreInfo = jest.fn();
@@ -6,11 +6,14 @@ const coreNotice = jest.fn();
 const coreStartGroup = jest.fn();
 const coreEndGroup = jest.fn();
 const coreSetFailed = jest.fn();
+const coreSetOutput = jest.fn();
 const globCreate = jest.fn().mockImplementation(() => ({
     glob: jest.fn().mockReturnValue(["file1", "file2"])
 }));
-const processFile = jest.fn().mockReturnValue(new ParsedAnnotations({
-    totals: {errors: 3, warnings: 2, notices: 1}
+const processFile = jest.fn().mockReturnValue(new ParseResults({
+    tests: { suites: [], totals: { tests: 4, passed: 2, errors: 0, skipped: 1, failed: 1 } },
+    checks: { checks: [], totals: { errors: 3, warnings: 2, others: 1 } },
+    totals: { errors: 10, warnings: 4, others: 6 }
 }));
 
 jest.mock("@actions/glob", () => ({
@@ -23,7 +26,8 @@ jest.mock("@actions/core", () => ({
     info: coreInfo,
     startGroup: coreStartGroup,
     endGroup: coreEndGroup,
-    setFailed: coreSetFailed
+    setFailed: coreSetFailed,
+    setOutput: coreSetOutput
 }));
 
 jest.mock("./processFile", () => ({
@@ -55,14 +59,17 @@ describe("main", () => {
         expect(coreEndGroup).toHaveBeenCalledTimes(2);
         expect(processFile).toHaveBeenCalledWith("file1", true);
         expect(processFile).toHaveBeenCalledWith("file2", true);
-        expect(coreNotice).toHaveBeenCalledWith("Processed 2 files: 6 errors, 4 warnings and 2 notices");
+        expect(coreNotice).toHaveBeenCalledWith("Processed 2 files: 20 errors, 8 warnings and 12 others");
         expect(coreSetFailed).not.toHaveBeenCalled();
+        expect(coreSetOutput).toHaveBeenCalledWith("tests", { tests: 8, passed: 4, errors: 0, skipped: 2, failed: 2 });
+        expect(coreSetOutput).toHaveBeenCalledWith("checks", { errors: 6, warnings: 4, others: 2 });
+        expect(coreSetOutput).toHaveBeenCalledWith("total", { errors: 20, warnings: 8, others: 12 });
     });
 
     test("if error and should fail, expect to fail", async () => {
         config.failOnError = true;
-        processFile.mockResolvedValue(new ParsedAnnotations({
-            totals: {errors: 3, warnings: 0, notices: 1}
+        processFile.mockResolvedValue(new ParseResults({
+            totals: {errors: 3, warnings: 0, others: 1}
         }));
 
         await main();
@@ -73,8 +80,8 @@ describe("main", () => {
     test("if warnings and should fail, expect to fail", async () => {
         config.warningsAsErrors = true;
         config.failOnError = true;
-        processFile.mockResolvedValue(new ParsedAnnotations({
-            totals: {errors: 0, warnings: 2, notices: 1}
+        processFile.mockResolvedValue(new ParseResults({
+            totals: {errors: 0, warnings: 2, others: 1}
         }));
 
         await main();

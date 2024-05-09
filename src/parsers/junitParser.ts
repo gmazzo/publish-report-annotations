@@ -2,12 +2,13 @@ import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
 import {Parser} from "./parser";
-import ParsedAnnotations from "../ParsedAnnotations";
+import {ParseResults, TestCase} from "../types";
 
-type TestCase = {
+type JUnitTest = {
     _attributes: {
         name: string,
         classname: string,
+        time?: number,
         file?: string,
         line?: number,
     }
@@ -21,45 +22,74 @@ type TestCase = {
     }
 };
 
-type TestSuite = {
-    testcase: TestCase | TestCase[],
+type JUnitSuite = {
+    _attributes: {
+        name: string
+        time?: number,
+        tests?: number
+        skipped?: number
+        failures?: number
+        errors?: number
+    }
+    testcase: JUnitTest | JUnitTest[],
 };
 
-type Data = {
+type JUnitData = {
     testsuites?: {
-        testsuite: TestSuite | TestSuite[],
+        testsuite: JUnitSuite | JUnitSuite[],
     },
-    testsuite?: TestSuite
+    testsuite?: JUnitSuite
 };
 
 export const junitParser: Parser = {
 
     async parse(filepath: string) {
-        const data: Data = await readFile(filepath);
+        const data: JUnitData = await readFile(filepath);
 
         if (data?.testsuite || data?.testsuites) {
-            const result = new ParsedAnnotations();
+            const result = new ParseResults();
 
-            for (const suite of asArray(data.testsuites?.testsuite || data.testsuite)) {
-                for (const testcase of asArray(suite.testcase)) {
-                    if (testcase.failure) {
-                        const filePath = testcase._attributes.file ?
-                            await resolveFile(testcase._attributes.file) :
-                            await resolveFile(testcase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
+            for (const testSuite of asArray(data.testsuites?.testsuite || data.testsuite)) {
+                const suite = {
+                    name: testSuite._attributes.name,
+                    time: testSuite._attributes.time,
+                    cases: [] as TestCase[],
+                    tests: testSuite._attributes.tests || 0,
+                    errors: testSuite._attributes.errors || 0,
+                    failed: testSuite._attributes.failures || 0,
+                    skipped: testSuite._attributes.skipped || 0,
+                };
 
-                        const line = getLine(testcase);
+                for (const testCase of asArray(testSuite.testcase)) {
+                    suite.cases.push({
+                        name: testCase._attributes.name,
+                        time: testCase._attributes.time,
+                        skipped: !!testCase.skipped,
+                        failure: testCase.failure?._attributes?.message,
+                    });
 
-                        result.add({
+                    if (testCase.failure) {
+                        const filePath = testCase._attributes.file ?
+                            await resolveFile(testCase._attributes.file) :
+                            await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
+
+                        const line = getLine(testCase);
+
+                        result.addAnnotation({
                             file: filePath,
                             type: 'error',
-                            title: testcase._attributes.name,
-                            message: testcase.failure._attributes?.message || testcase.failure._text,
-                            rawDetails: testcase.failure._text,
+                            title: testCase._attributes.name,
+                            message: testCase.failure._attributes?.message || testCase.failure._text,
+                            rawDetails: testCase.failure._text,
                             startLine: line,
                             endLine: line,
                         });
                     }
                 }
+                result.addTestSuite({
+                    ...suite,
+                    passed: suite.tests - suite.errors - suite.failed - suite.skipped,
+                });
             }
             return result;
         }
@@ -68,14 +98,14 @@ export const junitParser: Parser = {
 
 };
 
-function getLine(testcase: TestCase): number | undefined {
-    if (testcase._attributes.line) {
-        return testcase._attributes.line;
+function getLine(testCase: JUnitTest): number | undefined {
+    if (testCase._attributes.line) {
+        return testCase._attributes.line;
     }
 
-    const className = testcase._attributes.classname;
-    const method = testcase._attributes.name;
-    const stackTrace = testcase.failure?._text;
+    const className = testCase._attributes.classname;
+    const method = testCase._attributes.name;
+    const stackTrace = testCase.failure?._text;
 
     if (className && method && stackTrace) {
         const singleName = className.split('.').pop();

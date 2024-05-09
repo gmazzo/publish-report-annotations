@@ -2,11 +2,11 @@ import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
 import {Parser} from "./parser";
-import ParsedAnnotations from "../ParsedAnnotations";
+import {ParseResults, CheckSuite} from "../types";
 
 type Severity = 'error' | 'warning' | 'info' | 'ignore';
 
-type File = {
+type CheckStyleFile = {
     _attributes: {
         name: string,
     }
@@ -21,19 +21,20 @@ type File = {
     }
 };
 
-type Data = {
+type CheckStyleData = {
     checkstyle?: {
-        file: File | File[],
+        file: CheckStyleFile | CheckStyleFile[],
     }
 };
 
 export const checkstyleParser: Parser = {
 
     async parse(filepath: string) {
-        const data: Data = await readFile(filepath);
+        const data: CheckStyleData = await readFile(filepath);
 
         if (data?.checkstyle) {
-            const result = new ParsedAnnotations();
+            const result = new ParseResults();
+            const suite: CheckSuite = {name: 'CheckStyle', errors: 0, warnings: 0, others: 0};
 
             for (const file of asArray(data.checkstyle.file)) {
                 for (const error of asArray(file.error)) {
@@ -42,7 +43,11 @@ export const checkstyleParser: Parser = {
                     if (type) {
                         const filePath = await resolveFile(file._attributes.name);
 
-                        result.add({
+                        if (error._attributes.source?.startsWith('detekt.')) {
+                            suite.name = 'detekt';
+                        }
+
+                        result.addAnnotation({
                             type,
                             file: filePath,
                             title: error._attributes.source,
@@ -51,10 +56,11 @@ export const checkstyleParser: Parser = {
                             endLine: error._attributes.line,
                             startColumn: error._attributes.column,
                             endColumn: error._attributes.column,
-                        });
+                        }, suite);
                     }
                 }
             }
+            result.addCheckSuite(suite);
             return result;
         }
         return null;
