@@ -7,6 +7,8 @@ const coreStartGroup = jest.fn();
 const coreEndGroup = jest.fn();
 const coreSetFailed = jest.fn();
 const coreSetOutput = jest.fn();
+const coreSummaryAddRaw = jest.fn();
+const coreSummaryWrite = jest.fn();
 const globCreate = jest.fn().mockImplementation(() => ({
     glob: jest.fn().mockReturnValue(["file1", "file2"])
 }));
@@ -27,7 +29,8 @@ jest.mock("@actions/core", () => ({
     startGroup: coreStartGroup,
     endGroup: coreEndGroup,
     setFailed: coreSetFailed,
-    setOutput: coreSetOutput
+    setOutput: coreSetOutput,
+    summary: { addRaw: coreSummaryAddRaw, write: coreSummaryWrite }
 }));
 
 jest.mock("./processFile", () => ({
@@ -64,6 +67,8 @@ describe("main", () => {
         expect(coreSetOutput).toHaveBeenCalledWith("tests", { count: 8, passed: 4, errors: 0, skipped: 2, failed: 2 });
         expect(coreSetOutput).toHaveBeenCalledWith("checks", { count: 12, errors: 6, warnings: 4, others: 2 });
         expect(coreSetOutput).toHaveBeenCalledWith("total", { errors: 20, warnings: 8, others: 12 });
+        expect(coreSummaryAddRaw).toHaveBeenCalled();
+        expect(coreSummaryWrite).toHaveBeenCalled();
     });
 
     test("if error and should fail, expect to fail", async () => {

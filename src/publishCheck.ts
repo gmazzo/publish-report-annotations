@@ -2,7 +2,8 @@ import * as github from "@actions/github";
 import * as core from "@actions/core";
 import {checkName, githubToken, warningsAsErrors} from "./config";
 import {ParseResults} from "./types";
-import {shouldFail, summaryOf} from "./utils";
+import {shouldFail} from "./utils";
+import {summaryOf, summaryTableOf} from "./summary";
 
 export async function publishCheck(results: ParseResults) {
     const octokit = github.getOctokit(githubToken);
@@ -18,7 +19,7 @@ export async function publishCheck(results: ParseResults) {
         conclusion: getConclusion(results),
         output: {
             title: summaryOf(results),
-            summary: "",
+            summary: summaryTableOf(results),
             annotations: results.annotations.slice(0, 50).map(annotation => ({
                 path: annotation.file || '',
                 start_line: annotation.startLine || 0,

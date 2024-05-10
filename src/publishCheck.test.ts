@@ -13,10 +13,17 @@ const getOctokit = jest.fn().mockReturnValue({
     }
 });
 const coreInfo = jest.fn();
+const summaryOf = jest.fn().mockReturnValue("aSummary");
+const summaryTableOf = jest.fn().mockReturnValue("aSummaryTable");
 
 jest.mock("./config", () => ({
     githubToken: "aToken",
     checkName: "aCheckName",
+}));
+
+jest.mock("./summary", () => ({
+    summaryOf,
+    summaryTableOf
 }));
 
 jest.mock("@actions/github", () => ({
@@ -93,8 +100,8 @@ describe("publishCheck", () => {
             status: "completed",
             conclusion: "failure",
             output: {
-                title: "4 tests, 2 passed, 1 skipped, 1 failed, checks: 3 errors, 2 warnings, 1 other",
-                summary: "",
+                title: "aSummary",
+                summary: "aSummaryTable",
                 annotations: [{
                     path: "file1",
                     start_line: 1,
