@@ -38,38 +38,12 @@ describe("junitParser", () => {
                 suites: [
                     {
                         name: "org.test.sample.SampleTestSuite",
-                        cases: [
-                            {
-                                name: "a test skipped",
-                                skipped: true,
-                                time: 0,
-                                failure: undefined
-                            },
-                            {
-                                name: "a test that passes",
-                                skipped: false,
-                                time: 0,
-                                failure: undefined
-                            },
-                            {
-                                failure: "java.lang.AssertionError: this test has failed",
-                                name: "a test that fails",
-                                skipped: false,
-                                time: 0.001
-                            },
-                            {
-                                failure: "java.io.IOException: has been an I/O error",
-                                name: "a test that throws an exception",
-                                skipped: false,
-                                time: 0.001
-                            }
-                        ],
-                        tests: 4,
+                        count: 4,
                         passed: 1,
                         errors: 0,
                         failed: 2,
                         skipped: 1,
-                        time: 0.002
+                        took: 0.002
                     }
                 ],
                 totals: {
@@ -95,39 +69,13 @@ describe("junitParser", () => {
             tests: {
                 suites: [
                     {
-                        cases: [
-                            {
-                                name: "aTest[0]",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.027
-                            },
-                            {
-                                name: "aTest[1]",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.016
-                            },
-                            {
-                                name: "aTest[2]",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.203
-                            },
-                            {
-                                name: "aTest[3]",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.33
-                            }
-                        ],
                         errors: 0,
                         failed: 0,
                         name: "org.test.sample.AnotherTestSuite",
                         passed: 4,
                         skipped: 0,
-                        tests: 4,
-                        time: 0.578
+                        count: 4,
+                        took: 0.578
                     }
                 ],
                 totals: {
@@ -159,200 +107,76 @@ describe("junitParser", () => {
             tests: {
                 suites: [
                     {
-                        cases: [
-                            {
-                                name: "asArray when single element, returns it as an array",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.003
-                            },
-                            {
-                                name: "asArray when multiple elements, returns the same",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0
-                            },
-                            {
-                                name: "asArray when not a value, returns an empty array",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.001
-                            }
-                        ],
                         errors: 0,
                         failed: 0,
                         name: "asArray",
                         passed: 3,
                         skipped: 0,
-                        tests: 3,
-                        time: 1.197
+                        count: 3,
+                        took: 1.197
                     },
                     {
-                        cases: [
-                            {
-                                name: "main delegates to parsers and reports results",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.047
-                            },
-                            {
-                                name: "main if error and should fail, expect to fail",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0
-                            },
-                            {
-                                name: "main if warnings and should fail, expect to fail",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.001
-                            }
-                        ],
                         errors: 0,
                         failed: 0,
                         name: "main",
                         passed: 3,
                         skipped: 0,
-                        tests: 3,
-                        time: 1.651
+                        count: 3,
+                        took: 1.651
                     },
                     {
-                        cases: [
-                            {
-                                name: "readFile should return parsed XML file as JSON",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.018
-                            }
-                        ],
                         errors: 0,
                         failed: 0,
                         name: "readFile",
                         passed: 1,
                         skipped: 0,
-                        tests: 1,
-                        time: 1.72
+                        count: 1,
+                        took: 1.72
                     },
                     {
-                        cases: [
-                            {
-                                name: "processFile delegates to parsers and reports results",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.004
-                            }
-                        ],
                         errors: 0,
                         failed: 0,
                         name: "processFile",
                         passed: 1,
                         skipped: 0,
-                        tests: 1,
-                        time: 1.738
+                        count: 1,
+                        took: 1.738
                     },
                     {
-                        cases: [
-                            {
-                                name: "junitParser given junit xml should obtain annotations",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.007
-                            },
-                            {
-                                name: "junitParser given another junit xml should obtain annotations",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.001
-                            },
-                            {
-                                name: "junitParser given a jest junit xml should obtain annotations",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.002
-                            }
-                        ],
                         errors: 0,
                         failed: 1,
                         name: "junitParser",
                         passed: 2,
                         skipped: 0,
-                        tests: 3,
-                        time: 1.773
+                        count: 3,
+                        took: 1.773
                     },
                     {
-                        cases: [
-                            {
-                                name: "androidLintParser given lint xml should obtain annotations",
-                                skipped: false,
-                                failure: undefined,
-                                time: 1.021
-                            }
-                        ],
                         errors: 0,
                         failed: 0,
                         name: "androidLintParser",
                         passed: 1,
                         skipped: 0,
-                        tests: 1,
-                        time: 2.801
+                        count: 1,
+                        took: 2.801
                     },
                     {
-                        cases: [
-                            {
-                                name: "checkstyleParser given detekt xml should obtain annotations",
-                                skipped: false,
-                                failure: undefined,
-                                time: 1.04
-                            }
-                        ],
                         errors: 0,
                         failed: 0,
                         name: "checkstyleParser",
                         passed: 1,
                         skipped: 0,
-                        tests: 1,
-                        time: 2.806
+                        count: 1,
+                        took: 2.806
                     },
                     {
-                        cases: [
-                            {
-                                name: "resolveFile when is absolute path, just returns itself",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.002
-                            },
-                            {
-                                name: "resolveFile when file exists, just returns itself",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0
-                            },
-                            {
-                                name: "resolveFile when looking for a file, it returns a match",
-                                skipped: false,
-                                failure: undefined,
-                                time: 1.031
-                            },
-                            {
-                                name: "resolveFile when looking for a file with possible extensions, it returns a match",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.617
-                            },
-                            {
-                                name: "resolveFile when looking for a file but extension does not matches, it returns the same",
-                                skipped: false,
-                                failure: undefined,
-                                time: 0.568
-                            }
-                        ],
                         errors: 0,
                         failed: 0,
                         name: "resolveFile",
                         passed: 5,
                         skipped: 0,
-                        tests: 5,
-                        time: 3.985
+                        count: 5,
+                        took: 3.985
                     }
                 ],
                 totals: {
