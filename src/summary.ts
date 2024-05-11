@@ -42,47 +42,31 @@ export function summaryOf(results: ParseResults) {
     return summary;
 }
 
-function escapeHTML(value: string) {
-    return value
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-}
-
 function summaryTableOfTests(tests: ParseResults['tests']) {
-    let table = '<table>';
-    table += `<tr><th>Tests</th><th>✅ ${tests.totals.passed} passed</th><th>🟡 ${tests.totals.skipped} skipped</th><th>❌ ${tests.totals.failed + tests.totals.errors} failed</th></tr>`;
+    let table = `|Tests|✅ ${tests.totals.passed} passed|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed + tests.totals.errors} failed|⌛ took\n`;
+    table += `|:-|-|-|-|-|\n`;
     for (const suite of tests.suites) {
-        table += `<tr><td><i>${suite.failed + suite.errors > 0 ? '❌' : suite.skipped > 0 ? '🟡' : '✅'} ${escapeHTML(suite.name)} (⌛ ${suite.time}s)</i></td><td><i>${suite.passed}</i></td><td><i>${suite.skipped}</i></td><td><i>${suite.failed + suite.errors}</i></td></tr>`;
-        table += `<tr><td>`;
-        for (const test of suite.cases) {
-            table += `${test.failure ? '❌' : test.skipped ? '🟡' : '✅'} ${escapeHTML(test.name)} (⌛ ${test.time}s)<br/>`;
-        }
-        table += `</td><td colspan="3"/></tr>`;
+        table += `|${suite.failed + suite.errors > 0 ? '❌' : suite.skipped > 0 ? '🟡' : '✅'} ${suite.name}|${suite.passed}|${suite.skipped}|${suite.failed + suite.errors}|${suite.took}s\n`;
     }
-    table += `</table>`;
     return table;
 }
 
 function summaryTableOfChecks(checks: ParseResults['checks']) {
-    let table = '<table>';
-    table += `<tr><th>Checks</th><th>🛑 ${entry(checks.totals.errors, 'error')}</th><th>⚠️ ${entry(checks.totals.warnings, 'warning')}</th><th>💡 ${entry(checks.totals.others, 'other')}</th></tr>`;
+    let table = `|Checks|🛑 ${entry(checks.totals.errors, 'error')}|⚠️ ${entry(checks.totals.warnings, 'warning')}|💡 ${entry(checks.totals.others, 'other')}\n`;
+    table += `|:-|-|-|-|\n`;
     for (const check of checks.checks) {
-        table += `<tr><td>${escapeHTML(check.name)}</td><td>${check.errors}</td><td>${check.warnings}</td><td>${check.others}</td></tr>`;
+        table += `${check.name}|${check.errors}|${check.warnings}|${check.others}\n`;
     }
-    table += `</table>`;
     return table;
 }
 
 export function summaryTableOf(results: ParseResults) {
     let table = '';
     if (results.tests.totals.count > 0) {
-        table += '<h2>Tests</h2>';
         table += summaryTableOfTests(results.tests);
     }
     if (results.checks.totals.count > 0) {
-        table += '<h2>Checks</h2>';
+        if (table) table += '\n';
         table += summaryTableOfChecks(results.checks);
     }
     return table;

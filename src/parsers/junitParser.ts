@@ -2,7 +2,7 @@ import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
 import {Parser} from "./parser";
-import {ParseResults, TestCase} from "../types";
+import {ParseResults} from "../types";
 
 type JUnitTest = {
     _attributes: {
@@ -52,22 +52,14 @@ export const junitParser: Parser = {
             for (const testSuite of asArray(data.testsuites?.testsuite || data.testsuite)) {
                 const suite = {
                     name: testSuite._attributes.name,
-                    time: testSuite._attributes.time,
-                    cases: [] as TestCase[],
-                    tests: testSuite._attributes.tests || 0,
+                    took: testSuite._attributes.time,
+                    count: testSuite._attributes.tests || 0,
                     errors: testSuite._attributes.errors || 0,
                     failed: testSuite._attributes.failures || 0,
                     skipped: testSuite._attributes.skipped || 0,
                 };
 
                 for (const testCase of asArray(testSuite.testcase)) {
-                    suite.cases.push({
-                        name: testCase._attributes.name,
-                        time: testCase._attributes.time,
-                        skipped: !!testCase.skipped,
-                        failure: testCase.failure?._attributes?.message,
-                    });
-
                     if (testCase.failure) {
                         const filePath = testCase._attributes.file ?
                             await resolveFile(testCase._attributes.file) :
@@ -88,7 +80,7 @@ export const junitParser: Parser = {
                 }
                 result.addTestSuite({
                     ...suite,
-                    passed: suite.tests - suite.errors - suite.failed - suite.skipped,
+                    passed: suite.count - suite.errors - suite.failed - suite.skipped,
                 });
             }
             return result;

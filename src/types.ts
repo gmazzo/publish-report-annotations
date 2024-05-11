@@ -6,18 +6,10 @@ export type Annotation = {
     rawDetails?: string
 } & AnnotationProperties;
 
-export type TestCase = {
-    name: string
-    time?: number
-    failure?: string
-    skipped?: boolean
-};
-
 export type TestSuite = {
     name: string
-    cases: TestCase[]
-    time?: number
-    tests: number
+    took?: number
+    count: number
     passed: number
     errors: number
     failed: number
@@ -86,7 +78,7 @@ export class ParseResults {
 
     addTestSuite(suite: TestSuite) {
         this.tests.suites.push(suite);
-        this.tests.totals.count += suite.tests;
+        this.tests.totals.count += suite.count;
         this.tests.totals.passed += suite.passed;
         this.tests.totals.errors += suite.errors;
         this.tests.totals.failed += suite.failed;
@@ -94,11 +86,13 @@ export class ParseResults {
     }
 
     addCheckSuite(suite: CheckSuite) {
-        this.checks.checks.push(suite);
-        this.checks.totals.count++;
-        this.checks.totals.errors += suite.errors;
-        this.checks.totals.warnings += suite.warnings;
-        this.checks.totals.others += suite.others;
+        if (suite.errors > 0 || suite.warnings > 0 || suite.others > 0) {
+            this.checks.checks.push(suite);
+            this.checks.totals.count++;
+            this.checks.totals.errors += suite.errors;
+            this.checks.totals.warnings += suite.warnings;
+            this.checks.totals.others += suite.others;
+        }
     }
 
     mergeWith(results: ParseResults) {

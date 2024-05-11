@@ -87,20 +87,8 @@ describe("summaryTableOf", () => {
         const html = summaryTableOf(new ParseResults({
             tests: {
                 suites: [
-                    {
-                        name: "suite1", tests: 5, passed: 2, errors: 0, skipped: 1, failed: 1, time: 4, cases: [
-                            {name: "case1", time: 0.1},
-                            {name: "case2", time: 0.2},
-                            {name: "case3", time: 0.3, skipped: true},
-                            {name: "case4", time: 0.4, failure: "a Failure"}
-                        ]
-                    },
-                    {
-                        name: "suite2", tests: 2, passed: 2, errors: 0, skipped: 0, failed: 0, time: 2, cases: [
-                            {name: "case1", time: 0.1},
-                            {name: "case2", time: 0.2},
-                        ]
-                    }
+                    {name: "suite1", count: 5, passed: 2, errors: 0, skipped: 1, failed: 1, took: 4},
+                    {name: "suite2", count: 2, passed: 2, errors: 0, skipped: 0, failed: 0, took: 2}
                 ], totals: {count: 4, passed: 2, errors: 0, skipped: 1, failed: 1}
             },
             checks: {
@@ -111,7 +99,15 @@ describe("summaryTableOf", () => {
             }
         }));
 
-        expect(html).toBe('<h2>Tests</h2><table><tr><th>Tests</th><th>✅ 2 passed</th><th>🟡 1 skipped</th><th>❌ 1 failed</th></tr><tr><td><i>❌ suite1 (⌛ 4s)</i></td><td><i>2</i></td><td><i>1</i></td><td><i>1</i></td></tr><tr><td>✅ case1 (⌛ 0.1s)<br/>✅ case2 (⌛ 0.2s)<br/>🟡 case3 (⌛ 0.3s)<br/>❌ case4 (⌛ 0.4s)<br/></td><td colspan="3"/></tr><tr><td><i>✅ suite2 (⌛ 2s)</i></td><td><i>2</i></td><td><i>0</i></td><td><i>0</i></td></tr><tr><td>✅ case1 (⌛ 0.1s)<br/>✅ case2 (⌛ 0.2s)<br/></td><td colspan="3"/></tr></table><h2>Checks</h2><table><tr><th>Checks</th><th>🛑 3 errors</th><th>⚠️ 2 warnings</th><th>💡 1 other</th></tr><tr><td>check1</td><td>3</td><td>1</td><td>2</td></tr><tr><td>check2</td><td>7</td><td>3</td><td>4</td></tr></table>');
+        expect(html).toBe('|Tests|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
+            '|:-|-|-|-|-|\n' +
+            '|❌ suite1|2|1|1|4s\n' +
+            '|✅ suite2|2|0|0|2s\n' +
+            '\n' +
+            '|Checks|🛑 3 errors|⚠️ 2 warnings|💡 1 other\n' +
+            '|:-|-|-|-|\n' +
+            'check1|3|1|2\n' +
+            'check2|7|3|4\n');
     });
 
 });
