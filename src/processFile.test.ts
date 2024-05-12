@@ -29,7 +29,7 @@ const checkstyleParser: Parser = {
                     type: "warning",
                     message: "checkstyle warning"
                 }, {
-                    type: "notice",
+                    type: "other",
                     message: "checkstyle notice"
                 }],
                 totals: {
@@ -125,7 +125,7 @@ describe("processFile", () => {
                 type: "warning",
                 message: "checkstyle warning"
             }, {
-                type: "notice",
+                type: "other",
                 message: "checkstyle notice"
             }],
             totals: {
@@ -142,7 +142,7 @@ describe("processFile", () => {
 
         expect(coreError).toHaveBeenCalledWith("checkstyle error", doNotAnnotate ? undefined : {type: "error", message: "checkstyle error"});
         expect(coreWarning).toHaveBeenCalledWith("checkstyle warning", doNotAnnotate ? undefined : {type: "warning", message: "checkstyle warning"});
-        expect(coreNotice).toHaveBeenCalledWith("checkstyle notice", doNotAnnotate ? undefined : {type: "notice", message: "checkstyle notice"});
+        expect(coreNotice).toHaveBeenCalledWith("checkstyle notice", doNotAnnotate ? undefined : {type: "other", message: "checkstyle notice"});
     });
 
     test.each([[true],[false]])("for a android lint file", async (doNotAnnotate) => {

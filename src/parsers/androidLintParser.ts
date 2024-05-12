@@ -32,19 +32,21 @@ type LintData = {
 
 export const androidLintParser: Parser = {
 
-    async parse(filepath: string) {
+    parse: async function (filepath: string) {
         const data: LintData = await readFile(filepath);
 
         if (data?.issues) {
             const result = new ParseResults();
-            const suite: CheckSuite = {name: 'Android Lint', errors: 0, warnings: 0, others: 0};
+            const suite: CheckSuite = {name: 'Android Lint', errors: 0, warnings: 0, others: 0, issues: {}};
 
             for (const testcase of asArray(data.issues.issue)) {
                 const type = computeType(testcase._attributes.severity);
 
                 if (type) {
                     const file = await resolveFile(testcase.location._attributes.file);
+                    const issue = `${testcase._attributes.category} / ${testcase._attributes.id}`;
 
+                    result.addIssueToCheckSuite(suite, issue, type);
                     result.addAnnotation({
                         file,
                         type,
@@ -74,6 +76,6 @@ function computeType(severity: Severity) {
         case 'warning':
             return 'warning';
         case 'informational':
-            return 'notice';
+            return 'other';
     }
 }

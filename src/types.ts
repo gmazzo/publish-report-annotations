@@ -1,8 +1,10 @@
 import {AnnotationProperties} from "@actions/core";
 
+type Level = 'error' | 'warning' | 'other';
+
 export type Annotation = {
     message: string
-    type: 'error' | 'warning' | 'notice'
+    type: Level
     rawDetails?: string
 } & AnnotationProperties;
 
@@ -32,6 +34,7 @@ export type CheckSuite = {
     errors: number
     warnings: number
     others: number
+    issues: {[key: string]: {level: Level, count: number}}
 };
 
 export type ChecksResult = {
@@ -92,6 +95,16 @@ export class ParseResults {
             this.checks.totals.errors += suite.errors;
             this.checks.totals.warnings += suite.warnings;
             this.checks.totals.others += suite.others;
+        }
+    }
+
+    addIssueToCheckSuite(this: void, suite: CheckSuite, issue: string, level: Level) {
+        const current = suite.issues[issue];
+        if (current) {
+            current.count++;
+
+        } else {
+            suite.issues[issue] = {level, count: 1};
         }
     }
 

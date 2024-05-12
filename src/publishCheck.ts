@@ -57,11 +57,13 @@ function getConclusion(results: ParseResults): 'success' | 'failure' {
     return shouldFail(results.totals, warningsAsErrors) ? "failure" : "success";
 }
 
-function getAnnotationType(value: ParseResults['annotations'][0]['type']): 'notice' | 'warning' | 'failure' {
+function getAnnotationType(value: ParseResults['annotations'][0]['type']): 'failure' | 'warning' | 'notice' {
     switch (value) {
         case 'error':
             return 'failure';
-        default:
-            return value;
+        case 'warning':
+            return 'warning';
+        case 'other':
+            return 'notice';
     }
 }
