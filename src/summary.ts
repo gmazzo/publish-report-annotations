@@ -52,10 +52,14 @@ function summaryTableOfTests(tests: ParseResults['tests']) {
 }
 
 function summaryTableOfChecks(checks: ParseResults['checks']) {
-    let table = `|Checks|🛑 ${entry(checks.totals.errors, 'error')}|⚠️ ${entry(checks.totals.warnings, 'warning')}|💡 ${entry(checks.totals.others, 'other')}\n`;
-    table += `|:-|-|-|-|\n`;
+    let table = ``;
     for (const check of checks.checks) {
-        table += `${check.name}|${check.errors}|${check.warnings}|${check.others}\n`;
+        table = `|${check.name}|🛑 ${entry(check.errors, 'error')}|⚠️ ${entry(check.warnings, 'warning')}|💡 ${entry(check.others, 'other')}\n`;
+        table += `|:-|-|-|-|\n`;
+        for (const [issue, {level, count}] of Object.entries(check.issues)) {
+            table += `|${issue}|${level == 'error' ? count : '0'}|${level == 'warning' ? count : '0'}|${level == 'other' ? count : '0'}|\n`;
+        }
+        table += `\n`;
     }
     return table;
 }

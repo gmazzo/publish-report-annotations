@@ -25,7 +25,8 @@ describe("checkstyleParser", () => {
                         name: "detekt",
                         errors: 0,
                         warnings: 1,
-                        others: 0
+                        others: 0,
+                        issues: { 'NewLineAtEndOfFile': { level: 'warning', count: 1 } }
                     }
                 ],
                 totals: {

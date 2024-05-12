@@ -93,8 +93,8 @@ describe("summaryTableOf", () => {
             },
             checks: {
                 checks: [
-                    {name: "check1", errors: 3, warnings: 1, others: 2},
-                    {name: "check2", errors: 7, warnings: 3, others: 4},
+                    {name: "suite1", errors: 3, warnings: 1, others: 2, issues: { 'check1': { level: 'warning', count: 1 }, 'check2': { level: 'error', count: 2 } }},
+                    {name: "suite2", errors: 7, warnings: 3, others: 4, issues: { 'check2': { level: 'warning', count: 3 } }},
                 ], totals: {count: 6, errors: 3, warnings: 2, others: 1}
             }
         }));
@@ -104,10 +104,10 @@ describe("summaryTableOf", () => {
             '|❌ suite1|2|1|1|4s\n' +
             '|✅ suite2|2|0|0|2s\n' +
             '\n' +
-            '|Checks|🛑 3 errors|⚠️ 2 warnings|💡 1 other\n' +
+            '|suite2|🛑 7 errors|⚠️ 3 warnings|💡 4 others\n' +
             '|:-|-|-|-|\n' +
-            'check1|3|1|2\n' +
-            'check2|7|3|4\n');
+            '|check2|0|3|0|\n' +
+            '\n');
     });
 
 });

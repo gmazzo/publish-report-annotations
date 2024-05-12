@@ -34,7 +34,7 @@ export const checkstyleParser: Parser = {
 
         if (data?.checkstyle) {
             const result = new ParseResults();
-            const suite: CheckSuite = {name: 'CheckStyle', errors: 0, warnings: 0, others: 0};
+            const suite: CheckSuite = {name: 'CheckStyle', errors: 0, warnings: 0, others: 0, issues: {}};
 
             for (const file of asArray(data.checkstyle.file)) {
                 for (const error of asArray(file.error)) {
@@ -42,9 +42,15 @@ export const checkstyleParser: Parser = {
 
                     if (type) {
                         const filePath = await resolveFile(file._attributes.name);
+                        const source = error._attributes.source;
 
-                        if (error._attributes.source?.startsWith('detekt.')) {
-                            suite.name = 'detekt';
+                        if (source) {
+                            if (source.startsWith('detekt.')) {
+                                suite.name = 'detekt';
+                            }
+
+                            const issue = source.replace(/^detekt\./g, '');
+                            result.addIssueToCheckSuite(suite, issue, type);
                         }
 
                         result.addAnnotation({
@@ -75,6 +81,6 @@ function computeType(severity: Severity) {
         case 'warning':
             return 'warning';
         case 'info':
-            return 'notice';
+            return 'other';
     }
 }

@@ -26,7 +26,8 @@ describe("androidLintParser", () => {
                         name: "Android Lint",
                         errors: 0,
                         others: 0,
-                        warnings: 1
+                        warnings: 1,
+                        issues: { 'Correctness / GradleDependency': { level: 'warning', count: 1 } }
                     }
                 ],
                 totals: {
