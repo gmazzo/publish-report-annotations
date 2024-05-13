@@ -20,6 +20,16 @@ Mostly targeting Gradle builds
 #### Detailed logs
 ![logs](https://github.com/gmazzo/publish-report-annotations/assets/513566/4d2a3224-c326-4948-bf58-6aec18715818)
 
+#### Summaries
+| Tests                              | ✅ 5 passed | 🟡 1 skipped | ❌ 2 failed | ⌛ took |
+|:-----------------------------------|------------|--------------|------------|--------|
+| ✅ org.test.sample.AnotherTestSuite | 4          | 0            | 0          | 0.578s |
+| ❌ org.test.sample.SampleTestSuite  | 1          | 1            | 2          | 0.002s |
+
+| Android Lint                   | 🛑 0 errors | ⚠️ 1 warning | 💡 0 others |
+|:-------------------------------|-------------|--------------|-------------|
+| Correctness / GradleDependency | 0           | 1            | 0           |
+
 ## Usage
 On your workflow file add:
 ```yaml
@@ -42,8 +52,9 @@ steps:
 ### Outputs
 The action will output the number of errors and warnings found in the reports, aggregated by `tests`, `checks` and totals:
 
-| output   | description            | example                                                     |
-|----------|------------------------|-------------------------------------------------------------|
-| `tests`  | The totals of `tests`  | `{ tests: 8, passed: 4, errors: 0, skipped: 2, failed: 2 }` |
-| `checks` | The totals of `checks` | `{ checks: 8, errors: 0, warnings: 2 }`                     |
-| `total`  | The aggregated totals  | `{ errors: 0, warnings: 2, others: 12 }`                    |
+| output   | description            | example                                                                                    |
+|----------|------------------------|--------------------------------------------------------------------------------------------|
+| `tests`  | The totals of `tests`  | <pre lang="json">{ "count": 8, "passed": 4, "errors": 0, "skipped": 2, "failed": 2 }</pre> |
+| `checks` | The totals of `checks` | <pre lang="json">{ "count": 12, "errors": 6, "warnings": 4, "others": 2 }</json>           |
+| `total`  | The aggregated totals  | <pre lang="json">{ "errors": 20, "warnings": 8, "others": 12 }</json>                      |
+
