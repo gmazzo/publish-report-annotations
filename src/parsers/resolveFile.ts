@@ -1,8 +1,9 @@
 import * as glob from "@actions/glob";
 import * as core from "@actions/core";
 import {isAbsolute, relative} from "path";
-import process from "process";
+import {cwd} from "process";
 import {existsSync} from "fs";
+import {execSync} from "node:child_process";
 
 const knownLocations: string[] = [];
 
@@ -40,10 +41,9 @@ export async function resolveFile(filepath: string, ...possibleExtensions: strin
         possibleExtensions.map(ext => `**/${filepath}.${ext}`) :
         [`**/${filepath}`];
 
-    const globber = await glob.create(paths.join('\n'));
-    const {value: file} = await globber.globGenerator().next();
+    const file = await getFirstGitFile(paths);
     if (file) {
-        const relativePath = relative(process.cwd(), file);
+        const relativePath = relative(cwd(), file);
         core.debug(`File \`${relativePath}\` found for \`${filepath}\` with possible extensions ${possibleExtensions.join(', ')}`);
 
         const location = relative(process.cwd(), file.substring(0, file.indexOf(filepath)));
@@ -56,4 +56,34 @@ export async function resolveFile(filepath: string, ...possibleExtensions: strin
         core.warning(`Could not find a file matching \`${filepath}\` with possible extensions ${possibleExtensions.join(', ')}`);
     }
     return filepath;
+}
+
+async function getFirstGitFile(paths: string[]) {
+    const globber = await glob.create(paths.join('\n'));
+    const generator = globber.globGenerator();
+
+    let first: string | null = null;
+    let moreResults = true;
+    do {
+        const {value: file, done} = await generator.next();
+
+        if (file && isGitFile(file)) {
+            return file;
+
+        } else if (!first) {
+            first = file || null;
+        }
+        moreResults = !done;
+    } while (moreResults);
+    return first;
+}
+
+function isGitFile(path: string) {
+    try {
+        execSync(`git ls-files --error-unmatch -- ${path}`, {stdio: 'ignore'});
+        return true;
+
+    } catch (e) {
+        return false;
+    }
 }
