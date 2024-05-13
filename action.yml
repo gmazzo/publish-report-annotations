@@ -16,6 +16,10 @@ inputs:
       **/build/reports/checkstyle/*.xml
       **/build/reports/lint-results-*.xml
       **/build/reports/detekt/*.xml
+  summary:
+    description: "The kind summary to display in the check: `detailed`, `totals` or `off`"
+    default: "detailed"
+    required: true
   warningsAsErrors:
     description: "Treat warnings as errors"
     required: false
