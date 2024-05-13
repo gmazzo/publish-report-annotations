@@ -1,32 +1,38 @@
 import {ParseResults} from "./types";
+import {summary} from "./config";
 
 function entry(amount: number, name: string) {
     return `${amount} ${name}${amount != 1 ? 's' : ''}`;
 }
 
-function summaryOfTests(totals: ParseResults['tests']['totals']) {
+function summaryOfTests(totals: ParseResults['tests']['totals'], withIcons = false) {
     let summary = entry(totals.count, "test");
     if (totals.count == totals.passed) {
         return summary + ` passed`;
 
     } else {
-        if (totals.passed > 0) summary += `, ${totals.passed} passed`;
-        if (totals.skipped > 0) summary += `, ${totals.skipped} skipped`;
-        if (totals.failed > 0) summary += `, ${totals.failed} failed`;
-        if (totals.errors > 0) summary += `, ${entry(totals.errors, "error")}`;
+        if (totals.passed > 0) summary += `, ${withIcons ? '✅ ' : ''}${totals.passed} passed`;
+        if (totals.skipped > 0) summary += `, ${withIcons ? '🟡 ' : ''}${totals.skipped} skipped`;
+        if (totals.failed > 0) summary += `, ${withIcons ? '❌ ' : ''}${totals.failed} failed`;
+        if (totals.errors > 0) summary += `, ${withIcons ? '🛑 ' : ''}${entry(totals.errors, "error")}`;
     }
     return summary;
 }
 
-function summaryOfChecks(checks: ParseResults['checks']['totals']) {
+function summaryOfChecks(checks: ParseResults['checks']['totals'], withIcons = false) {
     let summary = '';
-    if (checks.errors > 0) summary += entry(checks.errors, "error");
+    if (checks.errors > 0) {
+        if (withIcons) summary += '🛑 ';
+        summary += entry(checks.errors, "error");
+    }
     if (checks.warnings > 0) {
         if (summary) summary += ', ';
+        if (withIcons) summary += '⚠️ ';
         summary += entry(checks.warnings, "warning");
     }
     if (checks.others > 0) {
         if (summary) summary += ', ';
+        if (withIcons) summary += '💡 ';
         summary += entry(checks.others, "other");
     }
     return summary;
@@ -64,14 +70,20 @@ function summaryTableOfChecks(checks: ParseResults['checks']) {
     return table;
 }
 
-export function summaryTableOf(results: ParseResults) {
-    let table = '';
-    if (results.tests.totals.count > 0) {
-        table += summaryTableOfTests(results.tests);
+export function summaryTableOf(results: ParseResults, summaryMode: typeof summary = summary) {
+    let content = '';
+    if (summaryMode != 'off') {
+        if (results.tests.totals.count > 0) {
+            content += summaryMode == 'totals' ?
+                `Tests: ${summaryOfTests(results.tests.totals, true)}` :
+                summaryTableOfTests(results.tests);
+        }
+        if (results.checks.totals.count > 0) {
+            if (content) content += '\n';
+            content += summaryMode == 'totals' ?
+                `Checks: ${summaryOfChecks(results.checks.totals, true)}` :
+                summaryTableOfChecks(results.checks);
+        }
     }
-    if (results.checks.totals.count > 0) {
-        if (table) table += '\n';
-        table += summaryTableOfChecks(results.checks);
-    }
-    return table;
+    return content;
 }
