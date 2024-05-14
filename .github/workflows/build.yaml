@@ -40,6 +40,7 @@ jobs:
           reports: |
             lib/*-junit.xml
             samples/
+          filterChecks: true
       - name: Coverage report
         uses: codecov/codecov-action@v4
         if: always()

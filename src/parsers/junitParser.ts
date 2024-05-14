@@ -1,8 +1,8 @@
 import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
-import {Parser} from "./parser";
 import {ParseResults} from "../types";
+import {Parser} from "./parser";
 
 type JUnitTest = {
     _attributes: {
@@ -43,8 +43,8 @@ type JUnitData = {
 
 export const junitParser: Parser = {
 
-    async parse(filepath: string) {
-        const data: JUnitData = await readFile(filepath);
+    async parse(filePath: string) {
+        const data: JUnitData = await readFile(filePath);
 
         if (data?.testsuite || data?.testsuites) {
             const result = new ParseResults();

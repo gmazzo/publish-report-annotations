@@ -1,6 +1,7 @@
 import {ParseResults} from "../types";
 
 const resolveFile = jest.fn().mockImplementation((file: string) => `<projectTestSrc>/${file}.kt`);
+const fileFilter = jest.fn().mockReturnValue(true);
 
 jest.mock("./resolveFile", () => ({
     resolveFile
@@ -11,8 +12,9 @@ import {junitParser} from "./junitParser";
 describe("junitParser", () => {
 
     test("given junit xml should obtain annotations", async () => {
-        const data = await junitParser.parse("samples/TEST-org.test.sample.SampleTestSuite.xml");
+        const data = await junitParser.parse("samples/TEST-org.test.sample.SampleTestSuite.xml", fileFilter);
 
+        expect(fileFilter).not.toHaveBeenCalled();
         expect(data).toStrictEqual(new ParseResults({
             annotations: [
                 {
@@ -63,8 +65,9 @@ describe("junitParser", () => {
     });
 
     test("given another junit xml should obtain annotations", async () => {
-        const data = await junitParser.parse("samples/TEST-org.test.sample.AnotherTestSuite.xml");
+        const data = await junitParser.parse("samples/TEST-org.test.sample.AnotherTestSuite.xml", fileFilter);
 
+        expect(fileFilter).not.toHaveBeenCalled();
         expect(data).toStrictEqual(new ParseResults({
             tests: {
                 suites: [
@@ -90,8 +93,9 @@ describe("junitParser", () => {
     });
 
     test("given a jest junit xml should obtain annotations", async () => {
-        const data = await junitParser.parse("samples/TEST-jest.xml");
+        const data = await junitParser.parse("samples/TEST-jest.xml", fileFilter);
 
+        expect(fileFilter).not.toHaveBeenCalled();
         expect(data).toStrictEqual(new ParseResults({
             annotations: [
                 {

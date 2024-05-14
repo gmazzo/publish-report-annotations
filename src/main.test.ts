@@ -9,6 +9,8 @@ const coreSetFailed = jest.fn();
 const coreSetOutput = jest.fn();
 const coreSummaryAddRaw = jest.fn();
 const coreSummaryWrite = jest.fn();
+const fileFilter = jest.fn();
+const createFileFilter = jest.fn().mockReturnValue(fileFilter);
 const globCreate = jest.fn().mockImplementation(() => ({
     glob: jest.fn().mockReturnValue(["file1", "file2"])
 }));
@@ -33,6 +35,10 @@ jest.mock("@actions/core", () => ({
     summary: { addRaw: coreSummaryAddRaw, write: coreSummaryWrite }
 }));
 
+jest.mock("./createFileFilter", () => ({
+    createFileFilter
+}));
+
 jest.mock("./processFile", () => ({
     processFile
 }));
@@ -40,7 +46,8 @@ jest.mock("./processFile", () => ({
 const config = {
     reports: ["path1", "path2"],
     warningsAsErrors: false,
-    failOnError: false
+    failOnError: false,
+    filterChecks: false,
 };
 jest.mock("./config", () => (config));
 
@@ -51,17 +58,21 @@ describe("main", () => {
     beforeEach(() => {
         config.warningsAsErrors = false;
         config.failOnError = false;
+        config.filterChecks = false;
     });
 
-    test("delegates to parsers and reports results", async () => {
+    test.each([[true],[false]])("delegates to parsers and reports results [filterChecks=%p]", async (filterChecks) => {
+        config.filterChecks = filterChecks;
+
         await main();
 
+        expect(createFileFilter).toHaveBeenCalledTimes(filterChecks ? 1 : 0);
         expect(coreDebug).toHaveBeenCalledWith("Found 2 files to process matching: path1, path2");
         expect(coreStartGroup).toHaveBeenCalledWith("Processing `file1`");
         expect(coreStartGroup).toHaveBeenCalledWith("Processing `file2`");
         expect(coreEndGroup).toHaveBeenCalledTimes(2);
-        expect(processFile).toHaveBeenCalledWith("file1", true);
-        expect(processFile).toHaveBeenCalledWith("file2", true);
+        expect(processFile).toHaveBeenCalledWith("file1", true, filterChecks ? fileFilter : expect.any(Function));
+        expect(processFile).toHaveBeenCalledWith("file2", true, filterChecks ? fileFilter : expect.any(Function));
         expect(coreNotice).toHaveBeenCalledWith("Processed 2 files: 8 tests, 4 passed, 2 skipped, 2 failed, checks: 6 errors, 4 warnings, 2 others");
         expect(coreSetFailed).not.toHaveBeenCalled();
         expect(coreSetOutput).toHaveBeenCalledWith("tests", { count: 8, passed: 4, errors: 0, skipped: 2, failed: 2 });

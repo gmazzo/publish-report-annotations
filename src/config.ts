@@ -18,6 +18,8 @@ export const summary = (() => {
     throw new Error(`Invalid summary value: ${value}`);
 })();
 
+export const filterChecks = core.getBooleanInput("filterChecks");
+
 export const warningsAsErrors = core.getBooleanInput("warningsAsErrors");
 
 export const failOnError = core.getBooleanInput("failOnError");

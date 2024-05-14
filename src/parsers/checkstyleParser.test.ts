@@ -1,11 +1,14 @@
 import {checkstyleParser} from "./checkstyleParser";
 import {ParseResults} from "../types";
 
+const fileFilter = jest.fn().mockReturnValue(true);
+
 describe("checkstyleParser", () => {
 
     test("given detekt xml should obtain annotations", async () => {
-        const data = await checkstyleParser.parse("samples/detekt-debug.xml");
+        const data = await checkstyleParser.parse("samples/detekt-debug.xml", fileFilter);
 
+        expect(fileFilter).toHaveBeenCalledWith("sample-gradle/src/main/kotlin/org/test/sample/App.kt");
         expect(data).toStrictEqual(new ParseResults({
             annotations: [
                 {
@@ -42,6 +45,15 @@ describe("checkstyleParser", () => {
                 others: 0
             },
         }));
+    });
+
+    test("given detekt xml, but filtering, expect no annotations", async () => {
+        fileFilter.mockReturnValue(false);
+
+        const data = await checkstyleParser.parse("samples/detekt-debug.xml", fileFilter);
+
+        expect(fileFilter).toHaveBeenCalledWith("sample-gradle/src/main/kotlin/org/test/sample/App.kt");
+        expect(data).toStrictEqual(new ParseResults({}));
     });
 
 });

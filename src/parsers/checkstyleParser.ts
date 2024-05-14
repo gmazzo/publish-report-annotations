@@ -1,7 +1,7 @@
 import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
-import {Parser} from "./parser";
+import {FileFilter, Parser} from "./parser";
 import {ParseResults, CheckSuite} from "../types";
 
 type Severity = 'error' | 'warning' | 'info' | 'ignore';
@@ -29,8 +29,8 @@ type CheckStyleData = {
 
 export const checkstyleParser: Parser = {
 
-    async parse(filepath: string) {
-        const data: CheckStyleData = await readFile(filepath);
+    async parse(filePath: string, fileFilter: FileFilter) {
+        const data: CheckStyleData = await readFile(filePath);
 
         if (data?.checkstyle) {
             const result = new ParseResults();
@@ -42,27 +42,30 @@ export const checkstyleParser: Parser = {
 
                     if (type) {
                         const filePath = await resolveFile(file._attributes.name);
-                        const source = error._attributes.source;
 
-                        if (source) {
-                            if (source.startsWith('detekt.')) {
-                                suite.name = 'detekt';
+                        if (fileFilter(filePath)) {
+                            const source = error._attributes.source;
+
+                            if (source) {
+                                if (source.startsWith('detekt.')) {
+                                    suite.name = 'detekt';
+                                }
+
+                                const issue = source.replace(/^detekt\./g, '');
+                                result.addIssueToCheckSuite(suite, issue, type);
                             }
 
-                            const issue = source.replace(/^detekt\./g, '');
-                            result.addIssueToCheckSuite(suite, issue, type);
+                            result.addAnnotation({
+                                severity: type,
+                                file: filePath,
+                                title: error._attributes.source,
+                                message: error._attributes.message,
+                                startLine: error._attributes.line,
+                                endLine: error._attributes.line,
+                                startColumn: error._attributes.column,
+                                endColumn: error._attributes.column,
+                            }, suite);
                         }
-
-                        result.addAnnotation({
-                            severity: type,
-                            file: filePath,
-                            title: error._attributes.source,
-                            message: error._attributes.message,
-                            startLine: error._attributes.line,
-                            endLine: error._attributes.line,
-                            startColumn: error._attributes.column,
-                            endColumn: error._attributes.column,
-                        }, suite);
                     }
                 }
             }
