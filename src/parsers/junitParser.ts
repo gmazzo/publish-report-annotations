@@ -69,7 +69,7 @@ export const junitParser: Parser = {
 
                         result.addAnnotation({
                             file: filePath,
-                            type: 'error',
+                            severity: 'error',
                             title: testCase._attributes.name,
                             message: testCase.failure._attributes?.message || testCase.failure._text,
                             rawDetails: testCase.failure._text,

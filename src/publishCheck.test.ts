@@ -54,8 +54,8 @@ describe("publishCheck", () => {
             },
             checks: {
                 checks: [
-                    {name: "check1", errors: 3, warnings: 1, others: 2, issues: { 'check1': { level: 'warning', count: 1 } }},
-                    {name: "check2", errors: 7, warnings: 3, others: 4, issues: { 'check2': { level: 'warning', count: 3 } }},
+                    {name: "check1", errors: 3, warnings: 1, others: 2, issues: { 'check1': { severity: 'warning', count: 1 } }},
+                    {name: "check2", errors: 7, warnings: 3, others: 4, issues: { 'check2': { severity: 'warning', count: 3 } }},
                 ], totals: {count: 6, errors: 3, warnings: 2, others: 1}
             },
             totals: {errors: 10, warnings: 4, others: 6},
@@ -63,7 +63,7 @@ describe("publishCheck", () => {
                 file: "file1",
                 startLine: 1,
                 endLine: 2,
-                type: "error",
+                severity: "error",
                 message: "message1",
                 title: "title1",
                 rawDetails: "rawDetails1"

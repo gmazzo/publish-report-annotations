@@ -22,7 +22,7 @@ export async function processFile(filepath: string, doNotAnnotate: boolean) {
                     annotation.rawDetails :
                     join(annotation.message, annotation.rawDetails);
 
-                switch (annotation.type) {
+                switch (annotation.severity) {
                     case 'error':
                         core.error(message, doNotAnnotate ? undefined : annotation);
                         break;

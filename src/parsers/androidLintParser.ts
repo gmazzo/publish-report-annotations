@@ -49,7 +49,7 @@ export const androidLintParser: Parser = {
                     result.addIssueToCheckSuite(suite, issue, type);
                     result.addAnnotation({
                         file,
-                        type,
+                        severity: type,
                         title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
                         message: testcase._attributes.message,
                         rawDetails: testcase._attributes.explanation,

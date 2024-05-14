@@ -54,7 +54,7 @@ export const checkstyleParser: Parser = {
                         }
 
                         result.addAnnotation({
-                            type,
+                            severity: type,
                             file: filePath,
                             title: error._attributes.source,
                             message: error._attributes.message,

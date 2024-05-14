@@ -17,7 +17,7 @@ describe("androidLintParser", () => {
                     startColumn: 5,
                     startLine: 14,
                     title: "Correctness: Obsolete Gradle Dependency",
-                    type: "warning"
+                    severity: "warning"
                 }
             ],
             checks: {
@@ -27,7 +27,7 @@ describe("androidLintParser", () => {
                         errors: 0,
                         others: 0,
                         warnings: 1,
-                        issues: { 'Correctness / GradleDependency': { level: 'warning', count: 1 } }
+                        issues: { 'Correctness / GradleDependency': { severity: 'warning', count: 1 } }
                     }
                 ],
                 totals: {

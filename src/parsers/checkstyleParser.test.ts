@@ -16,7 +16,7 @@ describe("checkstyleParser", () => {
                     startColumn: 11,
                     startLine: 3,
                     title: "detekt.NewLineAtEndOfFile",
-                    type: "warning"
+                    severity: "warning"
                 }
             ],
             checks: {
@@ -26,7 +26,7 @@ describe("checkstyleParser", () => {
                         errors: 0,
                         warnings: 1,
                         others: 0,
-                        issues: { 'NewLineAtEndOfFile': { level: 'warning', count: 1 } }
+                        issues: { 'NewLineAtEndOfFile': { severity: 'warning', count: 1 } }
                     }
                 ],
                 totals: {

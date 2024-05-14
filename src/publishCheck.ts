@@ -24,7 +24,7 @@ export async function publishCheck(results: ParseResults) {
                 path: annotation.file || '',
                 start_line: annotation.startLine || 0,
                 end_line: annotation.endLine || 0,
-                annotation_level: getAnnotationType(annotation.type),
+                annotation_level: getAnnotationType(annotation.severity),
                 message: annotation.message || '',
                 title: annotation.title || '',
                 raw_details: annotation.rawDetails
@@ -57,7 +57,7 @@ function getConclusion(results: ParseResults): 'success' | 'failure' {
     return shouldFail(results.totals, warningsAsErrors) ? "failure" : "success";
 }
 
-function getAnnotationType(value: ParseResults['annotations'][0]['type']): 'failure' | 'warning' | 'notice' {
+function getAnnotationType(value: ParseResults['annotations'][0]['severity']): 'failure' | 'warning' | 'notice' {
     switch (value) {
         case 'error':
             return 'failure';

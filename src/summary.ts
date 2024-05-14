@@ -62,8 +62,8 @@ function summaryTableOfChecks(checks: ParseResults['checks']) {
     for (const check of checks.checks) {
         table = `|${check.name}|🛑 ${entry(check.errors, 'error')}|⚠️ ${entry(check.warnings, 'warning')}|💡 ${entry(check.others, 'other')}\n`;
         table += `|:-|-|-|-|\n`;
-        for (const [issue, {level, count}] of Object.entries(check.issues)) {
-            table += `|${issue}|${level == 'error' ? count : '0'}|${level == 'warning' ? count : '0'}|${level == 'other' ? count : '0'}|\n`;
+        for (const [issue, {severity, count}] of Object.entries(check.issues)) {
+            table += `|${issue}|${severity == 'error' ? count : '0'}|${severity == 'warning' ? count : '0'}|${severity == 'other' ? count : '0'}|\n`;
         }
         table += `\n`;
     }
