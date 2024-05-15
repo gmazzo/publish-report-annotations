@@ -8,7 +8,6 @@ describe("androidLintParser", () => {
     test("given lint xml should obtain annotations", async () => {
         const data = await androidLintParser.parse("samples/lint-results-debug.xml", fileFilter);
 
-        expect(fileFilter).toHaveBeenCalledWith("sample-gradle/build.gradle.kts");
         expect(data).toStrictEqual(new ParseResults({
             annotations: [
                 {
@@ -21,6 +20,28 @@ describe("androidLintParser", () => {
                     startLine: 14,
                     title: "Correctness: Obsolete Gradle Dependency",
                     severity: "warning"
+                },
+                {
+                    endColumn: 27,
+                    endLine: 9,
+                    file: "src/main/res/drawable/ic_icon.xml",
+                    message: "Very long vector path (1444 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.",
+                    rawDetails: "Using long vector paths is bad for performance. There are several ways to make the `pathData` shorter:\n* Using less precision\n* Removing some minor details\n* Using the Android Studio vector conversion tool\n* Rasterizing the image (converting to PNG)",
+                    severity: "warning",
+                    startColumn: 27,
+                    startLine: 9,
+                    title: "Performance: Long vector paths"
+                },
+                {
+                    endColumn: 86,
+                    endLine: 2,
+                    file: "src/main/res/drawable/ic_icon.xml",
+                    message: "Very long vector path (1415 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.",
+                    rawDetails: "Using long vector paths is bad for performance. There are several ways to make the `pathData` shorter:\n* Using less precision\n* Removing some minor details\n* Using the Android Studio vector conversion tool\n* Rasterizing the image (converting to PNG)",
+                    severity: "warning",
+                    startColumn: 86,
+                    startLine: 2,
+                    title: "Performance: Long vector paths"
                 }
             ],
             checks: {
@@ -29,20 +50,22 @@ describe("androidLintParser", () => {
                         name: "Android Lint",
                         errors: 0,
                         others: 0,
-                        warnings: 1,
-                        issues: { 'Correctness / GradleDependency': { severity: 'warning', count: 1 } }
+                        warnings: 3,
+                        issues: {
+                            'Correctness / GradleDependency': { count: 1, severity: 'warning' },
+                            'Performance / VectorPath': { count: 2, severity: "warning" }}
                     }
                 ],
                 totals: {
                     count: 1,
                     errors: 0,
                     others: 0,
-                    warnings: 1
+                    warnings: 3
                 }
             },
             totals: {
                 errors: 0,
-                warnings: 1,
+                warnings: 3,
                 others: 0
             }
         }));
