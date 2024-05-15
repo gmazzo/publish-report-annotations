@@ -40,6 +40,14 @@ jobs:
           reports: |
             lib/*-junit.xml
             samples/
+      - name: Report to Check (PR filtered)
+        uses: ./.
+        if: always()
+        with:
+          checkName: "Test Reports (PR filtered)"
+          reports: |
+            lib/*-junit.xml
+            samples/[!TEST]*.xml
           filterChecks: true
       - name: Coverage report
         uses: codecov/codecov-action@v4
