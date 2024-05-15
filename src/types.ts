@@ -118,11 +118,20 @@ export class ParseResults {
         this.tests.totals.skipped += results.tests.totals.skipped;
 
         for (const check of results.checks.checks) {
-            const existing = this.checks.checks.find(it => it.name === check.name);
-            if (existing) {
-                existing.errors += check.errors;
-                existing.warnings += check.warnings;
-                existing.others += check.others;
+            const existingCheck = this.checks.checks.find(it => it.name === check.name);
+            if (existingCheck) {
+                for (const issue in check.issues) {
+                    const existingIssue = existingCheck.issues[issue];
+                    if (existingIssue) {
+                        existingIssue.count += check.issues[issue].count;
+
+                    } else {
+                        existingCheck.issues[issue] = check.issues[issue];
+                    }
+                }
+                existingCheck.errors += check.errors;
+                existingCheck.warnings += check.warnings;
+                existingCheck.others += check.others;
 
             } else {
                 this.checks.checks.push(check);
