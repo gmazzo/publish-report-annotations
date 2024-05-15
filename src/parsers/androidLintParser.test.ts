@@ -24,7 +24,7 @@ describe("androidLintParser", () => {
                 {
                     endColumn: 27,
                     endLine: 9,
-                    file: "src/main/res/drawable/ic_icon.xml",
+                    file: "sample-gradle/src/main/AndroidManifest.xml",
                     message: "Very long vector path (1444 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.",
                     rawDetails: "Using long vector paths is bad for performance. There are several ways to make the `pathData` shorter:\n* Using less precision\n* Removing some minor details\n* Using the Android Studio vector conversion tool\n* Rasterizing the image (converting to PNG)",
                     severity: "warning",
@@ -35,7 +35,7 @@ describe("androidLintParser", () => {
                 {
                     endColumn: 86,
                     endLine: 2,
-                    file: "src/main/res/drawable/ic_icon.xml",
+                    file: "sample-gradle/src/main/AndroidManifest.xml",
                     message: "Very long vector path (1415 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.",
                     rawDetails: "Using long vector paths is bad for performance. There are several ways to make the `pathData` shorter:\n* Using less precision\n* Removing some minor details\n* Using the Android Studio vector conversion tool\n* Rasterizing the image (converting to PNG)",
                     severity: "warning",
