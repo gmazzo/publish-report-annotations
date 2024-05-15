@@ -14,7 +14,7 @@ const getOctokit = jest.fn().mockReturnValue({
 });
 const coreInfo = jest.fn();
 const summaryOf = jest.fn().mockReturnValue("aSummary");
-const summaryTableOf = jest.fn().mockReturnValue("aSummaryTable");
+const summaryTableOf = jest.fn().mockImplementation((_, type) => `aSummaryTable: ${type || '<default>'}`);
 
 jest.mock("./config", () => ({
     githubToken: "aToken",
@@ -89,7 +89,8 @@ describe("publishCheck", () => {
             conclusion: "failure",
             output: {
                 title: "aSummary",
-                summary: "aSummaryTable",
+                text: "aSummaryTable: totals",
+                summary: "aSummaryTable: <default>",
                 annotations: [{
                     path: "file1",
                     start_line: 1,
