@@ -73,7 +73,7 @@ describe("main", () => {
         expect(coreEndGroup).toHaveBeenCalledTimes(2);
         expect(processFile).toHaveBeenCalledWith("file1", true, filterChecks ? fileFilter : expect.any(Function));
         expect(processFile).toHaveBeenCalledWith("file2", true, filterChecks ? fileFilter : expect.any(Function));
-        expect(coreNotice).toHaveBeenCalledWith("Processed 2 files: 8 tests, 4 passed, 2 skipped, 2 failed, checks: 6 errors, 4 warnings, 2 others");
+        expect(coreNotice).toHaveBeenCalledWith("Processed 2 files: 8 tests: ✅ 4 passed, 🟡 2 skipped, ❌ 2 failed, checks: 🛑 6 errors, ⚠️ 4 warnings, 💡 2 others");
         expect(coreSetFailed).not.toHaveBeenCalled();
         expect(coreSetOutput).toHaveBeenCalledWith("tests", { count: 8, passed: 4, errors: 0, skipped: 2, failed: 2 });
         expect(coreSetOutput).toHaveBeenCalledWith("checks", { count: 12, errors: 6, warnings: 4, others: 2 });

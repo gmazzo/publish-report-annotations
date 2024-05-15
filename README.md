@@ -26,6 +26,10 @@ Mostly targeting Gradle builds
 | ✅ org.test.sample.AnotherTestSuite | 4          | 0            | 0          | 0.578s |
 | ❌ org.test.sample.SampleTestSuite  | 1          | 1            | 2          | 0.002s |
 
+| detekt             | 🛑 0 errors | ⚠️ 1 warning | 💡 0 others |
+|:-------------------|-------------|--------------|-------------|
+| NewLineAtEndOfFile | 0           | 1            | 0           |
+
 | Android Lint                   | 🛑 0 errors | ⚠️ 1 warning | 💡 0 others |
 |:-------------------------------|-------------|--------------|-------------|
 | Correctness / GradleDependency | 0           | 1            | 0           |

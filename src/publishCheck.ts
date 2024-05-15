@@ -18,7 +18,7 @@ export async function publishCheck(results: ParseResults) {
         status: 'completed' as const,
         conclusion: getConclusion(results),
         output: {
-            title: summaryOf(results),
+            title: summaryOf(results, true),
             summary: summaryTableOf(results),
             annotations: results.annotations.slice(0, 50).map(annotation => ({
                 path: annotation.file || '',

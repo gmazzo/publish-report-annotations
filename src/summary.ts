@@ -1,49 +1,43 @@
 import {ParseResults} from "./types";
 import {summary} from "./config";
 
-function entry(amount: number, name: string) {
-    return `${amount} ${name}${amount != 1 ? 's' : ''}`;
-}
-
-function summaryOfTests(totals: ParseResults['tests']['totals'], withIcons = false) {
-    let summary = entry(totals.count, "test");
-    if (totals.count == totals.passed) {
-        return summary + ` passed`;
-
-    } else {
-        if (totals.passed > 0) summary += `, ${withIcons ? '✅ ' : ''}${totals.passed} passed`;
-        if (totals.skipped > 0) summary += `, ${withIcons ? '🟡 ' : ''}${totals.skipped} skipped`;
-        if (totals.failed > 0) summary += `, ${withIcons ? '❌ ' : ''}${totals.failed} failed`;
-        if (totals.errors > 0) summary += `, ${withIcons ? '🛑 ' : ''}${entry(totals.errors, "error")}`;
+function entry(params: { amount: number, icon?: string, type: string, simplified?: boolean, plural?: boolean, header?: boolean }) {
+    if (!params.header && params.amount == 0) return '';
+    let entry = params.icon ? `${params.icon} ` : '';
+    entry += params.amount;
+    if (params.simplified != true) {
+        entry += ' ' + params.type;
+        if (params.plural != false && params.amount != 1) entry += 's';
     }
-    return summary;
+    return entry;
 }
 
-function summaryOfChecks(checks: ParseResults['checks']['totals'], withIcons = false) {
+function summaryOfTests(totals: ParseResults['tests']['totals'], simplified: boolean) {
+    const heading = entry({amount: totals.count, type: "test"});
+    if (totals.count == totals.passed) return heading + ` ✅ passed`;
+
+    return heading + `: ` + [
+        entry({amount: totals.passed, icon: '✅', simplified, type: 'passed', plural: false}),
+        entry({amount: totals.skipped, icon: '🟡', simplified, type: 'skipped', plural: false}),
+        entry({amount: totals.failed, icon: '❌', simplified, type: 'failed', plural: false}),
+        entry({amount: totals.errors, icon: '🛑', simplified, type: 'error'})
+    ].filter(it => it).join(', ');
+}
+
+function summaryOfChecks(checks: ParseResults['checks']['totals'], simplified: boolean) {
+    return [
+        entry({amount: checks.errors, icon: '🛑', simplified, type: 'error'}),
+        entry({amount: checks.warnings, icon: '⚠️', simplified, type: 'warning'}),
+        entry({amount: checks.others, icon: '💡', simplified, type: 'other'})
+    ].filter(it => it).join(', ');
+}
+
+export function summaryOf(results: ParseResults, simplified = false) {
     let summary = '';
-    if (checks.errors > 0) {
-        if (withIcons) summary += '🛑 ';
-        summary += entry(checks.errors, "error");
-    }
-    if (checks.warnings > 0) {
-        if (summary) summary += ', ';
-        if (withIcons) summary += '⚠️ ';
-        summary += entry(checks.warnings, "warning");
-    }
-    if (checks.others > 0) {
-        if (summary) summary += ', ';
-        if (withIcons) summary += '💡 ';
-        summary += entry(checks.others, "other");
-    }
-    return summary;
-}
-
-export function summaryOf(results: ParseResults) {
-    let summary = '';
-    if (results.tests.totals.count > 0) summary = summaryOfTests(results.tests.totals);
+    if (results.tests.totals.count > 0) summary = summaryOfTests(results.tests.totals, simplified);
     if (results.checks.totals.count > 0) {
         if (summary) summary += ', checks: ';
-        summary += summaryOfChecks(results.checks.totals);
+        summary += summaryOfChecks(results.checks.totals, simplified);
     }
     return summary;
 }
@@ -60,8 +54,13 @@ function summaryTableOfTests(tests: ParseResults['tests']) {
 function summaryTableOfChecks(checks: ParseResults['checks']) {
     let table = ``;
     for (const check of checks.checks) {
-        table = `|${check.name}|🛑 ${entry(check.errors, 'error')}|⚠️ ${entry(check.warnings, 'warning')}|💡 ${entry(check.others, 'other')}\n`;
-        table += `|:-|-|-|-|\n`;
+        const headers = [
+            entry({header: true, amount: check.errors, icon: '🛑', type: 'error'}),
+            entry({header: true, amount: check.warnings, icon: '⚠️', type: 'warning'}),
+            entry({header: true, amount: check.others, icon: '💡', type: 'other'})
+        ].join('|');
+
+        table += `|${check.name}|${headers}|\n|:-|-|-|-|\n`;
         for (const [issue, {severity, count}] of Object.entries(check.issues)) {
             table += `|${issue}|${severity == 'error' ? count : '0'}|${severity == 'warning' ? count : '0'}|${severity == 'other' ? count : '0'}|\n`;
         }
@@ -75,13 +74,13 @@ export function summaryTableOf(results: ParseResults, summaryMode: typeof summar
     if (summaryMode != 'off') {
         if (results.tests.totals.count > 0) {
             content += summaryMode == 'totals' ?
-                `Tests: ${summaryOfTests(results.tests.totals, true)}` :
+                `Tests: ${summaryOfTests(results.tests.totals, false)}` :
                 summaryTableOfTests(results.tests);
         }
         if (results.checks.totals.count > 0) {
             if (content) content += '\n';
             content += summaryMode == 'totals' ?
-                `Checks: ${summaryOfChecks(results.checks.totals, true)}` :
+                `Checks: ${summaryOfChecks(results.checks.totals, false)}` :
                 summaryTableOfChecks(results.checks);
         }
     }
