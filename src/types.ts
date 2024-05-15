@@ -1,10 +1,10 @@
 import {AnnotationProperties} from "@actions/core";
 
-type Level = 'error' | 'warning' | 'other';
+type Severity = 'error' | 'warning' | 'other';
 
 export type Annotation = {
     message: string
-    type: Level
+    severity: 'error' | 'warning' | 'other'
     rawDetails?: string
 } & AnnotationProperties;
 
@@ -34,7 +34,7 @@ export type CheckSuite = {
     errors: number
     warnings: number
     others: number
-    issues: {[key: string]: {level: Level, count: number}}
+    issues: {[key: string]: {severity: Severity, count: number}}
 };
 
 export type ChecksResult = {
@@ -64,7 +64,7 @@ export class ParseResults {
     addAnnotation(annotation: Annotation, ofCheck?: CheckSuite) {
         this.annotations.push(annotation);
 
-        switch (annotation.type) {
+        switch (annotation.severity) {
             case 'error':
                 if (ofCheck) ofCheck.errors++;
                 this.totals.errors++;
@@ -98,13 +98,13 @@ export class ParseResults {
         }
     }
 
-    addIssueToCheckSuite(this: void, suite: CheckSuite, issue: string, level: Level) {
+    addIssueToCheckSuite(this: void, suite: CheckSuite, issue: string, severity: Severity) {
         const current = suite.issues[issue];
         if (current) {
             current.count++;
 
         } else {
-            suite.issues[issue] = {level, count: 1};
+            suite.issues[issue] = {severity: severity, count: 1};
         }
     }
 

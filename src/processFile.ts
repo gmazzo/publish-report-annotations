@@ -3,6 +3,7 @@ import {checkstyleParser} from "./parsers/checkstyleParser";
 import {androidLintParser} from "./parsers/androidLintParser";
 import {join} from "./utils";
 import * as core from "@actions/core";
+import {FileFilter} from "./parsers/parser";
 
 const parsers = [
     junitParser,
@@ -10,9 +11,9 @@ const parsers = [
     androidLintParser,
 ];
 
-export async function processFile(filepath: string, doNotAnnotate: boolean) {
+export async function processFile(filepath: string, doNotAnnotate: boolean, fileFilter: FileFilter) {
     for (const parser of parsers) {
-        const result = await parser.parse(filepath);
+        const result = await parser.parse(filepath, fileFilter);
 
         if (result) {
             for (const annotation of result.annotations) {
@@ -22,7 +23,7 @@ export async function processFile(filepath: string, doNotAnnotate: boolean) {
                     annotation.rawDetails :
                     join(annotation.message, annotation.rawDetails);
 
-                switch (annotation.type) {
+                switch (annotation.severity) {
                     case 'error':
                         core.error(message, doNotAnnotate ? undefined : annotation);
                         break;

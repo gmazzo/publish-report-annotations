@@ -1,11 +1,14 @@
 import {androidLintParser} from "./androidLintParser";
 import {ParseResults} from "../types";
 
+const fileFilter = jest.fn().mockReturnValue(true);
+
 describe("androidLintParser", () => {
 
     test("given lint xml should obtain annotations", async () => {
-        const data = await androidLintParser.parse("samples/lint-results-debug.xml");
+        const data = await androidLintParser.parse("samples/lint-results-debug.xml", fileFilter);
 
+        expect(fileFilter).toHaveBeenCalledWith("sample-gradle/build.gradle.kts");
         expect(data).toStrictEqual(new ParseResults({
             annotations: [
                 {
@@ -17,7 +20,7 @@ describe("androidLintParser", () => {
                     startColumn: 5,
                     startLine: 14,
                     title: "Correctness: Obsolete Gradle Dependency",
-                    type: "warning"
+                    severity: "warning"
                 }
             ],
             checks: {
@@ -27,7 +30,7 @@ describe("androidLintParser", () => {
                         errors: 0,
                         others: 0,
                         warnings: 1,
-                        issues: { 'Correctness / GradleDependency': { level: 'warning', count: 1 } }
+                        issues: { 'Correctness / GradleDependency': { severity: 'warning', count: 1 } }
                     }
                 ],
                 totals: {
@@ -43,6 +46,15 @@ describe("androidLintParser", () => {
                 others: 0
             }
         }));
+    });
+
+    test("given lint xml, but filtering, expect no annotations", async () => {
+        fileFilter.mockReturnValue(false);
+
+        const data = await androidLintParser.parse("samples/lint-results-debug.xml", fileFilter);
+
+        expect(fileFilter).toHaveBeenCalledWith("sample-gradle/build.gradle.kts");
+        expect(data).toStrictEqual(new ParseResults({}));
     });
 
 });

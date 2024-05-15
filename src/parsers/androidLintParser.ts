@@ -1,4 +1,4 @@
-import {Parser} from "./parser";
+import {FileFilter, Parser} from "./parser";
 import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
@@ -32,8 +32,8 @@ type LintData = {
 
 export const androidLintParser: Parser = {
 
-    parse: async function (filepath: string) {
-        const data: LintData = await readFile(filepath);
+    parse: async function (filePath: string, fileFilter: FileFilter) {
+        const data: LintData = await readFile(filePath);
 
         if (data?.issues) {
             const result = new ParseResults();
@@ -44,20 +44,23 @@ export const androidLintParser: Parser = {
 
                 if (type) {
                     const file = await resolveFile(testcase.location._attributes.file);
-                    const issue = `${testcase._attributes.category} / ${testcase._attributes.id}`;
 
-                    result.addIssueToCheckSuite(suite, issue, type);
-                    result.addAnnotation({
-                        file,
-                        type,
-                        title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
-                        message: testcase._attributes.message,
-                        rawDetails: testcase._attributes.explanation,
-                        startLine: testcase.location._attributes.line,
-                        endLine: testcase.location._attributes.line,
-                        startColumn: testcase.location._attributes.column,
-                        endColumn: testcase.location._attributes.column,
-                    }, suite);
+                    if (fileFilter(file)) {
+                        const issue = `${testcase._attributes.category} / ${testcase._attributes.id}`;
+
+                        result.addIssueToCheckSuite(suite, issue, type);
+                        result.addAnnotation({
+                            file,
+                            severity: type,
+                            title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
+                            message: testcase._attributes.message,
+                            rawDetails: testcase._attributes.explanation,
+                            startLine: testcase.location._attributes.line,
+                            endLine: testcase.location._attributes.line,
+                            startColumn: testcase.location._attributes.column,
+                            endColumn: testcase.location._attributes.column,
+                        }, suite);
+                    }
                 }
             }
 

@@ -20,6 +20,10 @@ inputs:
     description: "The kind summary to display in the check: `detailed`, `totals` or `off`"
     default: "detailed"
     required: true
+  filterChecks:
+    description: "Report only check annotations coming from files that have been changed in the PR (tests won't be filtered)"
+    required: false
+    default: "false"
   warningsAsErrors:
     description: "Treat warnings as errors"
     required: false
