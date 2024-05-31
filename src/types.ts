@@ -91,7 +91,7 @@ export class ParseResults {
     addCheckSuite(suite: CheckSuite) {
         if (suite.errors > 0 || suite.warnings > 0 || suite.others > 0) {
             this.checks.checks.push(suite);
-            this.checks.totals.count++;
+            this.checks.totals.count += suite.errors + suite.warnings + suite.others;
             this.checks.totals.errors += suite.errors;
             this.checks.totals.warnings += suite.warnings;
             this.checks.totals.others += suite.others;
