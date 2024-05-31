@@ -33,7 +33,9 @@ export default async function main() {
         core.endGroup();
     }
 
-    core.notice(`Processed ${files.length} files: ${summaryOf(all)}`);
+    if (files.length > 0) {
+        core.notice(`Processed ${files.length} files: ${summaryOf(all)}`);
+    }
 
     if (checkName) {
         await publishCheck(all);
