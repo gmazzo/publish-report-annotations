@@ -1,4 +1,12 @@
+import * as core from "@actions/core";
 import main from "./main";
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-main();
+(async function run() {
+    try {
+        await main()
+
+    } catch (error) {
+        if (error instanceof Error) core.setFailed(error)
+        else core.setFailed(JSON.stringify(error))
+    }
+})()
