@@ -1,4 +1,4 @@
+import * as core from "@actions/core";
 import main from "./main";
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-main();
+main().catch(core.setFailed);
