@@ -33,6 +33,17 @@ describe("androidLintParser", () => {
                     title: "Performance: Long vector paths"
                 },
                 {
+                    endColumn: 27,
+                    endLine: 3,
+                    file: "sample-gradle/src/debug/AndroidManifest.xml",
+                    message: "Very long vector path (1444 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.",
+                    rawDetails: "Using long vector paths is bad for performance. There are several ways to make the `pathData` shorter:\n* Using less precision\n* Removing some minor details\n* Using the Android Studio vector conversion tool\n* Rasterizing the image (converting to PNG)",
+                    severity: "warning",
+                    startColumn: 27,
+                    startLine: 3,
+                    title: "Performance: Long vector paths"
+                },
+                {
                     endColumn: 86,
                     endLine: 2,
                     file: "sample-gradle/src/main/AndroidManifest.xml",
@@ -50,22 +61,22 @@ describe("androidLintParser", () => {
                         name: "Android Lint",
                         errors: 0,
                         others: 0,
-                        warnings: 3,
+                        warnings: 4,
                         issues: {
                             'Correctness / GradleDependency': { count: 1, severity: 'warning' },
-                            'Performance / VectorPath': { count: 2, severity: "warning" }}
+                            'Performance / VectorPath': { count: 3, severity: "warning" }}
                     }
                 ],
                 totals: {
-                    count: 1,
+                    count: 4,
                     errors: 0,
                     others: 0,
-                    warnings: 3
+                    warnings: 4
                 }
             },
             totals: {
                 errors: 0,
-                warnings: 3,
+                warnings: 4,
                 others: 0
             }
         }));

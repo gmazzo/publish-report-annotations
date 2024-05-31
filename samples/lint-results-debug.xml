@@ -31,6 +31,10 @@
             file="src/main/AndroidManifest.xml"
             line="9"
             column="27"/>
+        <location
+                file="src/debug/AndroidManifest.xml"
+                line="3"
+                column="27"/>
     </issue>
 
     <issue

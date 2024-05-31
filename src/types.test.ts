@@ -120,7 +120,7 @@ describe("ParseResults", () => {
                         warnings: 1
                     }
                 ],
-                totals: {count: 3, errors: 4, others: 2, warnings: 5}
+                totals: {count: 11, errors: 4, others: 2, warnings: 5}
             },
             tests: {
                 suites: [

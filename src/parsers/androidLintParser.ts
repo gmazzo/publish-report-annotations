@@ -6,6 +6,14 @@ import {CheckSuite, ParseResults} from "../types";
 
 type Severity = 'fatal' | 'error' | 'warning' | 'informational';
 
+type Location = {
+    _attributes: {
+        file: string,
+        line: number,
+        column: number,
+    }
+};
+
 type LintIssue = {
     _attributes: {
         id: string,
@@ -15,13 +23,7 @@ type LintIssue = {
         summary: string,
         explanation: string,
     }
-    location: {
-        _attributes: {
-            file: string,
-            line: number,
-            column: number,
-        }
-    }
+    location: Location | Location[],
 };
 
 type LintData = {
@@ -43,23 +45,25 @@ export const androidLintParser: Parser = {
                 const type = computeType(testcase._attributes.severity);
 
                 if (type) {
-                    const file = await resolveFile(testcase.location._attributes.file);
+                    for (const location of asArray(testcase.location)) {
+                        const file = await resolveFile(location._attributes.file);
 
-                    if (fileFilter(file)) {
-                        const issue = `${testcase._attributes.category} / ${testcase._attributes.id}`;
+                        if (fileFilter(file)) {
+                            const issue = `${testcase._attributes.category} / ${testcase._attributes.id}`;
 
-                        result.addIssueToCheckSuite(suite, issue, type);
-                        result.addAnnotation({
-                            file,
-                            severity: type,
-                            title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
-                            message: testcase._attributes.message,
-                            rawDetails: testcase._attributes.explanation,
-                            startLine: testcase.location._attributes.line,
-                            endLine: testcase.location._attributes.line,
-                            startColumn: testcase.location._attributes.column,
-                            endColumn: testcase.location._attributes.column,
-                        }, suite);
+                            result.addIssueToCheckSuite(suite, issue, type);
+                            result.addAnnotation({
+                                file,
+                                severity: type,
+                                title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
+                                message: testcase._attributes.message,
+                                rawDetails: testcase._attributes.explanation,
+                                startLine: location._attributes.line,
+                                endLine: location._attributes.line,
+                                startColumn: location._attributes.column,
+                                endColumn: location._attributes.column,
+                            }, suite);
+                        }
                     }
                 }
             }
