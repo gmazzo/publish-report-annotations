@@ -14,7 +14,7 @@ export class ConfigImpl implements Config {
     private values?: Config;
 
     resolve() {
-        if (this.values == null) {
+        if (!this.values) {
             this.values = {
                 githubToken: core.getInput("token", {required: true}),
                 checkName: core.getInput("checkName"),

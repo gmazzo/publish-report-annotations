@@ -39,6 +39,9 @@ describe('config', () => {
         expect(getBooleanInput).toHaveBeenCalledWith('filterChecks');
         expect(getBooleanInput).toHaveBeenCalledWith('warningsAsErrors');
         expect(getBooleanInput).toHaveBeenCalledWith('failOnError');
+        expect(getInput).toHaveBeenCalledTimes(3);
+        expect(getMultilineInput).toHaveBeenCalledTimes(1);
+        expect(getBooleanInput).toHaveBeenCalledTimes(3);
     });
 
 });
