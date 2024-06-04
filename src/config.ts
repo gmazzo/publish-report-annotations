@@ -11,6 +11,7 @@ export const summary = (() => {
 
     switch (value) {
         case "detailed":
+        case "detailedWithoutPassed":
         case "totals":
         case "off":
             return value;
