@@ -47,11 +47,12 @@ export const checkstyleParser: Parser = {
                             const source = error._attributes.source;
 
                             if (source) {
+                                let issue = source;
                                 if (source.startsWith('detekt.')) {
-                                    suite.name = 'detekt';
+                                    suite.name = 'Detekt';
+                                    issue = source.substring('detekt.'.length);
                                 }
 
-                                const issue = source.replace(/^detekt\./g, '');
                                 result.addIssueToCheckSuite(suite, issue, type);
                             }
 
