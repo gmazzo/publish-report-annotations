@@ -10,7 +10,7 @@ import {summaryOf, summaryTableOf} from "./summary";
 import {createFileFilter} from "./createFileFilter";
 
 export default async function main() {
-    const globber = await glob.create(config.reports.join('\n'), { implicitDescendants: true , matchDirectories: false });
+    const globber = await glob.create(config.reports.join('\n'), {implicitDescendants: true, matchDirectories: false});
     const files = (await globber.glob()).map(it => relative(process.cwd(), it));
     core.debug(`Found ${files.length} files to process matching: ${config.reports.join(', ')}`);
 
@@ -35,6 +35,8 @@ export default async function main() {
 
     if (files.length > 0) {
         core.notice(`Processed ${files.length} files: ${summaryOf(all)}`);
+    } else {
+        core.warning(`No files found to process matching: ${config.reports.join(', ')}`);
     }
 
     if (config.checkName) {
