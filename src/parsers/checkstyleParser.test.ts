@@ -25,7 +25,7 @@ describe("checkstyleParser", () => {
             checks: {
                 checks: [
                     {
-                        name: "detekt",
+                        name: "Detekt",
                         errors: 0,
                         warnings: 1,
                         others: 0,
