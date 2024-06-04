@@ -1,5 +1,5 @@
 import {ParseResults} from "./types";
-import {summary} from "./config";
+import config, {Config} from "./config";
 
 function entry(params: { amount: number, icon?: string, type: string, simplified?: boolean, plural?: boolean, header?: boolean }) {
     if (!params.header && params.amount == 0) return '';
@@ -42,7 +42,7 @@ export function summaryOf(results: ParseResults, simplified = false) {
     return summary;
 }
 
-function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: typeof summary) {
+function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: Config['summary']) {
     const skipPassed = summaryMode == 'detailedWithoutPassed';
 
     // if skipping passed suites and all passed, we won't produce a table because is going to be empty
@@ -79,7 +79,7 @@ function summaryTableOfChecks(checks: ParseResults['checks']) {
     return table;
 }
 
-export function summaryTableOf(results: ParseResults, summaryMode: typeof summary = summary) {
+export function summaryTableOf(results: ParseResults, summaryMode: Config['summary'] = config.summary) {
     let content = '';
     if (summaryMode != 'off') {
         if (results.tests.totals.count > 0) {

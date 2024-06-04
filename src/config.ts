@@ -1,26 +1,71 @@
 import * as core from "@actions/core";
 
-export const githubToken = core.getInput("token", {required: true});
+export interface Config {
+    githubToken: string;
+    checkName: string;
+    reports: string[];
+    summary: "detailed" | "detailedWithoutPassed" | "totals" | "off";
+    filterChecks: boolean;
+    warningsAsErrors: boolean;
+    failOnError: boolean;
+}
 
-export const checkName = core.getInput("checkName");
+export class ConfigImpl implements Config {
+    private values?: Config;
 
-export const reports = core.getMultilineInput("reports", {required: true});
+    resolve() {
+        if (this.values == null) {
+            this.values = {
+                githubToken: core.getInput("token", {required: true}),
+                checkName: core.getInput("checkName"),
+                reports: core.getMultilineInput("reports", {required: true}),
+                summary: (() => {
+                    const value = core.getInput("summary", {required: true});
 
-export const summary = (() => {
-    const value = core.getInput("summary", {required: true});
-
-    switch (value) {
-        case "detailed":
-        case "detailedWithoutPassed":
-        case "totals":
-        case "off":
-            return value;
+                    switch (value) {
+                        case "detailed":
+                        case "detailedWithoutPassed":
+                        case "totals":
+                        case "off":
+                            return value;
+                    }
+                    throw new Error(`Invalid summary value: ${value}`);
+                })(),
+                filterChecks: core.getBooleanInput("filterChecks"),
+                warningsAsErrors: core.getBooleanInput("warningsAsErrors"),
+                failOnError: core.getBooleanInput("failOnError"),
+            };
+        }
+        return this.values;
     }
-    throw new Error(`Invalid summary value: ${value}`);
-})();
 
-export const filterChecks = core.getBooleanInput("filterChecks");
+    get githubToken(): string {
+        return this.resolve().githubToken;
+    }
 
-export const warningsAsErrors = core.getBooleanInput("warningsAsErrors");
+    get checkName() {
+        return this.resolve().checkName;
+    }
 
-export const failOnError = core.getBooleanInput("failOnError");
+    get reports() {
+        return this.resolve().reports;
+    }
+
+    get summary() {
+        return this.resolve().summary;
+    }
+
+    get filterChecks() {
+        return this.resolve().filterChecks;
+    }
+
+    get warningsAsErrors() {
+        return this.resolve().warningsAsErrors;
+    }
+
+    get failOnError() {
+        return this.resolve().failOnError;
+    }
+}
+
+export default new ConfigImpl() as Config;
