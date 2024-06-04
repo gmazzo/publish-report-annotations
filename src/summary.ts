@@ -39,7 +39,7 @@ export function summaryOf(results: ParseResults, simplified = false) {
         if (summary) summary += ', checks: ';
         summary += summaryOfChecks(results.checks.totals, simplified);
     }
-    return summary ? summary : `No tests or checks found`;
+    return summary ? summary : `No issues found`;
 }
 
 function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: Config['summary']) {
