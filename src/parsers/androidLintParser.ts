@@ -1,6 +1,6 @@
 import {FileFilter, Parser} from "./parser";
 import {readFile} from "./readFile";
-import {asArray} from "../utils";
+import {asArray, join} from "../utils";
 import {resolveFile} from "./resolveFile";
 import {CheckSuite, ParseResults} from "../types";
 
@@ -22,6 +22,8 @@ type LintIssue = {
         category: string,
         summary: string,
         explanation: string,
+        errorLine1?: string,
+        errorLine2?: string,
     }
     location: Location | Location[],
 };
@@ -57,7 +59,7 @@ export const androidLintParser: Parser = {
                                 severity: type,
                                 title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
                                 message: testcase._attributes.message,
-                                rawDetails: testcase._attributes.explanation,
+                                rawDetails: join(testcase._attributes.explanation, testcase._attributes.errorLine1, testcase._attributes.errorLine2),
                                 startLine: location._attributes.line,
                                 endLine: location._attributes.line,
                                 startColumn: location._attributes.column,
