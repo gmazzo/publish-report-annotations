@@ -18,7 +18,7 @@ inputs:
       **/build/reports/detekt/*.xml
   summary:
     description: "The kind summary to display in the check: `detailed`, `totals` or `off`"
-    default: "detailed"
+    default: "detailedWithoutPassed"
     required: true
   filterChecks:
     description: "Report only check annotations coming from files that have been changed in the PR (tests won't be filtered)"

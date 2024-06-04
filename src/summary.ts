@@ -42,11 +42,18 @@ export function summaryOf(results: ParseResults, simplified = false) {
     return summary;
 }
 
-function summaryTableOfTests(tests: ParseResults['tests']) {
-    let table = `|Tests|✅ ${tests.totals.passed} passed|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed + tests.totals.errors} failed|⌛ took\n`;
+function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: typeof summary) {
+    const skipPassed = summaryMode == 'detailedWithoutPassed';
+
+    let table = `|Tests|✅ ${tests.totals.passed} passed${skipPassed ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed + tests.totals.errors} failed|⌛ took\n`;
     table += `|:-|-|-|-|-|\n`;
     for (const suite of tests.suites) {
-        table += `|${suite.failed + suite.errors > 0 ? '❌' : suite.skipped > 0 ? '🟡' : '✅'} ${suite.name}|${suite.passed}|${suite.skipped}|${suite.failed + suite.errors}|${suite.took}s\n`;
+        if (!skipPassed || suite.count != suite.passed) {
+            table += `|${suite.failed + suite.errors > 0 ? '❌' : suite.skipped > 0 ? '🟡' : '✅'} ${suite.name}|${suite.passed}|${suite.skipped}|${suite.failed + suite.errors}|${suite.took}s\n`;
+        }
+    }
+    if (skipPassed) {
+        table += '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n';
     }
     return table;
 }
@@ -75,7 +82,7 @@ export function summaryTableOf(results: ParseResults, summaryMode: typeof summar
         if (results.tests.totals.count > 0) {
             content += summaryMode == 'totals' ?
                 `Tests: ${summaryOfTests(results.tests.totals, false)}` :
-                summaryTableOfTests(results.tests);
+                summaryTableOfTests(results.tests, summaryMode);
         }
         if (results.checks.totals.count > 0) {
             if (content) content += '\n';
