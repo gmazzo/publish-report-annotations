@@ -1,7 +1,7 @@
 import {ParseResults} from "./types";
 
 jest.mock('./config', () => ({
-    summary: 'detailedWithoutPassed'
+    summary: 'detailed'
 }));
 
 import {summaryOf, summaryTableOf} from "./summary";
@@ -129,10 +129,10 @@ describe("summaryTableOf", () => {
         }
     });
 
-    test("when summary is detailed, returns the expected result", () => {
-        const summary = summaryTableOf(results, 'detailed');
+    test("when summary is detailed (default), returns the expected result", () => {
+        const summary = summaryTableOf(results);
 
-        expect(summary).toBe('|Tests|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
+        expect(summary).toBe('|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
             '|:-|-|-|-|-|\n' +
             '|❌ suite1|2|1|1|4s\n' +
             '|✅ suite2|2|0|0|2s\n' +
@@ -148,10 +148,10 @@ describe("summaryTableOf", () => {
             '\n');
     });
 
-    test("when summary is detailedWithoutPassed(default), returns the expected result", () => {
-        const summary = summaryTableOf(results);
+    test("when summary is detailedWithoutPassed, returns the expected result", () => {
+        const summary = summaryTableOf(results, 'detailedWithoutPassed');
 
-        expect(summary).toBe('|Tests|✅ 2 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
+        expect(summary).toBe('|Test Suites|✅ 2 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
             '|:-|-|-|-|-|\n' +
             '|❌ suite1|2|1|1|4s\n' +
             '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n' +
