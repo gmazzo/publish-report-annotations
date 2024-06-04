@@ -45,7 +45,10 @@ export function summaryOf(results: ParseResults, simplified = false) {
 function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: typeof summary) {
     const skipPassed = summaryMode == 'detailedWithoutPassed';
 
-    let table = `|Tests|✅ ${tests.totals.passed} passed${skipPassed ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed + tests.totals.errors} failed|⌛ took\n`;
+    // if skipping passed suites and all passed, we won't produce a table because is going to be empty
+    if (skipPassed && tests.totals.passed == tests.totals.count) return '';
+
+    let table = `|Test Suites|✅ ${tests.totals.passed} passed${skipPassed ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed + tests.totals.errors} failed|⌛ took\n`;
     table += `|:-|-|-|-|-|\n`;
     for (const suite of tests.suites) {
         if (!skipPassed || suite.count != suite.passed) {
