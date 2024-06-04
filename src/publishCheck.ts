@@ -1,19 +1,19 @@
 import * as github from "@actions/github";
 import * as core from "@actions/core";
-import {checkName, githubToken, warningsAsErrors} from "./config";
+import config from "./config";
 import {ParseResults} from "./types";
 import {shouldFail} from "./utils";
 import {summaryOf, summaryTableOf} from "./summary";
 
 export async function publishCheck(results: ParseResults) {
-    const octokit = github.getOctokit(githubToken);
+    const octokit = github.getOctokit(config.githubToken);
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const commit = (github.context.payload?.pull_request?.head?.sha || github.context.sha) as string;
 
     const params= {
         ...github.context.repo,
-        name: checkName,
+        name: config.checkName,
         head_sha: commit,
         status: 'completed' as const,
         conclusion: getConclusion(results),
@@ -35,7 +35,7 @@ export async function publishCheck(results: ParseResults) {
     const {data: checks} = await octokit.rest.checks.listForRef({
         ...github.context.repo,
         ref: commit,
-        check_name: checkName,
+        check_name: config.checkName,
         status: 'in_progress',
         filter: 'latest'
     });
@@ -46,7 +46,7 @@ export async function publishCheck(results: ParseResults) {
         octokit.rest.checks.update({ ...params, check_run_id: checkRunId }) :
         octokit.rest.checks.create(params));
 
-    core.info(`Check \`${checkName}\` reported at ${html_url}`);
+    core.info(`Check \`${config.checkName}\` reported at ${html_url}`);
 
     if (results.annotations.length != params.output.annotations.length) {
         core.warning(`Due GitHub limitation, only ${params.output.annotations.length} of ${results.annotations.length} were reported.\nhttps://github.com/orgs/community/discussions/26680`);
@@ -54,7 +54,7 @@ export async function publishCheck(results: ParseResults) {
 }
 
 function getConclusion(results: ParseResults): 'success' | 'failure' {
-    return shouldFail(results.totals, warningsAsErrors) ? "failure" : "success";
+    return shouldFail(results.totals, config.warningsAsErrors) ? "failure" : "success";
 }
 
 function getAnnotationType(value: ParseResults['annotations'][0]['severity']): 'failure' | 'warning' | 'notice' {
