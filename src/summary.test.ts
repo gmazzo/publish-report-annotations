@@ -55,7 +55,7 @@ describe("summaryOf", () => {
             }
         }));
 
-        expect(result).toBe("🛑 3 errors, ⚠️ 1 warning, 💡 1 other");
+        expect(result).toBe("Checks: 🛑 3 errors, ⚠️ 1 warning, 💡 1 other");
     });
 
     test("tests and checks", () => {

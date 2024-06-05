@@ -36,7 +36,7 @@ export function summaryOf(results: ParseResults, simplified = false) {
     let summary = '';
     if (results.tests.totals.count > 0) summary = summaryOfTests(results.tests.totals, simplified);
     if (results.checks.totals.count > 0) {
-        if (summary) summary += ', checks: ';
+        summary += summary ? ', checks: ' : 'Checks: ';
         summary += summaryOfChecks(results.checks.totals, simplified);
     }
     return summary ? summary : `No issues found`;
