@@ -12,10 +12,8 @@ inputs:
     description: "A multiline list of glob paths to report XML files"
     required: true
     default: |
-      **/build/test-results/**/TEST-*.xml
-      **/build/reports/checkstyle/*.xml
-      **/build/reports/lint-results-*.xml
-      **/build/reports/detekt/*.xml
+      **/build/test-results/**/*.xml
+      **/build/reports/**/*.xml
   summary:
     description: "The kind summary to display in the check: `detailed`, `totals` or `off`"
     default: "detailed"
