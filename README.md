@@ -21,6 +21,8 @@ Mostly targeting Gradle builds
 ![logs](https://github.com/gmazzo/publish-report-annotations/assets/513566/4d2a3224-c326-4948-bf58-6aec18715818)
 
 #### Summaries
+![PR status check](https://github.com/gmazzo/publish-report-annotations/assets/513566/434289a0-6d4d-4226-ad4c-49554080df80)
+
 | Tests                              | ✅ 5 passed | 🟡 1 skipped | ❌ 2 failed | ⌛ took |
 |:-----------------------------------|------------|--------------|------------|--------|
 | ✅ org.test.sample.AnotherTestSuite | 4          | 0            | 0          | 0.578s |
