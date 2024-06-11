@@ -9,7 +9,7 @@ Reports JUnit, Android Lint, Detekt and any other CheckStyle compatible XML repo
 Mostly targeting Gradle builds
 
 #### JUnit's reports
-![junit](https://github.com/gmazzo/publish-report-annotations/assets/513566/63fd2a86-2585-4c49-bb79-9b9dc88007fd)
+![junit](https://github.com/gmazzo/publish-report-annotations/assets/513566/57ba4328-0318-48b5-9d91-22113c4387bb)
 
 #### Checkstyle (and compatibles, like Detekt)s reports
 ![checkstyle/detekt](https://github.com/gmazzo/publish-report-annotations/assets/513566/10979561-f1d3-48ef-a168-d416d866f2cc)
