@@ -43,7 +43,8 @@ steps:
   - name: Run Gradle build
     run: ./gradlew build # this is an example
   - name: Report build results
-    uses: gmazzo/publish-report-annotations@v1 # target latest version
+    uses: gmazzo/publish-report-annotations@v1 # target latest major
+    if: ${{ !cancelled() }}
 ```
 
 ### Configuration
