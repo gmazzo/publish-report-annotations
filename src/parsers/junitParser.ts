@@ -1,8 +1,9 @@
 import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
-import {ParseResults} from "../types";
+import {ParseResults, TestSuite} from "../types";
 import {Parser} from "./parser";
+import config from "../config";
 
 type JUnitTest = {
     _attributes: {
@@ -30,6 +31,7 @@ type JUnitSuite = {
         skipped?: number
         failures?: number
         errors?: number
+        retries?: number
     }
     testcase: JUnitTest | JUnitTest[],
 };
@@ -50,17 +52,47 @@ export const junitParser: Parser = {
             const result = new ParseResults();
 
             for (const testSuite of asArray(data.testsuites?.testsuite || data.testsuite)) {
-                const suite = {
+                const suite: TestSuite = {
                     name: testSuite._attributes.name,
                     took: testSuite._attributes.time,
                     count: testSuite._attributes.tests || 0,
                     errors: testSuite._attributes.errors || 0,
                     failed: testSuite._attributes.failures || 0,
                     skipped: testSuite._attributes.skipped || 0,
+                    passed: 0, // will be calculated later
                 };
 
-                for (const testCase of asArray(testSuite.testcase)) {
-                    if (testCase.failure) {
+                const testCases = asArray(testSuite.testcase);
+
+                // removes cases with same `className` and `name`, as they are considered retries of the same test
+                if (config.ignoreTestRetries) {
+                    let retries = 0;
+                    const seenAt: { [key: string]: number } = {};
+
+                    testCases.forEach((testCase, index) => {
+                        const key = `${testCase._attributes.classname}|${testCase._attributes.name}`;
+                        const previousIndex = seenAt[key];
+
+                        if (previousIndex >= 0) {
+                            const previous = testCases[previousIndex];
+
+                            suite.count--;
+                            retries++;
+                            if (previous.failure) {
+                                suite.failed--;
+                            } else if (previous.skipped) {
+                                suite.skipped--;
+                            }
+
+                            delete testCases[previousIndex];
+                        }
+                        seenAt[key] = index;
+                    });
+                    suite.retries = retries;
+                }
+
+                for (const testCase of testCases) {
+                    if (testCase?.failure) {
                         const filePath = testCase._attributes.file ?
                             await resolveFile(testCase._attributes.file) :
                             await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
@@ -96,12 +128,10 @@ function getLine(testCase: JUnitTest): number | undefined {
     }
 
     const className = testCase._attributes.classname;
-    const method = testCase._attributes.name;
     const stackTrace = testCase.failure?._text;
 
-    if (className && method && stackTrace) {
-        const singleName = className.split('.').pop();
-        const match = new RegExp(`\\s*at\\s+${className}\\.${method}\\(${singleName}\\.\\w+:(\\d+)\\)`).exec(stackTrace);
+    if (className && stackTrace) {
+        const match = new RegExp(`\\s*at\\s+${className}\\..*?\\(.*?:(\\d+)\\)`).exec(stackTrace);
 
         if (match) {
             return Number(match[1]);

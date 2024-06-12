@@ -14,13 +14,16 @@ function entry(params: { amount: number, icon?: string, type: string, simplified
 
 function summaryOfTests(totals: ParseResults['tests']['totals'], simplified: boolean) {
     const heading = entry({amount: totals.count, type: "test"});
-    if (totals.count == totals.passed) return heading + ` ✅ passed`;
+    if (totals.count == totals.passed) {
+        return heading + ` ✅ passed${totals.retries ? ` (${totals.retries} 🔄 retried)` : ''}`;
+    }
 
     return heading + `: ` + [
         entry({amount: totals.passed, icon: '✅', simplified, type: 'passed', plural: false}),
         entry({amount: totals.skipped, icon: '🟡', simplified, type: 'skipped', plural: false}),
         entry({amount: totals.failed, icon: '❌', simplified, type: 'failed', plural: false}),
-        entry({amount: totals.errors, icon: '🛑', simplified, type: 'error'})
+        entry({amount: totals.errors, icon: '🛑', simplified, type: 'error'}),
+        entry({amount: totals.retries || 0, icon: '🔄', simplified, type: 'retried', plural: false}),
     ].filter(it => it).join(', ');
 }
 
@@ -42,17 +45,17 @@ export function summaryOf(results: ParseResults, simplified = false) {
     return summary ? summary : `No issues found`;
 }
 
-function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: Config['summary']) {
+function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: Config['summary'], includeRetries: boolean) {
     const skipPassed = summaryMode == 'detailedWithoutPassed';
 
     // if skipping passed suites and all passed, we won't produce a table because is going to be empty
     if (skipPassed && tests.totals.passed == tests.totals.count) return '';
 
-    let table = `|Test Suites|✅ ${tests.totals.passed} passed${skipPassed ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed + tests.totals.errors} failed|⌛ took\n`;
-    table += `|:-|-|-|-|-|\n`;
+    let table = `|Test Suites|✅ ${tests.totals.passed} passed${skipPassed ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed + tests.totals.errors} failed|⌛ took${includeRetries?`|🔄 ${tests.totals.retries} retried (flaky?)` : ''}\n`;
+    table += `|:-|-|-|-|-${includeRetries?'|-':''}\n`;
     for (const suite of tests.suites) {
-        if (!skipPassed || suite.count != suite.passed) {
-            table += `|${suite.failed + suite.errors > 0 ? '❌' : suite.skipped > 0 ? '🟡' : '✅'} ${suite.name}|${suite.passed}|${suite.skipped}|${suite.failed + suite.errors}|${suite.took}s\n`;
+        if (!skipPassed || suite.count != suite.passed || (suite.retries || 0) > 0) {
+            table += `|${suite.failed + suite.errors > 0 ? '❌' : suite.skipped > 0 ? '🟡' : '✅'} ${suite.name}|${suite.passed}|${suite.skipped}|${suite.failed + suite.errors}|${suite.took}s${includeRetries ? `|${suite.retries}` : ''}\n`;
         }
     }
     if (skipPassed) {
@@ -79,13 +82,13 @@ function summaryTableOfChecks(checks: ParseResults['checks']) {
     return table;
 }
 
-export function summaryTableOf(results: ParseResults, summaryMode: Config['summary'] = config.summary) {
+export function summaryTableOf(results: ParseResults, summaryMode: Config['summary'] = config.summary, includeRetries: boolean = config.ignoreTestRetries) {
     let content = '';
     if (summaryMode != 'off') {
         if (results.tests.totals.count > 0) {
             content += summaryMode == 'totals' ?
                 `Tests: ${summaryOfTests(results.tests.totals, false)}` :
-                summaryTableOfTests(results.tests, summaryMode);
+                summaryTableOfTests(results.tests, summaryMode, includeRetries);
         }
         if (results.checks.totals.count > 0) {
             if (content) content += '\n';

@@ -16,6 +16,7 @@ export type TestSuite = {
     errors: number
     failed: number
     skipped: number
+    retries?: number,
 };
 
 export type TestResult = {
@@ -26,6 +27,7 @@ export type TestResult = {
         errors: number
         failed: number
         skipped: number
+        retries?: number,
     }
 };
 
@@ -86,6 +88,9 @@ export class ParseResults {
         this.tests.totals.errors += suite.errors;
         this.tests.totals.failed += suite.failed;
         this.tests.totals.skipped += suite.skipped;
+        if (suite.retries !== undefined) {
+            this.tests.totals.retries = (this.tests.totals.retries || 0) + suite.retries;
+        }
     }
 
     addCheckSuite(suite: CheckSuite) {
@@ -116,6 +121,10 @@ export class ParseResults {
         this.tests.totals.failed += results.tests.totals.failed;
         this.tests.totals.passed += results.tests.totals.passed;
         this.tests.totals.skipped += results.tests.totals.skipped;
+
+        if (results.tests.totals.retries) {
+            this.tests.totals.retries = (this.tests.totals.retries || 0) + results.tests.totals.retries;
+        }
 
         for (const check of results.checks.checks) {
             const existingCheck = this.checks.checks.find(it => it.name === check.name);

@@ -1,8 +1,8 @@
 package org.test.sample
 
-import org.junit.Assert.fail
-import org.junit.Ignore
-import org.junit.Test
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 import java.io.IOException
 
 class SampleTestSuite {
@@ -22,7 +22,7 @@ class SampleTestSuite {
     }
 
     @Test
-    @Ignore("not ready yet")
+    @Disabled("not ready yet")
     fun `a test skipped`() {
     }
 

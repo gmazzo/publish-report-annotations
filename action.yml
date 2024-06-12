@@ -22,6 +22,10 @@ inputs:
     description: "Report only check annotations coming from files that have been changed in the PR (tests won't be filtered)"
     required: false
     default: "false"
+  ignoreTestRetries:
+    description: "If multiple test reports matching `className` and `name` are found, they will be assumed re-tries, and only the last entry will be considered"
+    required: false
+    default: "false"
   warningsAsErrors:
     description: "Treat warnings as errors"
     required: false

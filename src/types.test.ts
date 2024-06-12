@@ -13,8 +13,8 @@ const junitResult2 = (() => {
     const result = new ParseResults();
     result.addAnnotation({severity: "other", message: "junit skip 1"});
     result.addAnnotation({severity: "other", message: "junit skip 2"});
-    result.addTestSuite({name: "test3", count: 2, passed: 0, errors: 0, failed: 0, skipped: 2});
-    result.addTestSuite({name: "test4", count: 3, passed: 0, errors: 0, failed: 0, skipped: 3});
+    result.addTestSuite({name: "test3", count: 2, passed: 0, errors: 0, failed: 0, skipped: 2, retries: 0});
+    result.addTestSuite({name: "test4", count: 3, passed: 0, errors: 0, failed: 0, skipped: 3, retries: 1});
     return result;
 })();
 
@@ -126,10 +126,10 @@ describe("ParseResults", () => {
                 suites: [
                     {count: 2, errors: 2, failed: 0, name: "test1", passed: 0, skipped: 0},
                     {count: 6, errors: 1, failed: 1, name: "test2", passed: 3, skipped: 1},
-                    {count: 2, errors: 0, failed: 0, name: "test3", passed: 0, skipped: 2},
-                    {count: 3, errors: 0, failed: 0, name: "test4", passed: 0, skipped: 3}
+                    {count: 2, errors: 0, failed: 0, name: "test3", passed: 0, skipped: 2, retries: 0},
+                    {count: 3, errors: 0, failed: 0, name: "test4", passed: 0, skipped: 3, retries: 1}
                 ],
-                totals: {count: 13, errors: 0, failed: 1, passed: 3, skipped: 6}
+                totals: {count: 13, errors: 0, failed: 1, passed: 3, skipped: 6, retries: 1}
             },
             totals: {errors: 5, others: 4, warnings: 6}
         }));

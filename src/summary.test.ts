@@ -34,12 +34,31 @@ describe("summaryOf", () => {
                     passed: 2,
                     skipped: 1,
                     failed: 1,
-                    errors: 1
+                    errors: 1,
+                    retries: 3
                 }
             }
         }));
 
-        expect(result).toBe("5 tests: ✅ 2 passed, 🟡 1 skipped, ❌ 1 failed, 🛑 1 error");
+        expect(result).toBe("5 tests: ✅ 2 passed, 🟡 1 skipped, ❌ 1 failed, 🛑 1 error, 🔄 3 retried");
+    });
+
+    test("only tests, with retries", () => {
+        const result = summaryOf(new ParseResults({
+            tests: {
+                suites: [],
+                totals: {
+                    count: 2,
+                    passed: 2,
+                    skipped: 0,
+                    failed: 0,
+                    errors: 0,
+                    retries: 3
+                }
+            }
+        }));
+
+        expect(result).toBe("2 tests ✅ passed (3 🔄 retried)");
     });
 
     test("only checks", () => {
@@ -133,7 +152,7 @@ describe("summaryTableOf", () => {
         const summary = summaryTableOf(results);
 
         expect(summary).toBe('|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
-            '|:-|-|-|-|-|\n' +
+            '|:-|-|-|-|-\n' +
             '|❌ suite1|2|1|1|4s\n' +
             '|✅ suite2|2|0|0|2s\n' +
             '\n' +
@@ -152,7 +171,7 @@ describe("summaryTableOf", () => {
         const summary = summaryTableOf(results, 'detailedWithoutPassed');
 
         expect(summary).toBe('|Test Suites|✅ 2 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
-            '|:-|-|-|-|-|\n' +
+            '|:-|-|-|-|-\n' +
             '|❌ suite1|2|1|1|4s\n' +
             '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n' +
             '\n' +
