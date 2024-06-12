@@ -1,3 +1,4 @@
+import {ParseResults} from "./types";
 import {Parser} from "./parsers/parser";
 
 const junitParser: Parser = {
@@ -87,7 +88,6 @@ jest.mock("@actions/core", () => ({
 }));
 
 import {processFile} from "./processFile";
-import {ParseResults} from "./types";
 
 describe("processFile", () => {
 

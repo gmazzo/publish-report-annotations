@@ -19,11 +19,17 @@ android {
 detekt.ignoreFailures = true
 
 dependencies {
-    testImplementation("junit:junit:4.13.2")
+    implementation(platform("org.junit:junit-bom:5.10.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
 tasks {
-    withType<AbstractTestTask>().configureEach { ignoreFailures = true }
+
+    withType<Test>().configureEach {
+        useJUnitPlatform()
+        ignoreFailures = true
+    }
 
     val exportSamples by registering(Copy::class) {
         from(named<Test>("testDebugUnitTest").map { it.reports.junitXml.outputLocation }) { include("**.xml") }

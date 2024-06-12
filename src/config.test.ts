@@ -37,11 +37,12 @@ describe('config', () => {
         expect(getInput).toHaveBeenCalledWith('summary', {required: true});
         expect(getMultilineInput).toHaveBeenCalledWith('reports', {required: true});
         expect(getBooleanInput).toHaveBeenCalledWith('filterChecks');
+        expect(getBooleanInput).toHaveBeenCalledWith('ignoreTestRetries');
         expect(getBooleanInput).toHaveBeenCalledWith('warningsAsErrors');
         expect(getBooleanInput).toHaveBeenCalledWith('failOnError');
         expect(getInput).toHaveBeenCalledTimes(3);
         expect(getMultilineInput).toHaveBeenCalledTimes(1);
-        expect(getBooleanInput).toHaveBeenCalledTimes(3);
+        expect(getBooleanInput).toHaveBeenCalledTimes(4);
     });
 
 });
