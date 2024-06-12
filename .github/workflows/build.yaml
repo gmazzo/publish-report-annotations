@@ -41,6 +41,15 @@ jobs:
             lib/*-junit.xml
             samples/
           summary: detailedWithoutPassed
+      - name: Report to Check (Ignoring Flaky)
+        uses: ./.
+        if: always()
+        with:
+          checkName: "Test Reports (Ignoring Flaky)"
+          reports: |
+            lib/*-junit.xml
+            samples/
+          ignoreTestRetries: true
       - name: Report to Check (PR filtered)
         uses: ./.
         if: always()
