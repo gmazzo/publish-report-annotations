@@ -4,8 +4,8 @@ const junitResult1 = (() => {
     const result = new ParseResults();
     result.addAnnotation({severity: "error", message: "junit failure 1"});
     result.addAnnotation({severity: "warning", message: "junit failure 2"});
-    result.addTestSuite({name: "test1", count: 2, passed: 0, errors: 2, failed: 0, skipped: 0});
-    result.addTestSuite({name: "test2", count: 6, passed: 3, errors: 1, failed: 1, skipped: 1});
+    result.addTestSuite({name: "test1", count: 2, passed: 0, failed: 0, skipped: 0});
+    result.addTestSuite({name: "test2", count: 6, passed: 3, failed: 1, skipped: 1});
     return result;
 })();
 
@@ -17,7 +17,6 @@ const junitResult2 = (() => {
         name: "test3",
         count: 2,
         passed: 0,
-        errors: 0,
         failed: 0,
         skipped: 2
     });
@@ -25,7 +24,6 @@ const junitResult2 = (() => {
         name: "test4",
         count: 3,
         passed: 0,
-        errors: 0,
         failed: 0,
         skipped: 3,
         flaky: 1,
@@ -139,11 +137,10 @@ describe("ParseResults", () => {
             },
             tests: {
                 suites: [
-                    {count: 2, errors: 2, failed: 0, name: "test1", passed: 0, skipped: 0},
-                    {count: 6, errors: 1, failed: 1, name: "test2", passed: 3, skipped: 1},
+                    {count: 2, failed: 0, name: "test1", passed: 0, skipped: 0},
+                    {count: 6, failed: 1, name: "test2", passed: 3, skipped: 1},
                     {
                         count: 2,
-                        errors: 0,
                         failed: 0,
                         name: "test3",
                         passed: 0,
@@ -151,7 +148,6 @@ describe("ParseResults", () => {
                     },
                     {
                         count: 3,
-                        errors: 0,
                         failed: 0,
                         name: "test4",
                         passed: 0,
@@ -161,7 +157,6 @@ describe("ParseResults", () => {
                 ],
                 totals: {
                     count: 13,
-                    errors: 0,
                     failed: 1,
                     passed: 3,
                     skipped: 6,

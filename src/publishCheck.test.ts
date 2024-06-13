@@ -48,9 +48,9 @@ describe("publishCheck", () => {
         await publishCheck(new ParseResults({
             tests: {
                 suites: [
-                    {name: "suite1", count: 5, passed: 2, errors: 0, skipped: 1, failed: 1},
-                    {name: "suite2", count: 2, passed: 2, errors: 0, skipped: 0, failed: 0}
-                ], totals: {count: 4, passed: 2, errors: 0, skipped: 1, failed: 1}
+                    {name: "suite1", count: 5, passed: 2, skipped: 1, failed: 1},
+                    {name: "suite2", count: 2, passed: 2, skipped: 0, failed: 0}
+                ], totals: {count: 4, passed: 2, skipped: 1, failed: 1}
             },
             checks: {
                 checks: [

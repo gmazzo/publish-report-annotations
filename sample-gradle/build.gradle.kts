@@ -5,6 +5,7 @@ plugins {
     kotlin("android") version "1.9.23"
     id("com.android.application") version "8.3.0"
     id("io.gitlab.arturbosch.detekt") version "1.23.6"
+    id("org.gradle.test-retry") version "1.5.9"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -27,8 +28,19 @@ dependencies {
 tasks {
 
     withType<Test>().configureEach {
+        val timesFile = File(temporaryDir, ".times")
+
         useJUnitPlatform()
         ignoreFailures = true
+        retry {
+            maxRetries = 4
+            filter.includeClasses.add("**.Flaky*")
+        }
+
+        environment("TIMES_FILE", timesFile.toRelativeString(projectDir))
+        doFirst {
+            timesFile.delete()
+        }
     }
 
     val exportSamples by registering(Copy::class) {

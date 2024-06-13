@@ -16,8 +16,7 @@ describe("summaryOf", () => {
                     count: 3,
                     passed: 3,
                     skipped: 0,
-                    failed: 0,
-                    errors: 0
+                    failed: 0
                 }
             }
         }));
@@ -34,13 +33,12 @@ describe("summaryOf", () => {
                     passed: 2,
                     skipped: 1,
                     failed: 1,
-                    errors: 1,
                     flaky: 1,
                 }
             }
         }));
 
-        expect(result).toBe("5 tests: ✅ 2 passed (❗ 1 flaky), 🟡 1 skipped, ❌ 1 failed, 🛑 1 error");
+        expect(result).toBe("5 tests: ✅ 2 passed (❗1 flaky), 🟡 1 skipped, ❌ 1 failed");
     });
 
     test("only tests, with retries", () => {
@@ -52,13 +50,12 @@ describe("summaryOf", () => {
                     passed: 2,
                     skipped: 0,
                     failed: 0,
-                    errors: 0,
                     flaky: 2,
                 }
             }
         }));
 
-        expect(result).toBe("2 tests ✅ passed (2 ❗ flaky)");
+        expect(result).toBe("2 tests ✅ passed (2 ❗flaky)");
     });
 
     test("only checks", () => {
@@ -85,8 +82,7 @@ describe("summaryOf", () => {
                     count: 3,
                     passed: 2,
                     skipped: 1,
-                    failed: 0,
-                    errors: 0
+                    failed: 0
                 }
             },
             checks: {
@@ -111,8 +107,7 @@ describe("summaryOf", () => {
                     count: 3,
                     passed: 2,
                     skipped: 1,
-                    failed: 0,
-                    errors: 0
+                    failed: 0
                 }
             },
             checks: {
@@ -136,10 +131,10 @@ describe("summaryTableOf", () => {
     const results = new ParseResults({
         tests: {
             suites: [
-                {name: "suite1", count: 5, passed: 2, errors: 0, skipped: 1, failed: 1, took: 4},
-                {name: "suite2", count: 2, passed: 2, errors: 0, skipped: 0, failed: 0, took: 2},
-                {name: "suite3", count: 2, passed: 2, errors: 0, skipped: 0, failed: 0, took: 2, flaky: 1}
-            ], totals: {count: 4, passed: 2, errors: 0, skipped: 1, failed: 1}
+                {name: "suite1", count: 5, passed: 2, skipped: 1, failed: 1, took: 4},
+                {name: "suite2", count: 2, passed: 2, skipped: 0, failed: 0, took: 2},
+                {name: "suite3", count: 2, passed: 2, skipped: 0, failed: 0, took: 2, flaky: 1}
+            ], totals: {count: 4, passed: 2, skipped: 1, failed: 1}
         },
         checks: {
             checks: [
@@ -156,8 +151,8 @@ describe("summaryTableOf", () => {
             '|:-|-|-|-|-\n' +
             '|❌ suite1|2|1|1|4s\n' +
             '|✅ suite2|2|0|0|2s\n' +
-            '|❎❗ suite3 [^flakyDisclaimer]|2|0|0|2s\n' +
-            '[^flakyDisclaimer]: These tests are ❎❗flaky (some executions have passed, others have failed)\n' +
+            '|❎❗suite3 [^flakyDisclaimer]|2|0|0|2s\n' +
+            '[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)\n' +
             '\n' +
             '|suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|\n' +
             '|:-|-|-|-|\n' +
@@ -176,9 +171,9 @@ describe("summaryTableOf", () => {
         expect(summary).toBe('|Test Suites|✅ 2 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
             '|:-|-|-|-|-\n' +
             '|❌ suite1|2|1|1|4s\n' +
-            '|❎❗ suite3 [^flakyDisclaimer]|2|0|0|2s\n' +
+            '|❎❗suite3 [^flakyDisclaimer]|2|0|0|2s\n' +
             '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n' +
-            '[^flakyDisclaimer]: These tests are ❎❗flaky (some executions have passed, others have failed)\n' +
+            '[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)\n' +
             '\n' +
             '|suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|\n' +
             '|:-|-|-|-|\n' +
