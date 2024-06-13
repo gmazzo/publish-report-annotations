@@ -81,7 +81,7 @@ function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: Config['
         }
     }
     if (skipPassed) table += '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n';
-    if (flakyDisclaimer) table += '[^flakyDisclaimer]: These tests are ❎❗flaky (some executions have passed, others have failed)\n';
+    if (flakyDisclaimer) table += '[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)\n';
     return table;
 }
 

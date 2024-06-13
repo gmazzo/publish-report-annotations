@@ -157,7 +157,7 @@ describe("summaryTableOf", () => {
             '|❌ suite1|2|1|1|4s\n' +
             '|✅ suite2|2|0|0|2s\n' +
             '|❎❗ suite3 [^flakyDisclaimer]|2|0|0|2s\n' +
-            '[^flakyDisclaimer]: These tests are ❎❗flaky (some executions have passed, others have failed)\n' +
+            '[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)\n' +
             '\n' +
             '|suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|\n' +
             '|:-|-|-|-|\n' +
@@ -178,7 +178,7 @@ describe("summaryTableOf", () => {
             '|❌ suite1|2|1|1|4s\n' +
             '|❎❗ suite3 [^flakyDisclaimer]|2|0|0|2s\n' +
             '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n' +
-            '[^flakyDisclaimer]: These tests are ❎❗flaky (some executions have passed, others have failed)\n' +
+            '[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)\n' +
             '\n' +
             '|suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|\n' +
             '|:-|-|-|-|\n' +
