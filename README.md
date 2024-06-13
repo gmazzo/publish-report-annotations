@@ -23,10 +23,12 @@ Mostly targeting Gradle builds
 #### Summaries
 ![PR status check](https://github.com/gmazzo/publish-report-annotations/assets/513566/434289a0-6d4d-4226-ad4c-49554080df80)
 
-| Tests                              | ✅ 5 passed | 🟡 1 skipped | ❌ 2 failed | ⌛ took |
-|:-----------------------------------|------------|--------------|------------|--------|
-| ✅ org.test.sample.AnotherTestSuite | 4          | 0            | 0          | 0.578s |
-| ❌ org.test.sample.SampleTestSuite  | 1          | 1            | 2          | 0.002s |
+| Tests                                               | ✅ 5 passed | 🟡 1 skipped | ❌ 2 failed | ⌛ took |
+|:----------------------------------------------------|------------|--------------|------------|--------|
+| ✅ org.test.sample.AnotherTestSuite                  | 4          | 0            | 0          | 0.578s |
+| ❌ org.test.sample.SampleTestSuite                   | 1          | 1            | 2          | 0.002s |
+| ❎❗org.test.sample.FlakyTestSuite [^flakyDisclaimer] | 1          | 0            | 0          | 1.295s |
+[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 
 | detekt             | 🛑 0 errors | ⚠️ 1 warning | 💡 0 others |
 |:-------------------|-------------|--------------|-------------|
