@@ -13,7 +13,6 @@ export type TestSuite = {
     took?: number
     count: number
     passed: number
-    errors: number
     failed: number
     skipped: number
     flaky?: number
@@ -24,7 +23,6 @@ export type TestResult = {
     totals: {
         count: number
         passed: number
-        errors: number
         failed: number
         skipped: number
         flaky?: number
@@ -53,7 +51,7 @@ export class ParseResults {
 
     annotations: Annotation[] = [];
 
-    tests: TestResult = {suites: [], totals: {count: 0, passed: 0, errors: 0, failed: 0, skipped: 0}};
+    tests: TestResult = {suites: [], totals: {count: 0, passed: 0, failed: 0, skipped: 0}};
 
     checks: ChecksResult = {checks: [], totals: {count: 0, errors: 0, warnings: 0, others: 0}};
 
@@ -85,7 +83,6 @@ export class ParseResults {
         this.tests.suites.push(suite);
         this.tests.totals.count += suite.count;
         this.tests.totals.passed += suite.passed;
-        this.tests.totals.errors += suite.errors;
         this.tests.totals.failed += suite.failed;
         this.tests.totals.skipped += suite.skipped;
         if (suite.flaky !== undefined) {

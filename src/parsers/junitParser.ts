@@ -1,7 +1,7 @@
 import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
-import {ParseResults, TestSuite} from "../types";
+import {ParseResults} from "../types";
 import {Parser} from "./parser";
 import config from "../config";
 
@@ -28,10 +28,6 @@ type JUnitSuite = {
     _attributes: {
         name: string
         time?: number,
-        tests?: number
-        skipped?: number
-        failures?: number
-        errors?: number
         retries?: number
     }
     testcase: JUnitTest | JUnitTest[],
@@ -53,20 +49,12 @@ export const junitParser: Parser = {
             const result = new ParseResults();
 
             for (const testSuite of asArray(data.testsuites?.testsuite || data.testsuite)) {
-                const suite: TestSuite = {
-                    name: testSuite._attributes.name,
-                    took: testSuite._attributes.time,
-                    count: testSuite._attributes.tests || 0,
-                    errors: testSuite._attributes.errors || 0,
-                    failed: testSuite._attributes.failures || 0,
-                    skipped: testSuite._attributes.skipped || 0,
-                    passed: 0, // will be calculated later
-                };
-
                 const testCases = asArray(testSuite.testcase);
 
                 // removes cases with same `className` and `name`, as they are considered retries of the same test
+                let flaky = undefined;
                 if (config.detectFlakyTests) {
+                    flaky = 0;
                     const seenAt: { [key: string]: { retried: boolean, lastFailure?: JUnitTest, previous: JUnitTest, previousIndex: number, passed: boolean, failed: boolean } } = {};
 
                     for (const [index, testCase] of testCases.entries()) {
@@ -78,12 +66,6 @@ export const junitParser: Parser = {
                         if (entry) {
                             entry.retried = true;
 
-                            suite.count--;
-                            if (entry.previous.failure) {
-                                suite.failed--;
-                            } else if (entry.previous.skipped) {
-                                suite.skipped--;
-                            }
                             if (testCase.failure) {
                                 entry.failed = true;
                                 entry.lastFailure = testCase;
@@ -108,7 +90,6 @@ export const junitParser: Parser = {
                         }
                     }
 
-                    let flaky = 0;
                     for (const entry of Object.values(seenAt)) {
                         if (entry.retried) {
                             if (entry.passed && entry.failed) {
@@ -121,11 +102,18 @@ export const junitParser: Parser = {
                             }
                         }
                     }
-                    suite.flaky = flaky;
                 }
 
+                let count = 0;
+                let failed = 0;
+                let skipped = 0;
                 for (const testCase of testCases) {
-                    if (testCase?.failure) {
+                    if (!testCase) continue;
+
+                    count++;
+                    if (testCase.failure) {
+                        if (!testCase.flaky) failed++;
+
                         const filePath = testCase._attributes.file ?
                             await resolveFile(testCase._attributes.file) :
                             await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
@@ -141,11 +129,19 @@ export const junitParser: Parser = {
                             startLine: line,
                             endLine: line,
                         });
+
+                    } else if (testCase.skipped) {
+                        skipped++;
                     }
                 }
                 result.addTestSuite({
-                    ...suite,
-                    passed: suite.count - suite.errors - suite.failed - suite.skipped,
+                    name: testSuite._attributes.name,
+                    took: testSuite._attributes.time,
+                    count,
+                    failed,
+                    skipped,
+                    passed: count - failed - skipped,
+                    ...(flaky !== undefined ? {flaky} : {}),
                 });
             }
             return result;

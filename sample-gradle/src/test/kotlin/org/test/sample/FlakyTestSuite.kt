@@ -2,17 +2,25 @@ package org.test.sample
 
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.RepeatedTest
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.fail
+import java.io.File
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class FlakyTestSuite {
 
-    private var times = 0
+    private val timesFile = File(checkNotNull(System.getenv("TIMES_FILE")))
 
-    @RepeatedTest(5, name = "flakyTest")
+    @Test
     fun flakyTest() {
-        assertTrue(++times >= 3)
+        var times = if (timesFile.isFile) timesFile.readText().toInt() else 0
+
+        try {
+            assertTrue(++times >= 3, "times >= 3, actual $times")
+
+        } finally {
+            timesFile.writeText(times.toString())
+        }
     }
 
 }
