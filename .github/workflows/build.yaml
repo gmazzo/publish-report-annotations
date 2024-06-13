@@ -49,7 +49,7 @@ jobs:
           reports: |
             lib/*-junit.xml
             samples/
-          ignoreTestRetries: true
+          detectFlakyTests: true
       - name: Report to Check (PR filtered)
         uses: ./.
         if: always()

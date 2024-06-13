@@ -37,7 +37,7 @@ describe('config', () => {
         expect(getInput).toHaveBeenCalledWith('summary', {required: true});
         expect(getMultilineInput).toHaveBeenCalledWith('reports', {required: true});
         expect(getBooleanInput).toHaveBeenCalledWith('filterChecks');
-        expect(getBooleanInput).toHaveBeenCalledWith('ignoreTestRetries');
+        expect(getBooleanInput).toHaveBeenCalledWith('detectFlakyTests');
         expect(getBooleanInput).toHaveBeenCalledWith('warningsAsErrors');
         expect(getBooleanInput).toHaveBeenCalledWith('failOnError');
         expect(getInput).toHaveBeenCalledTimes(3);
