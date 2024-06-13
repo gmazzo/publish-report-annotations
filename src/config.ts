@@ -6,7 +6,7 @@ export interface Config {
     reports: string[];
     summary: "detailed" | "detailedWithoutPassed" | "totals" | "off";
     filterChecks: boolean;
-    ignoreTestRetries: boolean;
+    detectFlakyTests: boolean;
     warningsAsErrors: boolean;
     failOnError: boolean;
 }
@@ -33,7 +33,7 @@ export class ConfigImpl implements Config {
                     throw new Error(`Invalid summary value: ${value}`);
                 })(),
                 filterChecks: core.getBooleanInput("filterChecks"),
-                ignoreTestRetries: core.getBooleanInput("ignoreTestRetries"),
+                detectFlakyTests: core.getBooleanInput("detectFlakyTests"),
                 warningsAsErrors: core.getBooleanInput("warningsAsErrors"),
                 failOnError: core.getBooleanInput("failOnError"),
             };
@@ -61,8 +61,8 @@ export class ConfigImpl implements Config {
         return this.resolve().filterChecks;
     }
 
-    get ignoreTestRetries() {
-        return this.resolve().ignoreTestRetries;
+    get detectFlakyTests() {
+        return this.resolve().detectFlakyTests;
     }
 
     get warningsAsErrors() {

@@ -21,6 +21,7 @@ type JUnitTest = {
         }
         _text: string,
     }
+    flaky?: boolean
 };
 
 type JUnitSuite = {
@@ -65,30 +66,62 @@ export const junitParser: Parser = {
                 const testCases = asArray(testSuite.testcase);
 
                 // removes cases with same `className` and `name`, as they are considered retries of the same test
-                if (config.ignoreTestRetries) {
-                    let retries = 0;
-                    const seenAt: { [key: string]: number } = {};
+                if (config.detectFlakyTests) {
+                    const seenAt: { [key: string]: { retried: boolean, lastFailure?: JUnitTest, previous: JUnitTest, previousIndex: number, passed: boolean, failed: boolean } } = {};
 
-                    testCases.forEach((testCase, index) => {
+                    for (const [index, testCase] of testCases.entries()) {
+                        if (testCase.skipped) continue;
+
                         const key = `${testCase._attributes.classname}|${testCase._attributes.name}`;
-                        const previousIndex = seenAt[key];
+                        const entry = seenAt[key];
 
-                        if (previousIndex >= 0) {
-                            const previous = testCases[previousIndex];
+                        if (entry) {
+                            entry.retried = true;
 
                             suite.count--;
-                            retries++;
-                            if (previous.failure) {
+                            if (entry.previous.failure) {
                                 suite.failed--;
-                            } else if (previous.skipped) {
+                            } else if (entry.previous.skipped) {
                                 suite.skipped--;
                             }
+                            if (testCase.failure) {
+                                entry.failed = true;
+                                entry.lastFailure = testCase;
+                            } else {
+                                entry.passed = true;
+                            }
 
-                            delete testCases[previousIndex];
+                            delete testCases[entry.previousIndex];
+
+                            entry.previous = testCase;
+                            entry.previousIndex = index;
+
+                        } else {
+                            seenAt[key] = {
+                                retried: false,
+                                lastFailure: testCase.failure ? testCase : undefined,
+                                previous: testCase,
+                                previousIndex: index,
+                                passed: !testCase.failure,
+                                failed: !!testCase.failure,
+                            };
                         }
-                        seenAt[key] = index;
-                    });
-                    suite.retries = retries;
+                    }
+
+                    let flaky = 0;
+                    for (const entry of Object.values(seenAt)) {
+                        if (entry.retried) {
+                            if (entry.passed && entry.failed) {
+                                flaky++;
+                            }
+                            if (entry.lastFailure) {
+                                // reports last failure, if no execution has passed
+                                entry.lastFailure.flaky = entry.passed;
+                                testCases[entry.previousIndex] = entry.lastFailure;
+                            }
+                        }
+                    }
+                    suite.flaky = flaky;
                 }
 
                 for (const testCase of testCases) {
@@ -101,8 +134,8 @@ export const junitParser: Parser = {
 
                         result.addAnnotation({
                             file: filePath,
-                            severity: 'error',
-                            title: testCase._attributes.name,
+                            severity: testCase.flaky ? 'warning' : 'error',
+                            title: testCase.flaky ? `(❗Flaky) ${testCase._attributes.name}` : testCase._attributes.name,
                             message: testCase.failure._attributes?.message || testCase.failure._text,
                             rawDetails: testCase.failure._text,
                             startLine: line,
