@@ -8,6 +8,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest --coverage",
+    "intTest": "jest --config=jest.it.config.js",
     "check": "npm run test && npm run lint",
     "build": "npm run compile && npm run package && npm run check"
   },

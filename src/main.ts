@@ -32,6 +32,7 @@ export default async function main() {
         }
         core.endGroup();
     }
+    all.sort();
 
     if (files.length > 0) {
         core.notice(`Processed ${files.length} files: ${summaryOf(all)}`);
