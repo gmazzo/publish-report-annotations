@@ -152,4 +152,9 @@ export class ParseResults {
         this.totals.others += results.totals.others;
     }
 
+    sort() {
+        this.tests.suites.sort((a, b) => a.name.localeCompare(b.name));
+        this.checks.checks.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
 }
