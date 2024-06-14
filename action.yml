@@ -15,8 +15,10 @@ inputs:
       **/build/test-results/**/*.xml
       **/build/reports/**/*.xml
   summary:
-    description: "The kind summary to display in the check: `detailed`, `totals` or `off`"
-    default: "detailed"
+    description: "The kind summary to generate (multiple values are allowed): `testCases`, `testsSuites`, `skipPassed`, `checks` or `off` (no summary at all)"
+    default: |
+      testsSuites
+      checks
     required: true
   filterChecks:
     description: "Report only check annotations coming from files that have been changed in the PR (tests won't be filtered)"

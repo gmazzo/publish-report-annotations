@@ -1,5 +1,5 @@
 import {ParseResults} from "./types";
-import config, {Config} from "./config";
+import config, {Config, SummaryMode} from "./config";
 
 function entry(params: { amount: number, icon?: string, type: string, simplified?: boolean, plural?: boolean, header?: boolean }) {
     if (!params.header && params.amount == 0) return '';
@@ -50,17 +50,16 @@ export function summaryOf(results: ParseResults, simplified = false) {
     return summary ? summary : `No issues found`;
 }
 
-function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: Config['summary']) {
-    const skipPassed = summaryMode == 'detailedWithoutPassed';
+function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: SummaryMode) {
     let flakyDisclaimer = false;
 
     // if skipping passed suites and all passed, we won't produce a table because is going to be empty
-    if (skipPassed && tests.totals.passed == tests.totals.count) return '';
+    if (summaryMode.tests.skipPassed && tests.totals.passed == tests.totals.count) return '';
 
-    let table = `|Test Suites|✅ ${tests.totals.passed} passed${skipPassed ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed} failed|⌛ took\n`;
+    let table = `|Test Suites|✅ ${tests.totals.passed} passed${summaryMode.tests.skipPassed ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed} failed|⌛ took\n`;
     table += `|:-|-|-|-|-\n`;
     for (const suite of tests.suites) {
-        if (!skipPassed || suite.count != suite.passed || suite.flaky) {
+        if (!summaryMode.tests.skipPassed || suite.count != suite.passed || suite.flaky) {
             if (suite.flaky) flakyDisclaimer = true;
 
             table += '|';
@@ -78,7 +77,7 @@ function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: Config['
             table += 's\n';
         }
     }
-    if (skipPassed) table += '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n';
+    if (summaryMode.tests.skipPassed) table += '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n';
     if (flakyDisclaimer) table += '[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)\n';
     return table;
 }
@@ -103,15 +102,15 @@ function summaryTableOfChecks(checks: ParseResults['checks']) {
 
 export function summaryTableOf(results: ParseResults, summaryMode: Config['summary'] = config.summary) {
     let content = '';
-    if (summaryMode != 'off') {
+    if (summaryMode) {
         if (results.tests.totals.count > 0) {
-            content += summaryMode == 'totals' ?
+            content += !summaryMode.tests.suites && !summaryMode.tests.cases ?
                 `Tests: ${summaryOfTests(results.tests.totals, false)}` :
                 summaryTableOfTests(results.tests, summaryMode);
         }
         if (results.checks.totals.count > 0) {
             if (content) content += '\n';
-            content += summaryMode == 'totals' ?
+            content += !summaryMode.checks ?
                 `Checks: ${summaryOfChecks(results.checks.totals, false)}` :
                 summaryTableOfChecks(results.checks);
         }

@@ -1,7 +1,7 @@
 import {ParseResults} from "./types";
 
 jest.mock('./config', () => ({
-    summary: 'detailed'
+    summary: {tests: {suites: true, cases: false, skipPassed: false}, checks: true}
 }));
 
 import {summaryOf, summaryTableOf} from "./summary";
@@ -166,7 +166,7 @@ describe("summaryTableOf", () => {
     });
 
     test("when summary is detailedWithoutPassed, returns the expected result", () => {
-        const summary = summaryTableOf(results, 'detailedWithoutPassed');
+        const summary = summaryTableOf(results, {tests: {suites: true, cases: false, skipPassed: true}, checks: true});
 
         expect(summary).toBe('|Test Suites|✅ 2 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
             '|:-|-|-|-|-\n' +
@@ -208,14 +208,14 @@ describe("summaryTableOf", () => {
     });
 
     test("when summary is totals, returns the expected result", () => {
-        const summary = summaryTableOf(results, 'totals');
+        const summary = summaryTableOf(results, {tests: {suites: false, cases: false, skipPassed: false}, checks: false});
 
         expect(summary).toBe('Tests: 4 tests: ✅ 2 passed, 🟡 1 skipped, ❌ 1 failed\n' +
             'Checks: 🛑 3 errors, ⚠️ 2 warnings, 💡 1 other');
     });
 
     test("when summary is off, returns an empty string", () => {
-        const summary = summaryTableOf(results, 'off');
+        const summary = summaryTableOf(results, false);
 
         expect(summary).toBe('');
     });

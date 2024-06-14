@@ -1,10 +1,15 @@
 import * as core from "@actions/core";
 
+export type SummaryMode = {
+    tests: { suites: boolean, cases: boolean, skipPassed: boolean };
+    checks: boolean;
+};
+
 export interface Config {
     githubToken: string;
     checkName: string;
     reports: string[];
-    summary: "detailed" | "detailedWithoutPassed" | "totals" | "off";
+    summary: SummaryMode | false;
     filterChecks: boolean;
     detectFlakyTests: boolean;
     warningsAsErrors: boolean;
@@ -20,18 +25,7 @@ export class ConfigImpl implements Config {
                 githubToken: core.getInput("token", {required: true}),
                 checkName: core.getInput("checkName"),
                 reports: core.getMultilineInput("reports", {required: true}),
-                summary: (() => {
-                    const value = core.getInput("summary", {required: true});
-
-                    switch (value) {
-                        case "detailed":
-                        case "detailedWithoutPassed":
-                        case "totals":
-                        case "off":
-                            return value;
-                    }
-                    throw new Error(`Invalid summary value: ${value}`);
-                })(),
+                summary: parseSummary(core.getInput("summary", {required: true})),
                 filterChecks: core.getBooleanInput("filterChecks"),
                 detectFlakyTests: core.getBooleanInput("detectFlakyTests"),
                 warningsAsErrors: core.getBooleanInput("warningsAsErrors"),
@@ -76,6 +70,65 @@ export class ConfigImpl implements Config {
 
 export default new ConfigImpl() as Config;
 
-export function createConfig(values: Partial<Config> = {}): Config {
-    return values as Config;
+function parseSummary(input: string): Config['summary'] {
+    const value = {tests: {suites: false, cases: false, skipPassed: false}, checks: false};
+
+    function printLegacyWarning() {
+        core.warning(`The summary flag '${input}' is deprecated and will be removed in a future version. Please use 'testSuites', 'testCases', 'skipPassed', 'checks' or 'off' instead.`);
+    }
+
+    // process legacy values
+    switch (input) {
+        case "detailed":
+            printLegacyWarning();
+            value.tests.suites = true;
+            value.checks = true;
+            return value;
+
+        case "detailedWithoutPassed":
+            printLegacyWarning();
+            value.tests.suites = true;
+            value.tests.skipPassed = true;
+            value.checks = true;
+            return value;
+
+        case "totals":
+            printLegacyWarning();
+            value.checks = true;
+            return value;
+    }
+
+    const flags = input.split(/[\s+,|]/);
+    for (const flag of flags) {
+        switch (flag) {
+            case "testSuites":
+                value.tests.suites = true;
+                break;
+
+            case "testCases":
+                value.tests.cases = true;
+                break;
+
+            case "skipPassed":
+                value.tests.skipPassed = true;
+                break;
+
+            case "checks":
+                value.checks = true;
+                break;
+
+            case "off":
+                if (flags.length > 1) {
+                    throw new Error(`Invalid summary flag: 'off' can not be combined with other values`);
+                }
+                return false;
+
+            default:
+                throw new Error(`Invalid summary flag: '${flag}'`);
+        }
+    }
+    if (value.tests.skipPassed && !(value.tests.suites || value.tests.cases)) {
+        throw new Error(`Invalid summary flag: 'skipPassed' can only be used with 'testSuites' or 'testCases'`);
+    }
+    return value;
 }
