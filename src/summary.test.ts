@@ -131,15 +131,45 @@ describe("summaryTableOf", () => {
     const results = new ParseResults({
         tests: {
             suites: [
-                {name: "suite1", count: 5, passed: 2, skipped: 1, failed: 1, took: 4},
-                {name: "suite2", count: 2, passed: 2, skipped: 0, failed: 0, took: 2},
-                {name: "suite3", count: 2, passed: 2, skipped: 0, failed: 0, took: 2, flaky: 1}
+                {
+                    name: "suite1", passed: 3, skipped: 1, failed: 1, took: 4, cases: [
+                        {name: 'test1', className: 'class1', outcome: 'passed'},
+                        {name: 'test2', className: 'class2', outcome: 'passed'},
+                        {name: 'test3', className: 'class3', outcome: 'passed'},
+                        {name: 'test4', className: 'class4', outcome: 'failed'},
+                        {name: 'test5', className: 'class5', outcome: 'skipped'},
+                    ]
+                },
+                {
+                    name: "suite2", passed: 2, skipped: 0, failed: 0, took: 2, cases: [
+                        {name: 'test1', className: 'class1', outcome: 'passed'},
+                        {name: 'test2', className: 'class2', outcome: 'passed'},
+                    ]
+                },
+                {
+                    name: "suite3", passed: 2, skipped: 0, failed: 0, took: 2, flaky: 1, cases: [
+                        {name: 'test1', className: 'class1', outcome: 'passed'},
+                        {name: 'test2', className: 'class2', outcome: 'passed'},
+                    ]
+                }
             ], totals: {count: 4, passed: 2, skipped: 1, failed: 1}
         },
         checks: {
             checks: [
-                {name: "suite1", errors: 3, warnings: 1, others: 2, issues: { 'check1': { severity: 'warning', count: 1 }, 'check2': { severity: 'error', count: 2 } }},
-                {name: "suite2", errors: 7, warnings: 3, others: 4, issues: { 'check2': { severity: 'warning', count: 3 } }},
+                {
+                    name: "suite1",
+                    errors: 3,
+                    warnings: 1,
+                    others: 2,
+                    issues: {'check1': {severity: 'warning', count: 1}, 'check2': {severity: 'error', count: 2}}
+                },
+                {
+                    name: "suite2",
+                    errors: 7,
+                    warnings: 3,
+                    others: 4,
+                    issues: {'check2': {severity: 'warning', count: 3}}
+                },
             ], totals: {count: 6, errors: 3, warnings: 2, others: 1}
         }
     });
@@ -149,7 +179,7 @@ describe("summaryTableOf", () => {
 
         expect(summary).toBe('|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
             '|:-|-|-|-|-\n' +
-            '|❌ suite1|2|1|1|4s\n' +
+            '|❌ suite1|3|1|1|4s\n' +
             '|✅ suite2|2|0|0|2s\n' +
             '|❎❗suite3 [^flakyDisclaimer]|2|0|0|2s\n' +
             '[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)\n' +
@@ -170,7 +200,7 @@ describe("summaryTableOf", () => {
 
         expect(summary).toBe('|Test Suites|✅ 2 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
             '|:-|-|-|-|-\n' +
-            '|❌ suite1|2|1|1|4s\n' +
+            '|❌ suite1|3|1|1|4s\n' +
             '|❎❗suite3 [^flakyDisclaimer]|2|0|0|2s\n' +
             '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n' +
             '[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)\n' +
@@ -190,8 +220,20 @@ describe("summaryTableOf", () => {
         const summary = summaryTableOf(new ParseResults({
             checks: {
                 checks: [
-                    {name: "suite1", errors: 0, warnings: 1, others: 0, issues: { check1: { severity: 'warning', count: 1 } }},
-                    {name: "suite2", errors: 0, warnings: 5, others: 0, issues: { check2: { severity: 'warning', count: 2 }, check3: { severity: 'warning', count: 3 }, }},
+                    {
+                        name: "suite1",
+                        errors: 0,
+                        warnings: 1,
+                        others: 0,
+                        issues: {check1: {severity: 'warning', count: 1}}
+                    },
+                    {
+                        name: "suite2",
+                        errors: 0,
+                        warnings: 5,
+                        others: 0,
+                        issues: {check2: {severity: 'warning', count: 2}, check3: {severity: 'warning', count: 3},}
+                    },
                 ], totals: {count: 6, errors: 0, warnings: 6, others: 0}
             }
         }));
@@ -208,7 +250,10 @@ describe("summaryTableOf", () => {
     });
 
     test("when summary is totals, returns the expected result", () => {
-        const summary = summaryTableOf(results, {tests: {suites: false, cases: false, skipPassed: false}, checks: false});
+        const summary = summaryTableOf(results, {
+            tests: {suites: false, cases: false, skipPassed: false},
+            checks: false
+        });
 
         expect(summary).toBe('Tests: 4 tests: ✅ 2 passed, 🟡 1 skipped, ❌ 1 failed\n' +
             'Checks: 🛑 3 errors, ⚠️ 2 warnings, 💡 1 other');

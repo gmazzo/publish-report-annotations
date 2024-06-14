@@ -59,7 +59,7 @@ function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: SummaryM
     let table = `|Test Suites|✅ ${tests.totals.passed} passed${summaryMode.tests.skipPassed ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed} failed|⌛ took\n`;
     table += `|:-|-|-|-|-\n`;
     for (const suite of tests.suites) {
-        if (!summaryMode.tests.skipPassed || suite.count != suite.passed || suite.flaky) {
+        if (!summaryMode.tests.skipPassed || suite.cases.length != suite.passed || suite.flaky) {
             if (suite.flaky) flakyDisclaimer = true;
 
             table += '|';

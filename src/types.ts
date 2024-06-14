@@ -8,14 +8,22 @@ export type Annotation = {
     rawDetails?: string
 } & AnnotationProperties;
 
+export type TestCase = {
+    name: string
+    className: string
+    took?: number
+    outcome: 'passed' | 'failed' | 'skipped' | 'flaky'
+    retries?: number
+};
+
 export type TestSuite = {
     name: string
     took?: number
-    count: number
     passed: number
     failed: number
     skipped: number
     flaky?: number
+    cases: TestCase[]
 };
 
 export type TestResult = {
@@ -81,7 +89,7 @@ export class ParseResults {
 
     addTestSuite(suite: TestSuite) {
         this.tests.suites.push(suite);
-        this.tests.totals.count += suite.count;
+        this.tests.totals.count += suite.cases.length;
         this.tests.totals.passed += suite.passed;
         this.tests.totals.failed += suite.failed;
         this.tests.totals.skipped += suite.skipped;
