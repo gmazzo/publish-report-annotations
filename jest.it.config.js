@@ -1,5 +1,10 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
+const base  = require('./jest.config')
+
+base.reporters.find(it => it[0] === 'jest-junit')[1].outputFile = 'lib/jest-it-junit.xml'
+
 module.exports = {
-    ...require('./jest.config'),
+    ...base,
     testMatch: ['**/*.it.test.ts'],
+    reporters: base.reporters.map(it => it[0] === 'jest-junit' ? ['jest-junit', { outputFile: 'lib/jest-it-junit.xml' }] : it)
 };

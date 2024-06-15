@@ -179,9 +179,9 @@ describe("summaryTableOf", () => {
 
         expect(summary).toBe(`|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took
 |:-|-|-|-|-
-|❌ suite1|3|1|1|4s
-|✅ suite2|2|0|0|2s
-|❎❗suite3 [^flakyDisclaimer]|2|0|0|2s
+|❌ suite1|3|1|1|4
+|✅ suite2|2|0|0|2
+|❎❗suite3 [^flakyDisclaimer]|2|0|0|2
 [^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 
 |suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|
@@ -201,9 +201,9 @@ describe("summaryTableOf", () => {
 
         expect(summary).toBe(`|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took
 |:-|-|-|-|-
-|<details><summary>❌ suite1</summary><ul><li>✅ test1</li><li>✅ test2</li><li>✅ test3</li><li>❌ test4</li><li>🟡 test5</li></ul></details>|3|1|1|4s
-|<details><summary>✅ suite2</summary><ul><li>✅ test1</li><li>✅ test2</li></ul></details>|2|0|0|2s
-|<details><summary>❎❗suite3 [^flakyDisclaimer]</summary><ul><li>✅ test1</li><li>✅ test2</li></ul></details>|2|0|0|2s
+|<details><summary>❌ suite1</summary><ul><li>✅ test1</li><li>✅ test2</li><li>✅ test3</li><li>❌ test4</li><li>🟡 test5</li></ul></details>|3|1|1|4
+|<details><summary>✅ suite2</summary><ul><li>✅ test1</li><li>✅ test2</li></ul></details>|2|0|0|2
+|<details><summary>❎❗suite3 [^flakyDisclaimer]</summary><ul><li>✅ test1</li><li>✅ test2</li></ul></details>|2|0|0|2
 [^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 
 |suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|
@@ -223,8 +223,8 @@ describe("summaryTableOf", () => {
 
         expect(summary).toBe(`|Test Suites|✅ 2 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 1 failed|⌛ took
 |:-|-|-|-|-
-|❌ suite1|3|1|1|4s
-|❎❗suite3 [^flakyDisclaimer]|2|0|0|2s
+|❌ suite1|3|1|1|4
+|❎❗suite3 [^flakyDisclaimer]|2|0|0|2
 [^passedSkipDisclaimer]: ✅ passed suites were not reported
 [^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 

@@ -62,15 +62,15 @@ describe("junitParser", () => {
                             },
                             {
                                 className: "org.test.sample.SampleTestSuite",
-                                name: "a test that passes()",
-                                outcome: "passed",
-                                took: 0.001,
-                            },
-                            {
-                                className: "org.test.sample.SampleTestSuite",
                                 name: "a test that fails()",
                                 outcome: "failed",
                                 took: 0.002,
+                            },
+                            {
+                                className: "org.test.sample.SampleTestSuite",
+                                name: "a test that passes()",
+                                outcome: "passed",
+                                took: 0.001,
                             },
                             {
                                 className: "org.test.sample.SampleTestSuite",
@@ -373,12 +373,6 @@ describe("junitParser", () => {
                     {
                         cases: [
                             {
-                                className: "asArray when single element, returns it as an array",
-                                name: "asArray when single element, returns it as an array",
-                                outcome: "passed",
-                                took: 0.003
-                            },
-                            {
                                 className: "asArray when multiple elements, returns the same",
                                 name: "asArray when multiple elements, returns the same",
                                 outcome: "passed",
@@ -389,7 +383,14 @@ describe("junitParser", () => {
                                 name: "asArray when not a value, returns an empty array",
                                 outcome: "passed",
                                 took: 0.001
-                            }
+                            },
+                            {
+                                className: "asArray when single element, returns it as an array",
+                                name: "asArray when single element, returns it as an array",
+                                outcome: "passed",
+                                took: 0.003
+                            },
+
                         ],
                         failed: 0,
                         name: "asArray",
@@ -457,10 +458,10 @@ describe("junitParser", () => {
                     {
                         cases: [
                             {
-                                className: "junitParser given junit xml should obtain annotations",
-                                name: "junitParser given junit xml should obtain annotations",
-                                outcome: "passed",
-                                took: 0.007
+                                className: "junitParser given a jest junit xml should obtain annotations",
+                                name: "junitParser given a jest junit xml should obtain annotations",
+                                outcome: "failed",
+                                took: 0.002
                             },
                             {
                                 className: "junitParser given another junit xml should obtain annotations",
@@ -469,11 +470,11 @@ describe("junitParser", () => {
                                 took: 0.001
                             },
                             {
-                                className: "junitParser given a jest junit xml should obtain annotations",
-                                name: "junitParser given a jest junit xml should obtain annotations",
-                                outcome: "failed",
-                                took: 0.002
-                            }
+                                className: "junitParser given junit xml should obtain annotations",
+                                name: "junitParser given junit xml should obtain annotations",
+                                outcome: "passed",
+                                took: 0.007
+                            },
                         ],
                         failed: 1,
                         name: "junitParser",
@@ -514,22 +515,22 @@ describe("junitParser", () => {
                     {
                         cases: [
                             {
-                                className: "resolveFile when is absolute path, just returns itself",
-                                name: "resolveFile when is absolute path, just returns itself",
-                                outcome: "passed",
-                                took: 0.002
-                            },
-                            {
                                 className: "resolveFile when file exists, just returns itself",
                                 name: "resolveFile when file exists, just returns itself",
                                 outcome: "passed",
                                 took: 0
                             },
                             {
-                                className: "resolveFile when looking for a file, it returns a match",
-                                name: "resolveFile when looking for a file, it returns a match",
+                                className: "resolveFile when is absolute path, just returns itself",
+                                name: "resolveFile when is absolute path, just returns itself",
                                 outcome: "passed",
-                                took: 1.031
+                                took: 0.002
+                            },
+                            {
+                                className: "resolveFile when looking for a file but extension does not matches, it returns the same",
+                                name: "resolveFile when looking for a file but extension does not matches, it returns the same",
+                                outcome: "passed",
+                                took: 0.568
                             },
                             {
                                 className: "resolveFile when looking for a file with possible extensions, it returns a match",
@@ -538,11 +539,11 @@ describe("junitParser", () => {
                                 took: 0.617
                             },
                             {
-                                className: "resolveFile when looking for a file but extension does not matches, it returns the same",
-                                name: "resolveFile when looking for a file but extension does not matches, it returns the same",
+                                className: "resolveFile when looking for a file, it returns a match",
+                                name: "resolveFile when looking for a file, it returns a match",
                                 outcome: "passed",
-                                took: 0.568
-                            }
+                                took: 1.031
+                            },
                         ],
                         failed: 0,
                         name: "resolveFile",

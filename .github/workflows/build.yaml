@@ -25,13 +25,6 @@ jobs:
         uses: ./.github/actions/setup-host
       - name: Build
         run: npm run build
-      - name: Test Reports (default)
-        uses: ./.
-        if: always()
-        with:
-          reports: |
-            lib/*-junit.xml
-            samples/
       - name: Report to Check
         uses: ./.
         if: always()
@@ -75,28 +68,15 @@ jobs:
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-
-  integration-test:
-    name: Integration Tests
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup host
-        uses: ./.github/actions/setup-host
       - name: Run integrations tests
         env:
           GITHUB_TOKEN: ${{ github.token }}
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
         run: npm run intTest
-      - name: Compile action
-        run: npm run compile
       - name: Report to PR
         uses: ./.
         if: always()
         with:
-          reports: lib/*-junit.xml
+          reports: |
+            lib/*-junit.xml
+            samples/

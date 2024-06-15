@@ -142,6 +142,8 @@ export const junitParser: Parser = {
                         ...testCase.retries !== undefined  ? {retries: testCase.retries} : {},
                     });
                 }
+
+                cases.sort((a, b) => a.className.localeCompare(b.className) || a.name.localeCompare(b.name));
                 result.addTestSuite({
                     name: testSuite._attributes.name,
                     took: testSuite._attributes.time,
