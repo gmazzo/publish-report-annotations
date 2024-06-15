@@ -45,7 +45,7 @@ jobs:
         uses: ./.
         if: always()
         with:
-          checkName: "Test Reports (Omitting Passed)"
+          checkName: "Test Reports (omitting passed)"
           reports: |
             lib/*-junit.xml
             samples/
@@ -55,7 +55,7 @@ jobs:
         uses: ./.
         if: always()
         with:
-          checkName: "Test Reports (Computing Flaky)"
+          checkName: "Test Reports (computing flaky)"
           reports: |
             lib/*-junit.xml
             samples/
