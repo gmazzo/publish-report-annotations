@@ -14,10 +14,22 @@ inputs:
     default: |
       **/build/test-results/**/*.xml
       **/build/reports/**/*.xml
-  summary:
+  summary: # TODO: remove this input in the future
+    deprecationMessage: 'Use `testsSummary` and `checksSummary` instead'
     description: "The kind summary to display in the check: `detailed`, `totals` or `off`"
-    default: "detailed"
+    required: false
+  testsSummary:
+    description: "The kind summary to report for the tests found: `full`, `suitesOnly` (default), `totals` or `off`"
     required: true
+    default: "suitesOnly"
+  checksSummary:
+    description: "The kind summary to report for the checks found: `full` (default), `totals`, `off`"
+    required: true
+    default: "full"
+  filterPassedTests:
+    description: "tests (suites and cases) that has passed from reporting into the summary"
+    required: true
+    default: "false"
   filterChecks:
     description: "Report only check annotations coming from files that have been changed in the PR (tests won't be filtered)"
     required: false

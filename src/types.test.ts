@@ -4,8 +4,21 @@ const junitResult1 = (() => {
     const result = new ParseResults();
     result.addAnnotation({severity: "error", message: "junit failure 1"});
     result.addAnnotation({severity: "warning", message: "junit failure 2"});
-    result.addTestSuite({name: "test1", count: 2, passed: 0, failed: 0, skipped: 0});
-    result.addTestSuite({name: "test2", count: 6, passed: 3, failed: 1, skipped: 1});
+    result.addTestSuite({
+        name: "suite1", passed: 2, failed: 0, skipped: 0, cases: [
+            {name: 'test1', className: 'class1', outcome: 'passed'},
+            {name: 'test2', className: 'class2', outcome: 'passed'},
+        ]
+    });
+    result.addTestSuite({
+        name: "suite2", passed: 3, failed: 1, skipped: 1, cases: [
+            {name: 'test1', className: 'class1', outcome: 'passed'},
+            {name: 'test2', className: 'class2', outcome: 'passed'},
+            {name: 'test3', className: 'class3', outcome: 'passed'},
+            {name: 'test4', className: 'class4', outcome: 'failed'},
+            {name: 'test5', className: 'class5', outcome: 'skipped'},
+        ]
+    });
     return result;
 })();
 
@@ -14,19 +27,17 @@ const junitResult2 = (() => {
     result.addAnnotation({severity: "other", message: "junit skip 1"});
     result.addAnnotation({severity: "other", message: "junit skip 2"});
     result.addTestSuite({
-        name: "test3",
-        count: 2,
-        passed: 0,
-        failed: 0,
-        skipped: 2
+        name: "suite3", passed: 0, failed: 0, skipped: 2, cases: [
+            {name: 'test1', className: 'class1', outcome: 'skipped'},
+            {name: 'test2', className: 'class2', outcome: 'skipped'},
+        ]
     });
     result.addTestSuite({
-        name: "test4",
-        count: 3,
-        passed: 0,
-        failed: 0,
-        skipped: 3,
-        flaky: 1,
+        name: "suite4", passed: 0, failed: 0, skipped: 2, flaky: 1, cases: [
+            {name: 'test1', className: 'class1', outcome: 'skipped'},
+            {name: 'test2', className: 'class2', outcome: 'skipped'},
+            {name: 'test3', className: 'class3', outcome: 'flaky'},
+        ]
     });
     return result;
 })();
@@ -137,29 +148,40 @@ describe("ParseResults", () => {
             },
             tests: {
                 suites: [
-                    {count: 2, failed: 0, name: "test1", passed: 0, skipped: 0},
-                    {count: 6, failed: 1, name: "test2", passed: 3, skipped: 1},
                     {
-                        count: 2,
-                        failed: 0,
-                        name: "test3",
-                        passed: 0,
-                        skipped: 2
+                        failed: 0, name: "suite1", passed: 2, skipped: 0, cases: [
+                            {name: 'test1', className: 'class1', outcome: 'passed'},
+                            {name: 'test2', className: 'class2', outcome: 'passed'},
+                        ]
                     },
                     {
-                        count: 3,
-                        failed: 0,
-                        name: "test4",
-                        passed: 0,
-                        skipped: 3,
-                        flaky: 1
+                        failed: 1, name: "suite2", passed: 3, skipped: 1, cases: [
+                            {name: 'test1', className: 'class1', outcome: 'passed'},
+                            {name: 'test2', className: 'class2', outcome: 'passed'},
+                            {name: 'test3', className: 'class3', outcome: 'passed'},
+                            {name: 'test4', className: 'class4', outcome: 'failed'},
+                            {name: 'test5', className: 'class5', outcome: 'skipped'},
+                        ]
+                    },
+                    {
+                        failed: 0, name: "suite3", passed: 0, skipped: 2, cases: [
+                            {name: 'test1', className: 'class1', outcome: 'skipped'},
+                            {name: 'test2', className: 'class2', outcome: 'skipped'},
+                        ]
+                    },
+                    {
+                        failed: 0, name: "suite4", passed: 0, skipped: 2, flaky: 1, cases: [
+                            {name: 'test1', className: 'class1', outcome: 'skipped'},
+                            {name: 'test2', className: 'class2', outcome: 'skipped'},
+                            {name: 'test3', className: 'class3', outcome: 'flaky'},
+                        ]
                     }
                 ],
                 totals: {
-                    count: 13,
+                    count: 12,
                     failed: 1,
-                    passed: 3,
-                    skipped: 6,
+                    passed: 5,
+                    skipped: 5,
                     flaky: 1
                 }
             },

@@ -48,14 +48,39 @@ describe("publishCheck", () => {
         await publishCheck(new ParseResults({
             tests: {
                 suites: [
-                    {name: "suite1", count: 5, passed: 2, skipped: 1, failed: 1},
-                    {name: "suite2", count: 2, passed: 2, skipped: 0, failed: 0}
+                    {
+                        name: "suite1", passed: 3, skipped: 1, failed: 1, cases: [
+                            {name: 'test1', className: 'class1', outcome: 'passed'},
+                            {name: 'test2', className: 'class2', outcome: 'passed'},
+                            {name: 'test3', className: 'class3', outcome: 'passed'},
+                            {name: 'test4', className: 'class4', outcome: 'failed'},
+                            {name: 'test5', className: 'class5', outcome: 'skipped'},
+                        ]
+                    },
+                    {
+                        name: "suite2", passed: 2, skipped: 0, failed: 0, cases: [
+                            {name: 'test1', className: 'class1', outcome: 'passed'},
+                            {name: 'test2', className: 'class2', outcome: 'passed'},
+                        ]
+                    }
                 ], totals: {count: 4, passed: 2, skipped: 1, failed: 1}
             },
             checks: {
                 checks: [
-                    {name: "check1", errors: 3, warnings: 1, others: 2, issues: { 'check1': { severity: 'warning', count: 1 } }},
-                    {name: "check2", errors: 7, warnings: 3, others: 4, issues: { 'check2': { severity: 'warning', count: 3 } }},
+                    {
+                        name: "check1",
+                        errors: 3,
+                        warnings: 1,
+                        others: 2,
+                        issues: {'check1': {severity: 'warning', count: 1}}
+                    },
+                    {
+                        name: "check2",
+                        errors: 7,
+                        warnings: 3,
+                        others: 4,
+                        issues: {'check2': {severity: 'warning', count: 3}}
+                    },
                 ], totals: {count: 6, errors: 3, warnings: 2, others: 1}
             },
             totals: {errors: 10, warnings: 4, others: 6},

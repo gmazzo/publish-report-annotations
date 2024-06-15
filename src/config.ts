@@ -4,7 +4,9 @@ export interface Config {
     githubToken: string;
     checkName: string;
     reports: string[];
-    summary: "detailed" | "detailedWithoutPassed" | "totals" | "off";
+    testsSummary: 'full' | 'suitesOnly' | 'totals' | 'off';
+    checksSummary: 'full' | 'totals' | 'off';
+    filterPassedTests: boolean;
     filterChecks: boolean;
     detectFlakyTests: boolean;
     warningsAsErrors: boolean;
@@ -16,22 +18,15 @@ export class ConfigImpl implements Config {
 
     resolve() {
         if (!this.values) {
+            const legacySummary = parseLegacySummary();
+
             this.values = {
                 githubToken: core.getInput("token", {required: true}),
                 checkName: core.getInput("checkName"),
                 reports: core.getMultilineInput("reports", {required: true}),
-                summary: (() => {
-                    const value = core.getInput("summary", {required: true});
-
-                    switch (value) {
-                        case "detailed":
-                        case "detailedWithoutPassed":
-                        case "totals":
-                        case "off":
-                            return value;
-                    }
-                    throw new Error(`Invalid summary value: ${value}`);
-                })(),
+                testsSummary: legacySummary?.testsSummary || getEnum("testsSummary", {full: null, suitesOnly: null, totals: null, off: null}),
+                checksSummary: legacySummary?.checksSummary || getEnum("checksSummary", {full: null, totals: null, off: null}),
+                filterPassedTests: legacySummary?.filterPassedTests || core.getBooleanInput("filterPassedTests"),
                 filterChecks: core.getBooleanInput("filterChecks"),
                 detectFlakyTests: core.getBooleanInput("detectFlakyTests"),
                 warningsAsErrors: core.getBooleanInput("warningsAsErrors"),
@@ -53,8 +48,16 @@ export class ConfigImpl implements Config {
         return this.resolve().reports;
     }
 
-    get summary() {
-        return this.resolve().summary;
+    get testsSummary() {
+        return this.resolve().testsSummary;
+    }
+
+    get checksSummary() {
+        return this.resolve().checksSummary;
+    }
+
+    get filterPassedTests() {
+        return this.resolve().filterPassedTests;
     }
 
     get filterChecks() {
@@ -76,6 +79,31 @@ export class ConfigImpl implements Config {
 
 export default new ConfigImpl() as Config;
 
-export function createConfig(values: Partial<Config> = {}): Config {
-    return values as Config;
+function getEnum<Enum extends object>(name: string, allowedValues: Enum) {
+    const input = core.getInput(name, {required: true});
+    if (!Object.keys(allowedValues).includes(input)) {
+        throw new Error(`Invalid value for '${name}': ${input}`);
+    }
+    return input as keyof Enum;
+}
+
+// TODO: remove this function in the future
+function parseLegacySummary(): { testsSummary: 'suitesOnly' | 'totals' | 'off', checksSummary: 'full' | 'totals' | 'off', filterPassedTests?: boolean } | undefined {
+    const summary = core.getInput("summary");
+    if (summary) {
+        switch (summary) {
+            case "detailed":
+                return {testsSummary: "suitesOnly", checksSummary: "full"};
+
+            case "detailedWithoutPassed":
+                return {testsSummary: "suitesOnly", checksSummary: "full", filterPassedTests: true};
+
+            case "totals":
+                return {testsSummary: "totals", checksSummary: "totals"};
+
+            case "off":
+                return {testsSummary: "off", checksSummary: "off"};
+        }
+        throw new Error(`Invalid value for 'summary': ${summary}`);
+    }
 }
