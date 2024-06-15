@@ -100,7 +100,7 @@ function summaryTableOfTests(
                         break;
                 }
                 table += test.name;
-                if (test.took) {
+                if (test.took !== undefined) {
                     table += ` (⌛ ${test.took})`;
                 }
                 table += '</li>';
@@ -114,7 +114,9 @@ function summaryTableOfTests(
         table += '|';
         table += suite.failed;
         table += '|';
-        table += suite.took;
+        if (suite.took !== undefined) {
+            table += suite.took;
+        }
         table += '\n';
     }
     if (filterPassedTests) table += '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n';
