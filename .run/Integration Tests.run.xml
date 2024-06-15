@@ -5,8 +5,8 @@
     <jest-package value="$PROJECT_DIR$/node_modules/jest" />
     <working-dir value="$PROJECT_DIR$" />
     <envs>
+      <env name="COMMIT_SHA" value="b2c8fd6" />
       <env name="GITHUB_REPOSITORY" value="gmazzo/publish-report-annotations" />
-      <env name="COMMIT_SHA" value="7026356becb78809fe531b5bef0240f0437f7b01" />
     </envs>
     <scope-kind value="ALL" />
     <method v="2" />

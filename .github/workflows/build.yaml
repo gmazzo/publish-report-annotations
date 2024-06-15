@@ -25,7 +25,7 @@ jobs:
         uses: ./.github/actions/setup-host
       - name: Build
         run: npm run build
-      - name: Report to PR
+      - name: Test Reports (default)
         uses: ./.
         if: always()
         with:
@@ -36,7 +36,7 @@ jobs:
         uses: ./.
         if: always()
         with:
-          checkName: "Test Reports"
+          checkName: "Test Reports (full)"
           reports: |
             lib/*-junit.xml
             samples/
@@ -49,6 +49,7 @@ jobs:
           reports: |
             lib/*-junit.xml
             samples/
+          testsSummary: full
           filterPassedTests: true
       - name: Report to Check (Computing Flaky)
         uses: ./.
@@ -58,6 +59,7 @@ jobs:
           reports: |
             lib/*-junit.xml
             samples/
+          testsSummary: full
           detectFlakyTests: true
       - name: Report to Check (PR filtered)
         uses: ./.

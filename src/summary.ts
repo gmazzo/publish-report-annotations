@@ -59,7 +59,7 @@ export function summaryOf(results: ParseResults, simplified = false) {
 
 function summaryTableOfTests(
     tests: ParseResults['tests'],
-    suitesOnly: boolean,
+    includeTests: boolean,
     filterPassedTests: boolean,
 ) {
     let flakyDisclaimer = false;
@@ -70,23 +70,52 @@ function summaryTableOfTests(
     let table = `|Test Suites|✅ ${tests.totals.passed} passed${filterPassedTests ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed} failed|⌛ took\n`;
     table += `|:-|-|-|-|-\n`;
     for (const suite of tests.suites) {
-        if (!filterPassedTests || suite.cases.length != suite.passed || suite.flaky) {
-            if (suite.flaky) flakyDisclaimer = true;
+        if (filterPassedTests && suite.passed == suite.cases.length && !suite.flaky) continue;
 
-            table += '|';
-            table += suite.failed > 0 ? '❌ ' : suite.skipped > 0 ? '🟡 ' : suite.flaky ? '❎❗' : '✅ ';
-            table += suite.name;
-            if (suite.flaky) table += ' [^flakyDisclaimer]';
-            table += '|';
-            table += suite.passed;
-            table += '|';
-            table += suite.skipped;
-            table += '|';
-            table += suite.failed;
-            table += '|';
-            table += suite.took;
-            table += 's\n';
+        if (suite.flaky) flakyDisclaimer = true;
+
+        table += '|';
+        if (includeTests) table += '<details><summary>';
+        table += suite.failed > 0 ? '❌ ' : suite.skipped > 0 ? '🟡 ' : suite.flaky ? '❎❗' : '✅ ';
+        table += suite.name;
+        if (suite.flaky) table += ' [^flakyDisclaimer]';
+        if (includeTests) {
+            table += '</summary><ul>';
+            for (const test of suite.cases) {
+                if (filterPassedTests && test.outcome == 'passed') continue;
+
+                table += `<li>`;
+                switch (test.outcome) {
+                    case 'failed':
+                        table += '❌ ';
+                        break;
+                    case 'skipped':
+                        table += '🟡 ';
+                        break;
+                    case 'passed':
+                        table += '✅ ';
+                        break;
+                    case 'flaky':
+                        table += '❎❗[^flakyDisclaimer]';
+                        break;
+                }
+                table += test.name;
+                if (test.took) {
+                    table += ` (⌛ ${test.took})`;
+                }
+                table += '</li>';
+            }
+            table += '</ul></details>';
         }
+        table += '|';
+        table += suite.passed;
+        table += '|';
+        table += suite.skipped;
+        table += '|';
+        table += suite.failed;
+        table += '|';
+        table += suite.took;
+        table += 's\n';
     }
     if (filterPassedTests) table += '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n';
     if (flakyDisclaimer) table += '[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)\n';
@@ -121,7 +150,7 @@ export function summaryTableOf(
     if (testsSummary != 'off' && results.tests.totals.count > 0) {
         content += testsSummary == 'totals' ?
             `Tests: ${summaryOfTests(results.tests.totals, false)}` :
-            summaryTableOfTests(results.tests, testsSummary == 'suitesOnly', filterPassedTests);
+            summaryTableOfTests(results.tests, testsSummary == 'full', filterPassedTests);
     }
     if (checksSummary != 'off' && results.checks.totals.count > 0) {
         if (content) content += '\n';

@@ -177,43 +177,67 @@ describe("summaryTableOf", () => {
     test("when summary is suites only (default), returns the expected result", () => {
         const summary = summaryTableOf(results);
 
-        expect(summary).toBe('|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
-            '|:-|-|-|-|-\n' +
-            '|❌ suite1|3|1|1|4s\n' +
-            '|✅ suite2|2|0|0|2s\n' +
-            '|❎❗suite3 [^flakyDisclaimer]|2|0|0|2s\n' +
-            '[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)\n' +
-            '\n' +
-            '|suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|\n' +
-            '|:-|-|-|-|\n' +
-            '|check1|0|1|0|\n' +
-            '|check2|2|0|0|\n' +
-            '\n' +
-            '|suite2|🛑 7 errors|⚠️ 3 warnings|💡 4 others|\n' +
-            '|:-|-|-|-|\n' +
-            '|check2|0|3|0|\n' +
-            '\n');
+        expect(summary).toBe(`|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took
+|:-|-|-|-|-
+|❌ suite1|3|1|1|4s
+|✅ suite2|2|0|0|2s
+|❎❗suite3 [^flakyDisclaimer]|2|0|0|2s
+[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
+
+|suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|
+|:-|-|-|-|
+|check1|0|1|0|
+|check2|2|0|0|
+
+|suite2|🛑 7 errors|⚠️ 3 warnings|💡 4 others|
+|:-|-|-|-|
+|check2|0|3|0|
+
+`);
+    });
+
+    test("when summary is full, returns the expected result", () => {
+        const summary = summaryTableOf(results, 'full');
+
+        expect(summary).toBe(`|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took
+|:-|-|-|-|-
+|<details><summary>❌ suite1</summary><ul><li>✅ test1</li><li>✅ test2</li><li>✅ test3</li><li>❌ test4</li><li>🟡 test5</li></ul></details>|3|1|1|4s
+|<details><summary>✅ suite2</summary><ul><li>✅ test1</li><li>✅ test2</li></ul></details>|2|0|0|2s
+|<details><summary>❎❗suite3 [^flakyDisclaimer]</summary><ul><li>✅ test1</li><li>✅ test2</li></ul></details>|2|0|0|2s
+[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
+
+|suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|
+|:-|-|-|-|
+|check1|0|1|0|
+|check2|2|0|0|
+
+|suite2|🛑 7 errors|⚠️ 3 warnings|💡 4 others|
+|:-|-|-|-|
+|check2|0|3|0|
+
+`);
     });
 
     test("when summary is without passed, returns the expected result", () => {
         const summary = summaryTableOf(results, 'suitesOnly', 'full', true);
 
-        expect(summary).toBe('|Test Suites|✅ 2 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 1 failed|⌛ took\n' +
-            '|:-|-|-|-|-\n' +
-            '|❌ suite1|3|1|1|4s\n' +
-            '|❎❗suite3 [^flakyDisclaimer]|2|0|0|2s\n' +
-            '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n' +
-            '[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)\n' +
-            '\n' +
-            '|suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|\n' +
-            '|:-|-|-|-|\n' +
-            '|check1|0|1|0|\n' +
-            '|check2|2|0|0|\n' +
-            '\n' +
-            '|suite2|🛑 7 errors|⚠️ 3 warnings|💡 4 others|\n' +
-            '|:-|-|-|-|\n' +
-            '|check2|0|3|0|\n' +
-            '\n');
+        expect(summary).toBe(`|Test Suites|✅ 2 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 1 failed|⌛ took
+|:-|-|-|-|-
+|❌ suite1|3|1|1|4s
+|❎❗suite3 [^flakyDisclaimer]|2|0|0|2s
+[^passedSkipDisclaimer]: ✅ passed suites were not reported
+[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
+
+|suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|
+|:-|-|-|-|
+|check1|0|1|0|
+|check2|2|0|0|
+
+|suite2|🛑 7 errors|⚠️ 3 warnings|💡 4 others|
+|:-|-|-|-|
+|check2|0|3|0|
+
+`);
     });
 
     test("when only warnings, returns the expected result", () => {
@@ -238,15 +262,16 @@ describe("summaryTableOf", () => {
             }
         }));
 
-        expect(summary).toBe('|suite1|🛑 0 errors|⚠️ 1 warning|💡 0 others|\n' +
-            '|:-|-|-|-|\n' +
-            '|check1|0|1|0|\n' +
-            '\n' +
-            '|suite2|🛑 0 errors|⚠️ 5 warnings|💡 0 others|\n' +
-            '|:-|-|-|-|\n' +
-            '|check2|0|2|0|\n' +
-            '|check3|0|3|0|\n' +
-            '\n');
+        expect(summary).toBe(`|suite1|🛑 0 errors|⚠️ 1 warning|💡 0 others|
+|:-|-|-|-|
+|check1|0|1|0|
+
+|suite2|🛑 0 errors|⚠️ 5 warnings|💡 0 others|
+|:-|-|-|-|
+|check2|0|2|0|
+|check3|0|3|0|
+
+`);
     });
 
     test("when summary is totals, returns the expected result", () => {
