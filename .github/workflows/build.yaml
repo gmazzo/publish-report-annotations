@@ -40,12 +40,21 @@ jobs:
           reports: |
             lib/*-junit.xml
             samples/
-          summary: detailedWithoutPassed
-      - name: Report to Check (Ignoring Flaky)
+          testsSummary: full
+      - name: Report to Check (Omit ✅ passed)
         uses: ./.
         if: always()
         with:
-          checkName: "Test Reports (Ignoring Flaky)"
+          checkName: "Test Reports (Omitting Passed)"
+          reports: |
+            lib/*-junit.xml
+            samples/
+          filterPassedTests: true
+      - name: Report to Check (Computing Flaky)
+        uses: ./.
+        if: always()
+        with:
+          checkName: "Test Reports (Computing Flaky)"
           reports: |
             lib/*-junit.xml
             samples/

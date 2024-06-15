@@ -1,7 +1,14 @@
 import {ParseResults} from "./types";
-import config, {Config, SummaryMode} from "./config";
+import config, {Config} from "./config";
 
-function entry(params: { amount: number, icon?: string, type: string, simplified?: boolean, plural?: boolean, header?: boolean }) {
+function entry(params: {
+    amount: number,
+    icon?: string,
+    type: string,
+    simplified?: boolean,
+    plural?: boolean,
+    header?: boolean
+}) {
     if (!params.header && params.amount == 0) return '';
     let entry = params.icon ? params.icon : '';
     entry += params.amount;
@@ -50,16 +57,20 @@ export function summaryOf(results: ParseResults, simplified = false) {
     return summary ? summary : `No issues found`;
 }
 
-function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: SummaryMode) {
+function summaryTableOfTests(
+    tests: ParseResults['tests'],
+    suitesOnly: boolean,
+    filterPassedTests: boolean,
+) {
     let flakyDisclaimer = false;
 
-    // if skipping passed suites and all passed, we won't produce a table because is going to be empty
-    if (summaryMode.tests.skipPassed && tests.totals.passed == tests.totals.count) return '';
+    // if skipping passed suites and all passed, we won't produce a table because it's going to be empty
+    if (filterPassedTests && tests.totals.passed == tests.totals.count) return '';
 
-    let table = `|Test Suites|✅ ${tests.totals.passed} passed${summaryMode.tests.skipPassed ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed} failed|⌛ took\n`;
+    let table = `|Test Suites|✅ ${tests.totals.passed} passed${filterPassedTests ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed} failed|⌛ took\n`;
     table += `|:-|-|-|-|-\n`;
     for (const suite of tests.suites) {
-        if (!summaryMode.tests.skipPassed || suite.cases.length != suite.passed || suite.flaky) {
+        if (!filterPassedTests || suite.cases.length != suite.passed || suite.flaky) {
             if (suite.flaky) flakyDisclaimer = true;
 
             table += '|';
@@ -77,7 +88,7 @@ function summaryTableOfTests(tests: ParseResults['tests'], summaryMode: SummaryM
             table += 's\n';
         }
     }
-    if (summaryMode.tests.skipPassed) table += '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n';
+    if (filterPassedTests) table += '[^passedSkipDisclaimer]: ✅ passed suites were not reported\n';
     if (flakyDisclaimer) table += '[^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)\n';
     return table;
 }
@@ -100,20 +111,23 @@ function summaryTableOfChecks(checks: ParseResults['checks']) {
     return table;
 }
 
-export function summaryTableOf(results: ParseResults, summaryMode: Config['summary'] = config.summary) {
+export function summaryTableOf(
+    results: ParseResults,
+    testsSummary: Config['testsSummary'] = config.testsSummary,
+    checksSummary: Config['checksSummary'] = config.checksSummary,
+    filterPassedTests: Config['filterPassedTests'] = config.filterPassedTests,
+) {
     let content = '';
-    if (summaryMode) {
-        if (results.tests.totals.count > 0) {
-            content += !summaryMode.tests.suites && !summaryMode.tests.cases ?
-                `Tests: ${summaryOfTests(results.tests.totals, false)}` :
-                summaryTableOfTests(results.tests, summaryMode);
-        }
-        if (results.checks.totals.count > 0) {
-            if (content) content += '\n';
-            content += !summaryMode.checks ?
-                `Checks: ${summaryOfChecks(results.checks.totals, false)}` :
-                summaryTableOfChecks(results.checks);
-        }
+    if (testsSummary != 'off' && results.tests.totals.count > 0) {
+        content += testsSummary == 'totals' ?
+            `Tests: ${summaryOfTests(results.tests.totals, false)}` :
+            summaryTableOfTests(results.tests, testsSummary == 'suitesOnly', filterPassedTests);
+    }
+    if (checksSummary != 'off' && results.checks.totals.count > 0) {
+        if (content) content += '\n';
+        content += checksSummary == 'totals' ?
+            `Checks: ${summaryOfChecks(results.checks.totals, false)}` :
+            summaryTableOfChecks(results.checks);
     }
     return content;
 }

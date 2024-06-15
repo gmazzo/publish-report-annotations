@@ -1,15 +1,12 @@
 import * as core from "@actions/core";
 
-export type SummaryMode = {
-    tests: { suites: boolean, cases: boolean, skipPassed: boolean };
-    checks: boolean;
-};
-
 export interface Config {
     githubToken: string;
     checkName: string;
     reports: string[];
-    summary: SummaryMode | false;
+    testsSummary: 'full' | 'suitesOnly' | 'totals' | 'off';
+    checksSummary: 'full' | 'totals' | 'off';
+    filterPassedTests: boolean;
     filterChecks: boolean;
     detectFlakyTests: boolean;
     warningsAsErrors: boolean;
@@ -21,11 +18,15 @@ export class ConfigImpl implements Config {
 
     resolve() {
         if (!this.values) {
+            const legacySummary = parseLegacySummary();
+
             this.values = {
                 githubToken: core.getInput("token", {required: true}),
                 checkName: core.getInput("checkName"),
                 reports: core.getMultilineInput("reports", {required: true}),
-                summary: parseSummary(core.getInput("summary", {required: true})),
+                testsSummary: legacySummary?.testsSummary || getEnum("testsSummary", {full: null, suitesOnly: null, totals: null, off: null}),
+                checksSummary: legacySummary?.checksSummary || getEnum("checksSummary", {full: null, totals: null, off: null}),
+                filterPassedTests: legacySummary?.filterPassedTests || core.getBooleanInput("filterPassedTests"),
                 filterChecks: core.getBooleanInput("filterChecks"),
                 detectFlakyTests: core.getBooleanInput("detectFlakyTests"),
                 warningsAsErrors: core.getBooleanInput("warningsAsErrors"),
@@ -47,8 +48,16 @@ export class ConfigImpl implements Config {
         return this.resolve().reports;
     }
 
-    get summary() {
-        return this.resolve().summary;
+    get testsSummary() {
+        return this.resolve().testsSummary;
+    }
+
+    get checksSummary() {
+        return this.resolve().checksSummary;
+    }
+
+    get filterPassedTests() {
+        return this.resolve().filterPassedTests;
     }
 
     get filterChecks() {
@@ -70,65 +79,31 @@ export class ConfigImpl implements Config {
 
 export default new ConfigImpl() as Config;
 
-function parseSummary(input: string): Config['summary'] {
-    const value = {tests: {suites: false, cases: false, skipPassed: false}, checks: false};
-
-    function printLegacyWarning() {
-        core.warning(`The summary flag '${input}' is deprecated and will be removed in a future version. Please use 'testSuites', 'testCases', 'skipPassed', 'checks' or 'off' instead.`);
+function getEnum<Enum extends object>(name: string, allowedValues: Enum) {
+    const input = core.getInput(name, {required: true});
+    if (!Object.keys(allowedValues).includes(input)) {
+        throw new Error(`Invalid value for '${name}': ${input}`);
     }
+    return input as keyof Enum;
+}
 
-    // process legacy values
-    switch (input) {
-        case "detailed":
-            printLegacyWarning();
-            value.tests.suites = true;
-            value.checks = true;
-            return value;
+// TODO: remove this function in the future
+function parseLegacySummary(): { testsSummary: 'suitesOnly' | 'totals' | 'off', checksSummary: 'full' | 'totals' | 'off', filterPassedTests?: boolean } | undefined {
+    const summary = core.getInput("summary");
+    if (summary) {
+        switch (summary) {
+            case "detailed":
+                return {testsSummary: "suitesOnly", checksSummary: "full"};
 
-        case "detailedWithoutPassed":
-            printLegacyWarning();
-            value.tests.suites = true;
-            value.tests.skipPassed = true;
-            value.checks = true;
-            return value;
+            case "detailedWithoutPassed":
+                return {testsSummary: "suitesOnly", checksSummary: "full", filterPassedTests: true};
 
-        case "totals":
-            printLegacyWarning();
-            value.checks = true;
-            return value;
-    }
-
-    const flags = input.split(/[\s+,|]/);
-    for (const flag of flags) {
-        switch (flag) {
-            case "testSuites":
-                value.tests.suites = true;
-                break;
-
-            case "testCases":
-                value.tests.cases = true;
-                break;
-
-            case "skipPassed":
-                value.tests.skipPassed = true;
-                break;
-
-            case "checks":
-                value.checks = true;
-                break;
+            case "totals":
+                return {testsSummary: "totals", checksSummary: "totals"};
 
             case "off":
-                if (flags.length > 1) {
-                    throw new Error(`Invalid summary flag: 'off' can not be combined with other values`);
-                }
-                return false;
-
-            default:
-                throw new Error(`Invalid summary flag: '${flag}'`);
+                return {testsSummary: "off", checksSummary: "off"};
         }
+        throw new Error(`Invalid value for 'summary': ${summary}`);
     }
-    if (value.tests.skipPassed && !(value.tests.suites || value.tests.cases)) {
-        throw new Error(`Invalid summary flag: 'skipPassed' can only be used with 'testSuites' or 'testCases'`);
-    }
-    return value;
 }
