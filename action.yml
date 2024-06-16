@@ -19,9 +19,9 @@ inputs:
     description: "The kind summary to display in the check: `detailed`, `totals` or `off`"
     required: false
   testsSummary:
-    description: "The kind summary to report for the tests found: `full`, `suitesOnly` (default), `totals` or `off`"
+    description: "The kind summary to report for the tests found: `full` (default), `suitesOnly`, `totals` or `off`"
     required: true
-    default: "suitesOnly"
+    default: "full"
   checksSummary:
     description: "The kind summary to report for the checks found: `full` (default), `totals`, `off`"
     required: true

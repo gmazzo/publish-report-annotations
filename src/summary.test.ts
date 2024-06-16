@@ -1,9 +1,4 @@
 import {ParseResults, TestCase} from "./types";
-
-jest.mock('./config', () => ({
-    summary: {tests: {suites: true, cases: false, skipPassed: false}, checks: true}
-}));
-
 import {summaryOf, summaryTableOf} from "./summary";
 
 describe("summaryOf", () => {
@@ -174,8 +169,8 @@ describe("summaryTableOf", () => {
         }
     });
 
-    test("when summary is suites only (default), returns the expected result", () => {
-        const summary = summaryTableOf(results);
+    test("when summary is suites only, returns the expected result", () => {
+        const summary = summaryTableOf(results, 'suitesOnly', 'full', false);
 
         expect(summary).toBe(`|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took
 |:-|-|-|-|-
@@ -197,7 +192,7 @@ describe("summaryTableOf", () => {
     });
 
     test("when summary is full, returns the expected result", () => {
-        const summary = summaryTableOf(results, 'full');
+        const summary = summaryTableOf(results, 'full', 'full', false);
 
         expect(summary).toBe(`|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took
 |:-|-|-|-|-
@@ -260,7 +255,7 @@ describe("summaryTableOf", () => {
                     },
                 ], totals: {count: 6, errors: 0, warnings: 6, others: 0}
             }
-        }));
+        }), 'off',  'full', false);
 
         expect(summary).toBe(`|suite1|🛑 0 errors|⚠️ 1 warning|💡 0 others|
 |:-|-|-|-|
@@ -275,14 +270,14 @@ describe("summaryTableOf", () => {
     });
 
     test("when summary is totals, returns the expected result", () => {
-        const summary = summaryTableOf(results, 'totals', 'totals');
+        const summary = summaryTableOf(results, 'totals', 'totals', false);
 
         expect(summary).toBe('Tests: 4 tests: ✅ 2 passed, 🟡 1 skipped, ❌ 1 failed\n' +
             'Checks: 🛑 3 errors, ⚠️ 2 warnings, 💡 1 other');
     });
 
     test("when summary is off, returns an empty string", () => {
-        const summary = summaryTableOf(results, 'off', 'off');
+        const summary = summaryTableOf(results, 'off', 'off', false);
 
         expect(summary).toBe('');
     });
