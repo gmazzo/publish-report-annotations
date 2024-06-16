@@ -148,17 +148,80 @@ export function summaryTableOf(
     checksSummary: Config['checksSummary'] = config.checksSummary,
     filterPassedTests: Config['filterPassedTests'] = config.filterPassedTests,
 ) {
-    let content = '';
-    if (testsSummary != 'off' && results.tests.totals.count > 0) {
-        content += testsSummary == 'totals' ?
-            `Tests: ${summaryOfTests(results.tests.totals, false)}` :
-            summaryTableOfTests(results.tests, testsSummary == 'full', filterPassedTests);
-    }
-    if (checksSummary != 'off' && results.checks.totals.count > 0) {
-        if (content) content += '\n';
-        content += checksSummary == 'totals' ?
-            `Checks: ${summaryOfChecks(results.checks.totals, false)}` :
-            summaryTableOfChecks(results.checks);
+    const originalTestsSummary = testsSummary;
+    const originalChecksSummary = checksSummary;
+    const originalFilterPassedTests = filterPassedTests;
+
+    let content;
+    let originalLength;
+    let tryReduce;
+    do {
+        content = '';
+        tryReduce = false;
+
+        if (testsSummary != 'off' && results.tests.totals.count > 0) {
+            content += testsSummary == 'totals' ?
+                `Tests: ${summaryOfTests(results.tests.totals, false)}` :
+                summaryTableOfTests(results.tests, testsSummary == 'full', filterPassedTests);
+        }
+        if (checksSummary != 'off' && results.checks.totals.count > 0) {
+            if (content) content += '\n';
+            content += checksSummary == 'totals' ?
+                `Checks: ${summaryOfChecks(results.checks.totals, false)}` :
+                summaryTableOfChecks(results.checks);
+        }
+
+        if (content.length > 65500) {
+            if (!originalLength) originalLength = content.length;
+
+            if (!filterPassedTests) {
+                filterPassedTests = true;
+
+            } else {
+                switch (testsSummary) {
+                    case 'full':
+                        testsSummary = 'suitesOnly';
+                        break;
+                    case 'suitesOnly':
+                        testsSummary = 'totals';
+                        break;
+                    case 'totals':
+                        testsSummary = 'off';
+                        break;
+                    default:
+                        switch (checksSummary) {
+                            case 'full':
+                                checksSummary = 'totals';
+                                break;
+                            case 'totals':
+                                checksSummary = 'off';
+                                break;
+                        }
+                }
+            }
+
+            tryReduce = testsSummary != 'off' || checksSummary != 'off';
+        }
+    } while (tryReduce);
+
+    if (originalLength && (
+        originalTestsSummary != testsSummary ||
+        originalChecksSummary != checksSummary ||
+        originalFilterPassedTests != filterPassedTests
+    )) {
+        content += `
+> [!NOTE]
+> Summary table was too long (${originalLength} characters), reduced the following to make it fit into the limits:
+`;
+        if (originalTestsSummary != testsSummary) {
+            content += `> - \`testsSummary\` from \`${originalTestsSummary}\` to \`${testsSummary}\`\n`;
+        }
+        if (originalChecksSummary != checksSummary) {
+            content += `> - \`checksSummary\` from \`${originalChecksSummary}\` to \`${checksSummary}\`\n`;
+        }
+        if (originalFilterPassedTests != filterPassedTests) {
+            content += `> - \`filterPassedTests\` from \`${originalFilterPassedTests}\` to \`${filterPassedTests}\`\n`;
+        }
     }
     return content;
 }

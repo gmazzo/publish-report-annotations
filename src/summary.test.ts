@@ -1,4 +1,4 @@
-import {ParseResults} from "./types";
+import {ParseResults, TestCase} from "./types";
 
 jest.mock('./config', () => ({
     summary: {tests: {suites: true, cases: false, skipPassed: false}, checks: true}
@@ -286,5 +286,26 @@ describe("summaryTableOf", () => {
 
         expect(summary).toBe('');
     });
+
+    test.each([
+        [false, ['`filterPassedTests` from `false` to `true`']],
+        [true, ['`testsSummary` from `full` to `suitesOnly`', '`filterPassedTests` from `false` to `true`']],
+    ])("when summary is too long, reduces it", (manyTestsFailing, expectedChanges) => {
+        const results = new ParseResults();
+        for (let i = 0; i < 100; i++) {
+            const cases: TestCase[] = [];
+            for (let j = 0; j < 100; j++) {
+                cases.push({name: `test${j}`, className: 'class', outcome: manyTestsFailing || i % 10 == 1 ? 'failed' : 'passed'});
+            }
+            results.addTestSuite({ name: `suite${i}`, passed: 1, skipped: 0, failed: 0, took: 1, cases });
+        }
+        const summary = summaryTableOf(results, 'full', 'full', false);
+        const note = summary.substring(summary.indexOf('> [!NOTE]'));
+
+        expect(summary.length).toBeLessThan(65500);
+        expect(note).toBe(`> [!NOTE]
+> Summary table was too long (175659 characters), reduced the following to make it fit into the limits:
+${expectedChanges.map(it => `> - ${it}`).join('\n')}
+`);});
 
 });

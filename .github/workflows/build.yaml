@@ -31,7 +31,6 @@ jobs:
         with:
           checkName: "Test Reports (full)"
           reports: |
-            lib/*-junit.xml
             samples/
           testsSummary: full
       - name: Report to Check (Omit ✅ passed)
@@ -40,7 +39,6 @@ jobs:
         with:
           checkName: "Test Reports (omitting passed)"
           reports: |
-            lib/*-junit.xml
             samples/
           testsSummary: full
           filterPassedTests: true
@@ -50,7 +48,6 @@ jobs:
         with:
           checkName: "Test Reports (computing flaky)"
           reports: |
-            lib/*-junit.xml
             samples/
           testsSummary: full
           detectFlakyTests: true
@@ -60,7 +57,6 @@ jobs:
         with:
           checkName: "Test Reports (PR filtered)"
           reports: |
-            lib/*-junit.xml
             samples/[!TEST]*.xml
           filterChecks: true
       - name: Coverage report
@@ -80,4 +76,3 @@ jobs:
         with:
           reports: |
             lib/*-junit.xml
-            samples/
