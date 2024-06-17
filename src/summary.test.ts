@@ -127,7 +127,7 @@ describe("summaryTableOf", () => {
         tests: {
             suites: [
                 {
-                    name: "suite1", passed: 3, skipped: 1, failed: 1, took: 4, cases: [
+                    name: "suite1", passed: 3, skipped: 1, failed: 1, took: "4", cases: [
                         {name: 'test1', className: 'class1', outcome: 'passed'},
                         {name: 'test2', className: 'class2', outcome: 'passed'},
                         {name: 'test3', className: 'class3', outcome: 'passed'},
@@ -136,13 +136,13 @@ describe("summaryTableOf", () => {
                     ]
                 },
                 {
-                    name: "suite2", passed: 2, skipped: 0, failed: 0, took: 2, cases: [
+                    name: "suite2", passed: 2, skipped: 0, failed: 0, took: "2", cases: [
                         {name: 'test1', className: 'class1', outcome: 'passed'},
                         {name: 'test2', className: 'class2', outcome: 'passed'},
                     ]
                 },
                 {
-                    name: "suite3", passed: 2, skipped: 0, failed: 0, took: 2, flaky: 1, cases: [
+                    name: "suite3", passed: 2, skipped: 0, failed: 0, took: "2", flaky: 1, cases: [
                         {name: 'test1', className: 'class1', outcome: 'passed'},
                         {name: 'test2', className: 'class2', outcome: 'passed'},
                     ]
@@ -292,7 +292,7 @@ describe("summaryTableOf", () => {
             for (let j = 0; j < 100; j++) {
                 cases.push({name: `test${j}`, className: 'class', outcome: manyTestsFailing || i % 10 == 1 ? 'failed' : 'passed'});
             }
-            results.addTestSuite({ name: `suite${i}`, passed: 1, skipped: 0, failed: 0, took: 1, cases });
+            results.addTestSuite({ name: `suite${i}`, passed: 1, skipped: 0, failed: 0, took: "1", cases });
         }
         const summary = summaryTableOf(results, 'full', 'full', false);
         const note = summary.substring(summary.indexOf('[^settingsChanged]: '));

@@ -9,9 +9,9 @@ type JUnitTest = {
     _attributes: {
         name: string,
         classname: string,
-        time?: number,
+        time?: string,
         file?: string,
-        line?: number,
+        line?: string,
     }
     skipped?: boolean,
     failure?: {
@@ -28,7 +28,7 @@ type JUnitTest = {
 type JUnitSuite = {
     _attributes: {
         name: string
-        time?: number,
+        time?: string,
         retries?: number
     }
     testcase: JUnitTest | JUnitTest[],
@@ -114,9 +114,9 @@ export const junitParser: Parser = {
                     if (testCase.failure) {
                         if (!testCase.flaky) failed++;
 
-                        const filePath = testCase._attributes.file?.toString() ?
-                            await resolveFile(testCase._attributes.file.toString()) :
-                            await resolveFile(testCase._attributes.classname.toString().replace(/\./g, '/'), 'java', 'kt', 'groovy');
+                        const filePath = testCase._attributes.file ?
+                            await resolveFile(testCase._attributes.file) :
+                            await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
 
                         const line = getLine(testCase);
 
@@ -135,8 +135,8 @@ export const junitParser: Parser = {
                     }
 
                     cases.push({
-                        name: testCase._attributes.name.toString(),
-                        className: testCase._attributes.classname.toString(),
+                        name: testCase._attributes.name,
+                        className: testCase._attributes.classname,
                         took: testCase._attributes.time,
                         outcome: testCase.flaky ? 'flaky' : testCase.failure ? 'failed' : testCase.skipped ? 'skipped' : 'passed',
                         ...testCase.retries !== undefined  ? {retries: testCase.retries} : {},
@@ -145,7 +145,7 @@ export const junitParser: Parser = {
 
                 cases.sort((a, b) => a.className.localeCompare(b.className) || a.name.localeCompare(b.name));
                 result.addTestSuite({
-                    name: testSuite._attributes.name.toString(),
+                    name: testSuite._attributes.name,
                     took: testSuite._attributes.time,
                     failed,
                     skipped,
@@ -163,10 +163,10 @@ export const junitParser: Parser = {
 
 function getLine(testCase: JUnitTest): number | undefined {
     if (testCase._attributes.line) {
-        return testCase._attributes.line;
+        return Number(testCase._attributes.line);
     }
 
-    const className = testCase._attributes.classname.toString();
+    const className = testCase._attributes.classname;
     const stackTrace = testCase.failure?._text;
 
     if (className && stackTrace) {

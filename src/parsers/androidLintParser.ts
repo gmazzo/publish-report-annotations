@@ -9,8 +9,8 @@ type Severity = 'fatal' | 'error' | 'warning' | 'informational';
 type Location = {
     _attributes: {
         file: string,
-        line: number,
-        column: number,
+        line: string,
+        column: string,
     }
 };
 
@@ -48,7 +48,7 @@ export const androidLintParser: Parser = {
 
                 if (type) {
                     for (const location of asArray(testcase.location)) {
-                        const file = await resolveFile(location._attributes.file.toString());
+                        const file = await resolveFile(location._attributes.file);
 
                         if (fileFilter(file)) {
                             const issue = `${testcase._attributes.category} / ${testcase._attributes.id}`;
@@ -58,12 +58,12 @@ export const androidLintParser: Parser = {
                                 file,
                                 severity: type,
                                 title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
-                                message: testcase._attributes.message.toString(),
+                                message: testcase._attributes.message,
                                 rawDetails: join(testcase._attributes.explanation, testcase._attributes.errorLine1, testcase._attributes.errorLine2),
-                                startLine: location._attributes.line,
-                                endLine: location._attributes.line,
-                                startColumn: location._attributes.column,
-                                endColumn: location._attributes.column,
+                                startLine: Number(location._attributes.line),
+                                endLine: Number(location._attributes.line),
+                                startColumn: Number(location._attributes.column),
+                                endColumn: Number(location._attributes.column),
                             }, suite);
                         }
                     }
