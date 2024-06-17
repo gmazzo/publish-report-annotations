@@ -81,11 +81,11 @@ function summaryTableOfTests(
         table += suite.name;
         if (suite.flaky) table += ' [^flakyDisclaimer]';
         if (includeTests) {
-            table += '</summary><ul>';
+            table += '</summary>';
             for (const test of suite.cases) {
                 if (filterPassedTests && test.outcome == 'passed') continue;
 
-                table += `<li>`;
+                table += `<br/>`;
                 switch (test.outcome) {
                     case 'failed':
                         table += '❌ ';
@@ -104,9 +104,8 @@ function summaryTableOfTests(
                 if (test.took !== undefined) {
                     table += ` (⌛ ${test.took})`;
                 }
-                table += '</li>';
             }
-            table += '</ul></details>';
+            table += '</details>';
         }
         table += '|';
         table += suite.passed;

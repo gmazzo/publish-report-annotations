@@ -27,7 +27,7 @@ jobs:
         run: npm run build
       - name: Report to Check
         uses: ./.
-        if: always()
+        if: ${{ always() && github.event_name == 'pull_request' }}
         with:
           checkName: "Test Reports (full)"
           reports: |
@@ -35,7 +35,7 @@ jobs:
           testsSummary: full
       - name: Report to Check (Omit ✅ passed)
         uses: ./.
-        if: always()
+        if: ${{ always() && github.event_name == 'pull_request' }}
         with:
           checkName: "Test Reports (omitting passed)"
           reports: |
@@ -44,7 +44,7 @@ jobs:
           filterPassedTests: true
       - name: Report to Check (Computing Flaky)
         uses: ./.
-        if: always()
+        if: ${{ always() && github.event_name == 'pull_request' }}
         with:
           checkName: "Test Reports (computing flaky)"
           reports: |
@@ -53,7 +53,7 @@ jobs:
           detectFlakyTests: true
       - name: Report to Check (PR filtered)
         uses: ./.
-        if: always()
+        if: ${{ always() && github.event_name == 'pull_request' }}
         with:
           checkName: "Test Reports (PR filtered)"
           reports: |

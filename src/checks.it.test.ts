@@ -35,18 +35,18 @@ describe('checks', () => {
                 "status": "completed",
                 "summary": `|Test Suites|✅ 23 passed|🟡 1 skipped|❌ 4 failed|⌛ took
 |:-|-|-|-|-
-|<details><summary>✅ androidLintParser</summary><ul><li>✅ androidLintParser given lint xml should obtain annotations (⌛ <time>)</li></ul></details>|1|0|0|<time>
-|<details><summary>✅ asArray</summary><ul><li>✅ asArray when multiple elements, returns the same (⌛ <time>)</li><li>✅ asArray when not a value, returns an empty array (⌛ <time>)</li><li>✅ asArray when single element, returns it as an array (⌛ <time>)</li></ul></details>|3|0|0|<time>
-|<details><summary>✅ checkstyleParser</summary><ul><li>✅ checkstyleParser given detekt xml should obtain annotations (⌛ <time>)</li></ul></details>|1|0|0|<time>
-|<details><summary>❌ junitParser</summary><ul><li>❌ junitParser given a jest junit xml should obtain annotations (⌛ <time>)</li><li>✅ junitParser given another junit xml should obtain annotations (⌛ <time>)</li><li>✅ junitParser given junit xml should obtain annotations (⌛ <time>)</li></ul></details>|2|0|1|<time>
-|<details><summary>✅ main</summary><ul><li>✅ main delegates to parsers and reports results (⌛ <time>)</li><li>✅ main if error and should fail, expect to fail (⌛ <time>)</li><li>✅ main if warnings and should fail, expect to fail (⌛ <time>)</li></ul></details>|3|0|0|<time>
-|<details><summary>✅ org.test.sample.AnotherTestSuite</summary><ul><li>✅ aTest[maxDuration=100] (⌛ <time>)</li><li>✅ aTest[maxDuration=200] (⌛ <time>)</li><li>✅ aTest[maxDuration=300] (⌛ <time>)</li><li>✅ aTest[maxDuration=400] (⌛ <time>)</li></ul></details>|4|0|0|<time>
-|<details><summary>❌ org.test.sample.FlakyFailingTestSuite</summary><ul><li>❌ failingTest() (⌛ <time>)</li></ul></details>|0|0|1|<time>
-|<details><summary>❎❗org.test.sample.FlakyTestSuite [^flakyDisclaimer]</summary><ul><li>❎❗[^flakyDisclaimer]flakyTest() (⌛ <time>)</li></ul></details>|1|0|0|<time>
-|<details><summary>❌ org.test.sample.SampleTestSuite</summary><ul><li>🟡 a test skipped() (⌛ <time>)</li><li>❌ a test that fails() (⌛ <time>)</li><li>✅ a test that passes() (⌛ <time>)</li><li>❌ a test that throws an exception() (⌛ <time>)</li></ul></details>|1|1|2|<time>
-|<details><summary>✅ processFile</summary><ul><li>✅ processFile delegates to parsers and reports results (⌛ <time>)</li></ul></details>|1|0|0|<time>
-|<details><summary>✅ readFile</summary><ul><li>✅ readFile should return parsed XML file as JSON (⌛ <time>)</li></ul></details>|1|0|0|<time>
-|<details><summary>✅ resolveFile</summary><ul><li>✅ resolveFile when file exists, just returns itself (⌛ <time>)</li><li>✅ resolveFile when is absolute path, just returns itself (⌛ <time>)</li><li>✅ resolveFile when looking for a file but extension does not matches, it returns the same (⌛ <time>)</li><li>✅ resolveFile when looking for a file with possible extensions, it returns a match (⌛ <time>)</li><li>✅ resolveFile when looking for a file, it returns a match (⌛ <time>)</li></ul></details>|5|0|0|<time>
+|<details><summary>✅ androidLintParser</summary><br/>✅ androidLintParser given lint xml should obtain annotations (⌛ <time>)</details>|1|0|0|<time>
+|<details><summary>✅ asArray</summary><br/>✅ asArray when multiple elements, returns the same (⌛ <time>)<br/>✅ asArray when not a value, returns an empty array (⌛ <time>)<br/>✅ asArray when single element, returns it as an array (⌛ <time>)</details>|3|0|0|<time>
+|<details><summary>✅ checkstyleParser</summary><br/>✅ checkstyleParser given detekt xml should obtain annotations (⌛ <time>)</details>|1|0|0|<time>
+|<details><summary>❌ junitParser</summary><br/>❌ junitParser given a jest junit xml should obtain annotations (⌛ <time>)<br/>✅ junitParser given another junit xml should obtain annotations (⌛ <time>)<br/>✅ junitParser given junit xml should obtain annotations (⌛ <time>)</details>|2|0|1|<time>
+|<details><summary>✅ main</summary><br/>✅ main delegates to parsers and reports results (⌛ <time>)<br/>✅ main if error and should fail, expect to fail (⌛ <time>)<br/>✅ main if warnings and should fail, expect to fail (⌛ <time>)</details>|3|0|0|<time>
+|<details><summary>✅ org.test.sample.AnotherTestSuite</summary><br/>✅ aTest[maxDuration=100] (⌛ <time>)<br/>✅ aTest[maxDuration=200] (⌛ <time>)<br/>✅ aTest[maxDuration=300] (⌛ <time>)<br/>✅ aTest[maxDuration=400] (⌛ <time>)</details>|4|0|0|<time>
+|<details><summary>❌ org.test.sample.FlakyFailingTestSuite</summary><br/>❌ failingTest() (⌛ <time>)</details>|0|0|1|<time>
+|<details><summary>❎❗org.test.sample.FlakyTestSuite [^flakyDisclaimer]</summary><br/>❎❗[^flakyDisclaimer]flakyTest() (⌛ <time>)</details>|1|0|0|<time>
+|<details><summary>❌ org.test.sample.SampleTestSuite</summary><br/>🟡 a test skipped() (⌛ <time>)<br/>❌ a test that fails() (⌛ <time>)<br/>✅ a test that passes() (⌛ <time>)<br/>❌ a test that throws an exception() (⌛ <time>)</details>|1|1|2|<time>
+|<details><summary>✅ processFile</summary><br/>✅ processFile delegates to parsers and reports results (⌛ <time>)</details>|1|0|0|<time>
+|<details><summary>✅ readFile</summary><br/>✅ readFile should return parsed XML file as JSON (⌛ <time>)</details>|1|0|0|<time>
+|<details><summary>✅ resolveFile</summary><br/>✅ resolveFile when file exists, just returns itself (⌛ <time>)<br/>✅ resolveFile when is absolute path, just returns itself (⌛ <time>)<br/>✅ resolveFile when looking for a file but extension does not matches, it returns the same (⌛ <time>)<br/>✅ resolveFile when looking for a file with possible extensions, it returns a match (⌛ <time>)<br/>✅ resolveFile when looking for a file, it returns a match (⌛ <time>)</details>|5|0|0|<time>
 [^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 
 |Android Lint|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
@@ -67,18 +67,18 @@ describe('checks', () => {
                 "status": "completed",
                 "summary": `|Test Suites|✅ 23 passed|🟡 1 skipped|❌ 10 failed|⌛ took
 |:-|-|-|-|-
-|<details><summary>✅ androidLintParser</summary><ul><li>✅ androidLintParser given lint xml should obtain annotations (⌛ <time>)</li></ul></details>|1|0|0|<time>
-|<details><summary>✅ asArray</summary><ul><li>✅ asArray when multiple elements, returns the same (⌛ <time>)</li><li>✅ asArray when not a value, returns an empty array (⌛ <time>)</li><li>✅ asArray when single element, returns it as an array (⌛ <time>)</li></ul></details>|3|0|0|<time>
-|<details><summary>✅ checkstyleParser</summary><ul><li>✅ checkstyleParser given detekt xml should obtain annotations (⌛ <time>)</li></ul></details>|1|0|0|<time>
-|<details><summary>❌ junitParser</summary><ul><li>❌ junitParser given a jest junit xml should obtain annotations (⌛ <time>)</li><li>✅ junitParser given another junit xml should obtain annotations (⌛ <time>)</li><li>✅ junitParser given junit xml should obtain annotations (⌛ <time>)</li></ul></details>|2|0|1|<time>
-|<details><summary>✅ main</summary><ul><li>✅ main delegates to parsers and reports results (⌛ <time>)</li><li>✅ main if error and should fail, expect to fail (⌛ <time>)</li><li>✅ main if warnings and should fail, expect to fail (⌛ <time>)</li></ul></details>|3|0|0|<time>
-|<details><summary>✅ org.test.sample.AnotherTestSuite</summary><ul><li>✅ aTest[maxDuration=100] (⌛ <time>)</li><li>✅ aTest[maxDuration=200] (⌛ <time>)</li><li>✅ aTest[maxDuration=300] (⌛ <time>)</li><li>✅ aTest[maxDuration=400] (⌛ <time>)</li></ul></details>|4|0|0|<time>
-|<details><summary>❌ org.test.sample.FlakyFailingTestSuite</summary><ul><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li></ul></details>|0|0|5|<time>
-|<details><summary>❌ org.test.sample.FlakyTestSuite</summary><ul><li>❌ flakyTest() (⌛ <time>)</li><li>❌ flakyTest() (⌛ <time>)</li><li>✅ flakyTest() (⌛ <time>)</li></ul></details>|1|0|2|<time>
-|<details><summary>❌ org.test.sample.SampleTestSuite</summary><ul><li>🟡 a test skipped() (⌛ <time>)</li><li>❌ a test that fails() (⌛ <time>)</li><li>✅ a test that passes() (⌛ <time>)</li><li>❌ a test that throws an exception() (⌛ <time>)</li></ul></details>|1|1|2|<time>
-|<details><summary>✅ processFile</summary><ul><li>✅ processFile delegates to parsers and reports results (⌛ <time>)</li></ul></details>|1|0|0|<time>
-|<details><summary>✅ readFile</summary><ul><li>✅ readFile should return parsed XML file as JSON (⌛ <time>)</li></ul></details>|1|0|0|<time>
-|<details><summary>✅ resolveFile</summary><ul><li>✅ resolveFile when file exists, just returns itself (⌛ <time>)</li><li>✅ resolveFile when is absolute path, just returns itself (⌛ <time>)</li><li>✅ resolveFile when looking for a file but extension does not matches, it returns the same (⌛ <time>)</li><li>✅ resolveFile when looking for a file with possible extensions, it returns a match (⌛ <time>)</li><li>✅ resolveFile when looking for a file, it returns a match (⌛ <time>)</li></ul></details>|5|0|0|<time>
+|<details><summary>✅ androidLintParser</summary><br/>✅ androidLintParser given lint xml should obtain annotations (⌛ <time>)</details>|1|0|0|<time>
+|<details><summary>✅ asArray</summary><br/>✅ asArray when multiple elements, returns the same (⌛ <time>)<br/>✅ asArray when not a value, returns an empty array (⌛ <time>)<br/>✅ asArray when single element, returns it as an array (⌛ <time>)</details>|3|0|0|<time>
+|<details><summary>✅ checkstyleParser</summary><br/>✅ checkstyleParser given detekt xml should obtain annotations (⌛ <time>)</details>|1|0|0|<time>
+|<details><summary>❌ junitParser</summary><br/>❌ junitParser given a jest junit xml should obtain annotations (⌛ <time>)<br/>✅ junitParser given another junit xml should obtain annotations (⌛ <time>)<br/>✅ junitParser given junit xml should obtain annotations (⌛ <time>)</details>|2|0|1|<time>
+|<details><summary>✅ main</summary><br/>✅ main delegates to parsers and reports results (⌛ <time>)<br/>✅ main if error and should fail, expect to fail (⌛ <time>)<br/>✅ main if warnings and should fail, expect to fail (⌛ <time>)</details>|3|0|0|<time>
+|<details><summary>✅ org.test.sample.AnotherTestSuite</summary><br/>✅ aTest[maxDuration=100] (⌛ <time>)<br/>✅ aTest[maxDuration=200] (⌛ <time>)<br/>✅ aTest[maxDuration=300] (⌛ <time>)<br/>✅ aTest[maxDuration=400] (⌛ <time>)</details>|4|0|0|<time>
+|<details><summary>❌ org.test.sample.FlakyFailingTestSuite</summary><br/>❌ failingTest() (⌛ <time>)<br/>❌ failingTest() (⌛ <time>)<br/>❌ failingTest() (⌛ <time>)<br/>❌ failingTest() (⌛ <time>)<br/>❌ failingTest() (⌛ <time>)</details>|0|0|5|<time>
+|<details><summary>❌ org.test.sample.FlakyTestSuite</summary><br/>❌ flakyTest() (⌛ <time>)<br/>❌ flakyTest() (⌛ <time>)<br/>✅ flakyTest() (⌛ <time>)</details>|1|0|2|<time>
+|<details><summary>❌ org.test.sample.SampleTestSuite</summary><br/>🟡 a test skipped() (⌛ <time>)<br/>❌ a test that fails() (⌛ <time>)<br/>✅ a test that passes() (⌛ <time>)<br/>❌ a test that throws an exception() (⌛ <time>)</details>|1|1|2|<time>
+|<details><summary>✅ processFile</summary><br/>✅ processFile delegates to parsers and reports results (⌛ <time>)</details>|1|0|0|<time>
+|<details><summary>✅ readFile</summary><br/>✅ readFile should return parsed XML file as JSON (⌛ <time>)</details>|1|0|0|<time>
+|<details><summary>✅ resolveFile</summary><br/>✅ resolveFile when file exists, just returns itself (⌛ <time>)<br/>✅ resolveFile when is absolute path, just returns itself (⌛ <time>)<br/>✅ resolveFile when looking for a file but extension does not matches, it returns the same (⌛ <time>)<br/>✅ resolveFile when looking for a file with possible extensions, it returns a match (⌛ <time>)<br/>✅ resolveFile when looking for a file, it returns a match (⌛ <time>)</details>|5|0|0|<time>
 
 |Android Lint|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
 |:-|-|-|-|
@@ -98,10 +98,10 @@ describe('checks', () => {
                 "status": "completed",
                 "summary": `|Test Suites|✅ 23 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 10 failed|⌛ took
 |:-|-|-|-|-
-|<details><summary>❌ junitParser</summary><ul><li>❌ junitParser given a jest junit xml should obtain annotations (⌛ <time>)</li></ul></details>|2|0|1|<time>
-|<details><summary>❌ org.test.sample.FlakyFailingTestSuite</summary><ul><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li></ul></details>|0|0|5|<time>
-|<details><summary>❌ org.test.sample.FlakyTestSuite</summary><ul><li>❌ flakyTest() (⌛ <time>)</li><li>❌ flakyTest() (⌛ <time>)</li></ul></details>|1|0|2|<time>
-|<details><summary>❌ org.test.sample.SampleTestSuite</summary><ul><li>🟡 a test skipped() (⌛ <time>)</li><li>❌ a test that fails() (⌛ <time>)</li><li>❌ a test that throws an exception() (⌛ <time>)</li></ul></details>|1|1|2|<time>
+|<details><summary>❌ junitParser</summary><br/>❌ junitParser given a jest junit xml should obtain annotations (⌛ <time>)</details>|2|0|1|<time>
+|<details><summary>❌ org.test.sample.FlakyFailingTestSuite</summary><br/>❌ failingTest() (⌛ <time>)<br/>❌ failingTest() (⌛ <time>)<br/>❌ failingTest() (⌛ <time>)<br/>❌ failingTest() (⌛ <time>)<br/>❌ failingTest() (⌛ <time>)</details>|0|0|5|<time>
+|<details><summary>❌ org.test.sample.FlakyTestSuite</summary><br/>❌ flakyTest() (⌛ <time>)<br/>❌ flakyTest() (⌛ <time>)</details>|1|0|2|<time>
+|<details><summary>❌ org.test.sample.SampleTestSuite</summary><br/>🟡 a test skipped() (⌛ <time>)<br/>❌ a test that fails() (⌛ <time>)<br/>❌ a test that throws an exception() (⌛ <time>)</details>|1|1|2|<time>
 [^passedSkipDisclaimer]: ✅ passed suites were not reported
 
 |Android Lint|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
