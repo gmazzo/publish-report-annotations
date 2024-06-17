@@ -77,7 +77,8 @@ function summaryTableOfTests(
 
         table += '|';
         if (includeTests) table += '<details><summary>';
-        table += suite.failed > 0 ? '❌ ' : suite.skipped > 0 ? '🟡 ' : suite.flaky ? '❎❗' : '✅ ';
+        table += suite.failed > 0 ? '❌' : suite.skipped > 0 ? '🟡' : suite.flaky ? '❎' : '✅';
+        table += suite.flaky ? '❗' : ' ';
         table += suite.name;
         if (suite.flaky) table += ' [^flakyDisclaimer]';
         if (includeTests) {
