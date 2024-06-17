@@ -114,9 +114,9 @@ export const junitParser: Parser = {
                     if (testCase.failure) {
                         if (!testCase.flaky) failed++;
 
-                        const filePath = testCase._attributes.file ?
-                            await resolveFile(testCase._attributes.file) :
-                            await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
+                        const filePath = testCase._attributes.file?.toString() ?
+                            await resolveFile(testCase._attributes.file.toString()) :
+                            await resolveFile(testCase._attributes.classname.toString().replace(/\./g, '/'), 'java', 'kt', 'groovy');
 
                         const line = getLine(testCase);
 
@@ -135,8 +135,8 @@ export const junitParser: Parser = {
                     }
 
                     cases.push({
-                        name: testCase._attributes.name,
-                        className: testCase._attributes.classname,
+                        name: testCase._attributes.name.toString(),
+                        className: testCase._attributes.classname.toString(),
                         took: testCase._attributes.time,
                         outcome: testCase.flaky ? 'flaky' : testCase.failure ? 'failed' : testCase.skipped ? 'skipped' : 'passed',
                         ...testCase.retries !== undefined  ? {retries: testCase.retries} : {},
@@ -145,7 +145,7 @@ export const junitParser: Parser = {
 
                 cases.sort((a, b) => a.className.localeCompare(b.className) || a.name.localeCompare(b.name));
                 result.addTestSuite({
-                    name: testSuite._attributes.name,
+                    name: testSuite._attributes.name.toString(),
                     took: testSuite._attributes.time,
                     failed,
                     skipped,
@@ -166,7 +166,7 @@ function getLine(testCase: JUnitTest): number | undefined {
         return testCase._attributes.line;
     }
 
-    const className = testCase._attributes.classname;
+    const className = testCase._attributes.classname.toString();
     const stackTrace = testCase.failure?._text;
 
     if (className && stackTrace) {

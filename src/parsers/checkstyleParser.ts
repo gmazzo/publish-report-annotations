@@ -41,10 +41,10 @@ export const checkstyleParser: Parser = {
                     const type = computeType(error._attributes.severity);
 
                     if (type) {
-                        const filePath = await resolveFile(file._attributes.name);
+                        const filePath = await resolveFile(file._attributes.name.toString());
 
                         if (fileFilter(filePath)) {
-                            const source = error._attributes.source;
+                            const source = error._attributes.source.toString();
 
                             if (source) {
                                 let issue = source;
@@ -59,8 +59,8 @@ export const checkstyleParser: Parser = {
                             result.addAnnotation({
                                 severity: type,
                                 file: filePath,
-                                title: error._attributes.source,
-                                message: error._attributes.message,
+                                title: error._attributes.source.toString(),
+                                message: error._attributes.message.toString(),
                                 startLine: error._attributes.line,
                                 endLine: error._attributes.line,
                                 startColumn: error._attributes.column,
