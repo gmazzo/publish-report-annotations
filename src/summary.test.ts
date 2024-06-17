@@ -295,12 +295,9 @@ describe("summaryTableOf", () => {
             results.addTestSuite({ name: `suite${i}`, passed: 1, skipped: 0, failed: 0, took: 1, cases });
         }
         const summary = summaryTableOf(results, 'full', 'full', false);
-        const note = summary.substring(summary.indexOf('> [!NOTE]'));
+        const note = summary.substring(summary.indexOf('[^settingsChanged]: '));
 
         expect(summary.length).toBeLessThan(65500);
-        expect(note).toBe(`> [!NOTE]
-> Summary table was too long (175659 characters), reduced the following to make it fit into the limits:
-${expectedChanges.map(it => `> - ${it}`).join('\n')}
-`);});
-
+        expect(summary).toContain('Test Suites[^settingsChanged]|');
+        expect(note).toBe(`[^settingsChanged]: Summary table was too long (175659 characters), reduced the following to make it fit into the limits:${expectedChanges.map(it => `<br/>- ${it}`).join('')}`);});
 });

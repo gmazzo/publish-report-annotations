@@ -61,13 +61,14 @@ function summaryTableOfTests(
     tests: ParseResults['tests'],
     includeTests: boolean,
     filterPassedTests: boolean,
+    settingsChangedDisclaimer: boolean,
 ) {
     let flakyDisclaimer = false;
 
     // if skipping passed suites and all passed, we won't produce a table because it's going to be empty
     if (filterPassedTests && tests.totals.passed == tests.totals.count) return '';
 
-    let table = `|Test Suites|✅ ${tests.totals.passed} passed${filterPassedTests ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed} failed|⌛ took\n`;
+    let table = `|Test Suites${settingsChangedDisclaimer ? '[^settingsChanged]' : ''}|✅ ${tests.totals.passed} passed${filterPassedTests ? '[^passedSkipDisclaimer]' : ''}|🟡 ${tests.totals.skipped} skipped|❌ ${tests.totals.failed} failed|⌛ took\n`;
     table += `|:-|-|-|-|-\n`;
     for (const suite of tests.suites) {
         if (filterPassedTests && suite.passed == suite.cases.length && !suite.flaky) continue;
@@ -124,7 +125,10 @@ function summaryTableOfTests(
     return table;
 }
 
-function summaryTableOfChecks(checks: ParseResults['checks']) {
+function summaryTableOfChecks(
+    checks: ParseResults['checks'],
+    settingsChangedDisclaimer: boolean,
+) {
     let table = ``;
     for (const check of checks.checks) {
         const headers = [
@@ -133,7 +137,7 @@ function summaryTableOfChecks(checks: ParseResults['checks']) {
             entry({header: true, amount: check.others, icon: '💡 ', type: 'other'})
         ].join('|');
 
-        table += `|${check.name}|${headers}|\n|:-|-|-|-|\n`;
+        table += `|${check.name}${settingsChangedDisclaimer ? '[^settingsChanged]' : ''}|${headers}|\n|:-|-|-|-|\n`;
         for (const [issue, {severity, count}] of Object.entries(check.issues)) {
             table += `|${issue}|${severity == 'error' ? count : '0'}|${severity == 'warning' ? count : '0'}|${severity == 'other' ? count : '0'}|\n`;
         }
@@ -162,13 +166,17 @@ export function summaryTableOf(
         if (testsSummary != 'off' && results.tests.totals.count > 0) {
             content += testsSummary == 'totals' ?
                 `Tests: ${summaryOfTests(results.tests.totals, false)}` :
-                summaryTableOfTests(results.tests, testsSummary == 'full', filterPassedTests);
+                summaryTableOfTests(
+                    results.tests,
+                    testsSummary == 'full',
+                    filterPassedTests,
+                    testsSummary != originalTestsSummary || filterPassedTests != originalFilterPassedTests);
         }
         if (checksSummary != 'off' && results.checks.totals.count > 0) {
             if (content) content += '\n';
             content += checksSummary == 'totals' ?
                 `Checks: ${summaryOfChecks(results.checks.totals, false)}` :
-                summaryTableOfChecks(results.checks);
+                summaryTableOfChecks(results.checks, checksSummary != originalChecksSummary);
         }
 
         if (content.length > 65500) {
@@ -204,23 +212,16 @@ export function summaryTableOf(
         }
     } while (tryReduce);
 
-    if (originalLength && (
-        originalTestsSummary != testsSummary ||
-        originalChecksSummary != checksSummary ||
-        originalFilterPassedTests != filterPassedTests
-    )) {
-        content += `
-> [!NOTE]
-> Summary table was too long (${originalLength} characters), reduced the following to make it fit into the limits:
-`;
+    if (originalLength) {
+        content += `[^settingsChanged]: Summary table was too long (${originalLength} characters), reduced the following to make it fit into the limits:`;
         if (originalTestsSummary != testsSummary) {
-            content += `> - \`testsSummary\` from \`${originalTestsSummary}\` to \`${testsSummary}\`\n`;
+            content += `<br/>- \`testsSummary\` from \`${originalTestsSummary}\` to \`${testsSummary}\``;
         }
         if (originalChecksSummary != checksSummary) {
-            content += `> - \`checksSummary\` from \`${originalChecksSummary}\` to \`${checksSummary}\`\n`;
+            content += `<br/>- \`checksSummary\` from \`${originalChecksSummary}\` to \`${checksSummary}\``;
         }
         if (originalFilterPassedTests != filterPassedTests) {
-            content += `> - \`filterPassedTests\` from \`${originalFilterPassedTests}\` to \`${filterPassedTests}\`\n`;
+            content += `<br/>- \`filterPassedTests\` from \`${originalFilterPassedTests}\` to \`${filterPassedTests}\``;
         }
     }
     return content;
