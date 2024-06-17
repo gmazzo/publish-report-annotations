@@ -11,14 +11,14 @@ export type Annotation = {
 export type TestCase = {
     name: string
     className: string
-    took?: number
+    took?: string
     outcome: 'passed' | 'failed' | 'skipped' | 'flaky'
     retries?: number
 };
 
 export type TestSuite = {
     name: string
-    took?: number
+    took?: string
     passed: number
     failed: number
     skipped: number

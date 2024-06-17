@@ -12,8 +12,8 @@ type CheckStyleFile = {
     }
     error?: {
         _attributes: {
-            line: number,
-            column: number,
+            line: string,
+            column: string,
             severity: Severity,
             message: string,
             source: string,
@@ -41,10 +41,10 @@ export const checkstyleParser: Parser = {
                     const type = computeType(error._attributes.severity);
 
                     if (type) {
-                        const filePath = await resolveFile(file._attributes.name.toString());
+                        const filePath = await resolveFile(file._attributes.name);
 
                         if (fileFilter(filePath)) {
-                            const source = error._attributes.source.toString();
+                            const source = error._attributes.source;
 
                             if (source) {
                                 let issue = source;
@@ -59,12 +59,12 @@ export const checkstyleParser: Parser = {
                             result.addAnnotation({
                                 severity: type,
                                 file: filePath,
-                                title: error._attributes.source.toString(),
-                                message: error._attributes.message.toString(),
-                                startLine: error._attributes.line,
-                                endLine: error._attributes.line,
-                                startColumn: error._attributes.column,
-                                endColumn: error._attributes.column,
+                                title: error._attributes.source,
+                                message: error._attributes.message,
+                                startLine: Number(error._attributes.line),
+                                endLine: Number(error._attributes.line),
+                                startColumn: Number(error._attributes.column),
+                                endColumn: Number(error._attributes.column),
                             }, suite);
                         }
                     }

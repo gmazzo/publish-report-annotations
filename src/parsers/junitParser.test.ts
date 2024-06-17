@@ -52,31 +52,31 @@ describe("junitParser", () => {
                         passed: 1,
                         failed: 2,
                         skipped: 1,
-                        took: 0.004,
+                        took: "0.004",
                         cases: [
                             {
                                 className: "org.test.sample.SampleTestSuite",
                                 name: "a test skipped()",
                                 outcome: "skipped",
-                                took: 0
+                                took: "0.0"
                             },
                             {
                                 className: "org.test.sample.SampleTestSuite",
                                 name: "a test that fails()",
                                 outcome: "failed",
-                                took: 0.002,
+                                took: "0.002"
                             },
                             {
                                 className: "org.test.sample.SampleTestSuite",
                                 name: "a test that passes()",
                                 outcome: "passed",
-                                took: 0.001,
+                                took: "0.001"
                             },
                             {
                                 className: "org.test.sample.SampleTestSuite",
                                 name: "a test that throws an exception()",
                                 outcome: "failed",
-                                took: 0.001,
+                                took: "0.001"
                             }
                         ]
                     }
@@ -108,31 +108,31 @@ describe("junitParser", () => {
                         name: "org.test.sample.AnotherTestSuite",
                         passed: 4,
                         skipped: 0,
-                        took: 0.506,
+                        took: "0.506",
                         cases: [
                             {
                                 className: "org.test.sample.AnotherTestSuite",
                                 name: "aTest[maxDuration=100]",
                                 outcome: "passed",
-                                took: 0.054,
+                                took: "0.054"
                             },
                             {
                                 className: "org.test.sample.AnotherTestSuite",
                                 name: "aTest[maxDuration=200]",
                                 outcome: "passed",
-                                took: 0.107,
+                                took: "0.107"
                             },
                             {
                                 className: "org.test.sample.AnotherTestSuite",
                                 name: "aTest[maxDuration=300]",
                                 outcome: "passed",
-                                took: 0.238,
+                                took: "0.238"
                             },
                             {
                                 className: "org.test.sample.AnotherTestSuite",
                                 name: "aTest[maxDuration=400]",
                                 outcome: "passed",
-                                took: 0.103,
+                                took: "0.103"
                             }
                         ]
                     }
@@ -180,7 +180,7 @@ describe("junitParser", () => {
                         name: "org.test.sample.FlakyTestSuite",
                         passed: 1,
                         skipped: 0,
-                        took: 1.295,
+                        took: "1.295",
                         flaky: 1,
                         cases: [
                             {
@@ -188,7 +188,7 @@ describe("junitParser", () => {
                                 name: "flakyTest()",
                                 outcome: "flaky",
                                 retries: 2,
-                                took: 0.005,
+                                took: "0.005"
                             }
                         ]
                     }
@@ -243,25 +243,25 @@ describe("junitParser", () => {
                         name: "org.test.sample.FlakyTestSuite",
                         passed: 1,
                         skipped: 0,
-                        took: 1.295,
+                        took: "1.295",
                         cases: [
                             {
                                 className: "org.test.sample.FlakyTestSuite",
                                 name: "flakyTest()",
                                 outcome: "failed",
-                                took: 0.005,
+                                took: "0.005"
                             },
                             {
                                 className: "org.test.sample.FlakyTestSuite",
                                 name: "flakyTest()",
                                 outcome: "failed",
-                                took: 0.005,
+                                took: "0.005"
                             },
                             {
                                 className: "org.test.sample.FlakyTestSuite",
                                 name: "flakyTest()",
                                 outcome: "passed",
-                                took: 0.005,
+                                took: "0.005"
                             }
                         ]
                     }
@@ -314,7 +314,7 @@ describe("junitParser", () => {
                         name: "org.test.sample.FlakyFailingTestSuite",
                         passed: 0,
                         skipped: 0,
-                        took: 2.07,
+                        took: "2.07",
                         flaky: 0,
                         cases: [
                             {
@@ -322,7 +322,7 @@ describe("junitParser", () => {
                                 name: "failingTest()",
                                 outcome: "failed",
                                 retries: 4,
-                                took: 0.011,
+                                took: "0.011"
                             }
                         ]
                     }
@@ -376,19 +376,19 @@ describe("junitParser", () => {
                                 className: "asArray when multiple elements, returns the same",
                                 name: "asArray when multiple elements, returns the same",
                                 outcome: "passed",
-                                took: 0
+                                took: "0"
                             },
                             {
                                 className: "asArray when not a value, returns an empty array",
                                 name: "asArray when not a value, returns an empty array",
                                 outcome: "passed",
-                                took: 0.001
+                                took: "0.001"
                             },
                             {
                                 className: "asArray when single element, returns it as an array",
                                 name: "asArray when single element, returns it as an array",
                                 outcome: "passed",
-                                took: 0.003
+                                took: "0.003"
                             },
 
                         ],
@@ -396,7 +396,7 @@ describe("junitParser", () => {
                         name: "asArray",
                         passed: 3,
                         skipped: 0,
-                        took: 1.197
+                        took: "1.197"
                     },
                     {
                         cases: [
@@ -404,26 +404,26 @@ describe("junitParser", () => {
                                 className: "main delegates to parsers and reports results",
                                 name: "main delegates to parsers and reports results",
                                 outcome: "passed",
-                                took: 0.047
+                                took: "0.047"
                             },
                             {
                                 className: "main if error and should fail, expect to fail",
                                 name: "main if error and should fail, expect to fail",
                                 outcome: "passed",
-                                took: 0
+                                took: "0"
                             },
                             {
                                 className: "main if warnings and should fail, expect to fail",
                                 name: "main if warnings and should fail, expect to fail",
                                 outcome: "passed",
-                                took: 0.001
+                                took: "0.001"
                             }
                         ],
                         failed: 0,
                         name: "main",
                         passed: 3,
                         skipped: 0,
-                        took: 1.651
+                        took: "1.651"
                     },
                     {
                         cases: [
@@ -431,14 +431,14 @@ describe("junitParser", () => {
                                 className: "readFile should return parsed XML file as JSON",
                                 name: "readFile should return parsed XML file as JSON",
                                 outcome: "passed",
-                                took: 0.018
+                                took: "0.018"
                             }
                         ],
                         failed: 0,
                         name: "readFile",
                         passed: 1,
                         skipped: 0,
-                        took: 1.72
+                        took: "1.72"
                     },
                     {
                         cases: [
@@ -446,14 +446,14 @@ describe("junitParser", () => {
                                 className: "processFile delegates to parsers and reports results",
                                 name: "processFile delegates to parsers and reports results",
                                 outcome: "passed",
-                                took: 0.004
+                                took: "0.004"
                             }
                         ],
                         failed: 0,
                         name: "processFile",
                         passed: 1,
                         skipped: 0,
-                        took: 1.738
+                        took: "1.738"
                     },
                     {
                         cases: [
@@ -461,26 +461,26 @@ describe("junitParser", () => {
                                 className: "junitParser given a jest junit xml should obtain annotations",
                                 name: "junitParser given a jest junit xml should obtain annotations",
                                 outcome: "failed",
-                                took: 0.002
+                                took: "0.002"
                             },
                             {
                                 className: "junitParser given another junit xml should obtain annotations",
                                 name: "junitParser given another junit xml should obtain annotations",
                                 outcome: "passed",
-                                took: 0.001
+                                took: "0.001"
                             },
                             {
                                 className: "junitParser given junit xml should obtain annotations",
                                 name: "junitParser given junit xml should obtain annotations",
                                 outcome: "passed",
-                                took: 0.007
+                                took: "0.007"
                             },
                         ],
                         failed: 1,
                         name: "junitParser",
                         passed: 2,
                         skipped: 0,
-                        took: 1.773
+                        took: "1.773"
                     },
                     {
                         cases: [
@@ -488,14 +488,14 @@ describe("junitParser", () => {
                                 className: "androidLintParser given lint xml should obtain annotations",
                                 name: "androidLintParser given lint xml should obtain annotations",
                                 outcome: "passed",
-                                took: 1.021
+                                took: "1.021"
                             }
                         ],
                         failed: 0,
                         name: "androidLintParser",
                         passed: 1,
                         skipped: 0,
-                        took: 2.801
+                        took: "2.801"
                     },
                     {
                         cases: [
@@ -503,14 +503,14 @@ describe("junitParser", () => {
                                 className: "checkstyleParser given detekt xml should obtain annotations",
                                 name: "checkstyleParser given detekt xml should obtain annotations",
                                 outcome: "passed",
-                                took: 1.04
+                                took: "1.04"
                             }
                         ],
                         failed: 0,
                         name: "checkstyleParser",
                         passed: 1,
                         skipped: 0,
-                        took: 2.806
+                        took: "2.806"
                     },
                     {
                         cases: [
@@ -518,38 +518,38 @@ describe("junitParser", () => {
                                 className: "resolveFile when file exists, just returns itself",
                                 name: "resolveFile when file exists, just returns itself",
                                 outcome: "passed",
-                                took: 0
+                                took: "0"
                             },
                             {
                                 className: "resolveFile when is absolute path, just returns itself",
                                 name: "resolveFile when is absolute path, just returns itself",
                                 outcome: "passed",
-                                took: 0.002
+                                took: "0.002"
                             },
                             {
                                 className: "resolveFile when looking for a file but extension does not matches, it returns the same",
                                 name: "resolveFile when looking for a file but extension does not matches, it returns the same",
                                 outcome: "passed",
-                                took: 0.568
+                                took: "0.568"
                             },
                             {
                                 className: "resolveFile when looking for a file with possible extensions, it returns a match",
                                 name: "resolveFile when looking for a file with possible extensions, it returns a match",
                                 outcome: "passed",
-                                took: 0.617
+                                took: "0.617"
                             },
                             {
                                 className: "resolveFile when looking for a file, it returns a match",
                                 name: "resolveFile when looking for a file, it returns a match",
                                 outcome: "passed",
-                                took: 1.031
+                                took: "1.031"
                             },
                         ],
                         failed: 0,
                         name: "resolveFile",
                         passed: 5,
                         skipped: 0,
-                        took: 3.985
+                        took: "3.985"
                     }
                 ],
                 totals: {
