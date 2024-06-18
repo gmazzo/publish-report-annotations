@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="" tests="4" failures="1" flakes="1" errors="0" skipped="0" time="298.907" hostname="localhost">
+    <testcase name="userCanOpenAndApplyFilters" classname="org.test.ui.StoresFeedActivityTest" time="4.317"/>
+    <testcase name="userCanApplyGroupFilters" classname="org.test.ui.StoresFeedActivityTest" time="1.8279999999999998"/>
+    <testcase name="i_can_see_map_screen_for_delivering_orders"
+              classname="org.test.orders.ongoingorder.OngoingOrderTest" time="64.355" flaky="true">
+        <failure>androidx.test.espresso.PerformException: Error performing 'single click' on view 'view.getId() is &lt;2131429294/org.test.dev:id/profile&gt;'</failure>
+    </testcase>
+    <testcase name="flakyTest" classname="org.test.FlakyTest" time="0.078">
+        <failure>java.lang.AssertionError: Expected count &gt;= 2, but was 1</failure>
+        <failure>java.lang.AssertionError: Expected count &gt;= 2, but was 1</failure>
+    </testcase>
+</testsuite>
