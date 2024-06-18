@@ -1,6 +1,6 @@
 {
   "name": "publish-report-annotations",
-  "version": "1.6.4",
+  "version": "1.7.0",
   "private": true,
   "scripts": {
     "compile": "tsc",
