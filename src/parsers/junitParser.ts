@@ -12,15 +12,16 @@ type JUnitTest = {
         time?: string,
         file?: string,
         line?: string,
+        flaky?: string,
     }
     skipped?: boolean,
-    failure?: {
+    failure: [{
         _attributes: {
             message: string,
             type: string,
         }
         _text: string,
-    }
+    }]
     flaky?: boolean
     retries?: number
 };
@@ -53,9 +54,7 @@ export const junitParser: Parser = {
                 const testCases = asArray(testSuite.testcase);
 
                 // removes cases with same `className` and `name`, as they are considered retries of the same test
-                let flaky = undefined;
                 if (config.detectFlakyTests) {
-                    flaky = 0;
                     const seenAt: { [key: string]: { mostSignificant: JUnitTest, previous: JUnitTest, previousIndex: number, passed: boolean, failed: boolean } } = {};
 
                     for (const [index, testCase] of testCases.entries()) {
@@ -99,7 +98,6 @@ export const junitParser: Parser = {
 
                             if (entry.passed && entry.failed) {
                                 entry.mostSignificant.flaky = true;
-                                flaky++;
                             }
                         }
                     }
@@ -107,9 +105,13 @@ export const junitParser: Parser = {
 
                 let failed = 0;
                 let skipped = 0;
+                let flaky;
                 const cases: TestCase[] = [];
                 for (const testCase of testCases) {
                     if (!testCase) continue;
+
+                    if (testCase._attributes.flaky === 'true') testCase.flaky = true;
+                    if (testCase.flaky) flaky = (flaky || 0) + 1;
 
                     if (testCase.failure) {
                         if (!testCase.flaky) failed++;
@@ -118,17 +120,19 @@ export const junitParser: Parser = {
                             await resolveFile(testCase._attributes.file) :
                             await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
 
-                        const line = getLine(testCase);
+                        for (const failure of asArray(testCase.failure)) {
+                            const line = getLine(testCase, failure._text);
 
-                        result.addAnnotation({
-                            file: filePath,
-                            severity: testCase.flaky ? 'warning' : 'error',
-                            title: testCase.flaky ? `(❗Flaky) ${testCase._attributes.name}` : testCase._attributes.name,
-                            message: testCase.failure._attributes?.message || testCase.failure._text,
-                            rawDetails: testCase.failure._text,
-                            startLine: line,
-                            endLine: line,
-                        });
+                            result.addAnnotation({
+                                file: filePath,
+                                severity: testCase.flaky ? 'warning' : 'error',
+                                title: testCase.flaky ? `(❗Flaky) ${testCase._attributes.name}` : testCase._attributes.name,
+                                message: failure._attributes?.message || failure._text,
+                                rawDetails: failure._text,
+                                startLine: line,
+                                endLine: line,
+                            });
+                        }
 
                     } else if (testCase.skipped) {
                         skipped++;
@@ -161,13 +165,12 @@ export const junitParser: Parser = {
 
 };
 
-function getLine(testCase: JUnitTest): number | undefined {
+function getLine(testCase: JUnitTest, stackTrace: string): number | undefined {
     if (testCase._attributes.line) {
         return Number(testCase._attributes.line);
     }
 
     const className = testCase._attributes.classname;
-    const stackTrace = testCase.failure?._text;
 
     if (className && stackTrace) {
         const match = new RegExp(`\\s*at\\s+${className}\\..*?\\(.*?:(\\d+)\\)`).exec(stackTrace);

@@ -315,7 +315,6 @@ describe("junitParser", () => {
                         passed: 0,
                         skipped: 0,
                         took: "2.07",
-                        flaky: 0,
                         cases: [
                             {
                                 className: "org.test.sample.FlakyFailingTestSuite",
@@ -331,8 +330,7 @@ describe("junitParser", () => {
                     count: 1,
                     failed: 1,
                     passed: 0,
-                    skipped: 0,
-                    flaky: 0
+                    skipped: 0
                 }
             },
             totals: {
@@ -563,6 +561,102 @@ describe("junitParser", () => {
                 errors: 1,
                 others: 0,
                 warnings: 0
+            }
+        }));
+    });
+
+    test("given a Firebase TestLab junit xml should parse it and report flakiness", async () => {
+        const data = await junitParser.parse("samples/TEST-firebase-testlab-test_results_merged.xml", fileFilter);
+
+        expect(fileFilter).not.toHaveBeenCalled();
+        expect(data).toStrictEqual(new ParseResults({
+            annotations: [
+                {
+                    file: "<projectTestSrc>/org/test/orders/ongoingorder/OngoingOrderTest.kt",
+                    message: "androidx.test.espresso.PerformException: Error performing 'single click' on view 'view.getId() is <2131429294/org.test.dev:id/profile>'",
+                    rawDetails: "androidx.test.espresso.PerformException: Error performing 'single click' on view 'view.getId() is <2131429294/org.test.dev:id/profile>'",
+                    severity: "warning",
+                    title: "(❗Flaky) i_can_see_map_screen_for_delivering_orders",
+                    startLine: undefined,
+                    endLine: undefined
+                },
+                {
+                    file: "<projectTestSrc>/org/test/FlakyTest.kt",
+                    message: "java.lang.AssertionError: Expected count >= 2, but was 1",
+                    rawDetails: "java.lang.AssertionError: Expected count >= 2, but was 1",
+                    severity: "error",
+                    title: "flakyTest",
+                    startLine: undefined,
+                    endLine: undefined
+                },
+                {
+                    file: "<projectTestSrc>/org/test/FlakyTest.kt",
+                    message: "java.lang.AssertionError: Expected count >= 2, but was 1",
+                    rawDetails: "java.lang.AssertionError: Expected count >= 2, but was 1",
+                    severity: "error",
+                    title: "flakyTest",
+                    startLine: undefined,
+                    endLine: undefined
+                }
+            ],
+            checks: {
+                checks: [],
+                totals: {
+                    count: 0,
+                    errors: 0,
+                    others: 0,
+                    warnings: 0
+                }
+            },
+            tests: {
+                suites: [
+                    {
+                        cases: [
+                            {
+                                className: "org.test.FlakyTest",
+                                name: "flakyTest",
+                                outcome: "failed",
+                                took: "0.078"
+                            },
+                            {
+                                className: "org.test.orders.ongoingorder.OngoingOrderTest",
+                                name: "i_can_see_map_screen_for_delivering_orders",
+                                outcome: "flaky",
+                                took: "64.355"
+                            },
+                            {
+                                className: "org.test.ui.StoresFeedActivityTest",
+                                name: "userCanApplyGroupFilters",
+                                outcome: "passed",
+                                took: "1.8279999999999998"
+                            },
+                            {
+                                className: "org.test.ui.StoresFeedActivityTest",
+                                name: "userCanOpenAndApplyFilters",
+                                outcome: "passed",
+                                took: "4.317"
+                            }
+                        ],
+                        failed: 1,
+                        flaky: 1,
+                        name: "",
+                        passed: 3,
+                        skipped: 0,
+                        took: "298.907"
+                    }
+                ],
+                totals: {
+                    count: 4,
+                    failed: 1,
+                    flaky: 1,
+                    passed: 3,
+                    skipped: 0
+                }
+            },
+            totals: {
+                errors: 2,
+                others: 0,
+                warnings: 1
             }
         }));
     });
