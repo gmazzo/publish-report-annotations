@@ -1,5 +1,4 @@
-import {ParseResults} from "./types";
-import config, {Config} from "./config";
+import {Config, ParseResults} from "./types";
 
 function entry(params: {
     amount: number,
@@ -147,15 +146,10 @@ function summaryTableOfChecks(
     return table;
 }
 
-export function summaryTableOf(
-    results: ParseResults,
-    testsSummary: Config['testsSummary'] = config.testsSummary,
-    checksSummary: Config['checksSummary'] = config.checksSummary,
-    filterPassedTests: Config['filterPassedTests'] = config.filterPassedTests,
-) {
-    const originalTestsSummary = testsSummary;
-    const originalChecksSummary = checksSummary;
-    const originalFilterPassedTests = filterPassedTests;
+export function summaryTableOf(results: ParseResults, config: Config) {
+    let testsSummary = config.testsSummary;
+    let checksSummary = config.checksSummary;
+    let filterPassedTests = config.filterPassedTests;
 
     let content;
     let originalLength;
@@ -171,13 +165,13 @@ export function summaryTableOf(
                     results.tests,
                     testsSummary == 'full',
                     filterPassedTests,
-                    testsSummary != originalTestsSummary || filterPassedTests != originalFilterPassedTests);
+                    testsSummary != config.testsSummary || filterPassedTests != config.filterPassedTests);
         }
         if (checksSummary != 'off' && results.checks.totals.count > 0) {
             if (content) content += '\n';
             content += checksSummary == 'totals' ?
                 `Checks: ${summaryOfChecks(results.checks.totals, false)}` :
-                summaryTableOfChecks(results.checks, checksSummary != originalChecksSummary);
+                summaryTableOfChecks(results.checks, checksSummary != config.checksSummary);
         }
 
         if (content.length > 65500) {
@@ -215,14 +209,14 @@ export function summaryTableOf(
 
     if (originalLength) {
         content += `[^settingsChanged]: Summary table was too long (${originalLength} characters), reduced the following to make it fit into the limits:`;
-        if (originalTestsSummary != testsSummary) {
-            content += `<br/>- \`testsSummary\` from \`${originalTestsSummary}\` to \`${testsSummary}\``;
+        if (config.testsSummary != testsSummary) {
+            content += `<br/>- \`testsSummary\` from \`${config.testsSummary}\` to \`${testsSummary}\``;
         }
-        if (originalChecksSummary != checksSummary) {
-            content += `<br/>- \`checksSummary\` from \`${originalChecksSummary}\` to \`${checksSummary}\``;
+        if (config.checksSummary != checksSummary) {
+            content += `<br/>- \`checksSummary\` from \`${config.checksSummary}\` to \`${checksSummary}\``;
         }
-        if (originalFilterPassedTests != filterPassedTests) {
-            content += `<br/>- \`filterPassedTests\` from \`${originalFilterPassedTests}\` to \`${filterPassedTests}\``;
+        if (config.filterPassedTests != filterPassedTests) {
+            content += `<br/>- \`filterPassedTests\` from \`${config.filterPassedTests}\` to \`${filterPassedTests}\``;
         }
     }
     return content;

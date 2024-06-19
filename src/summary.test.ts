@@ -1,4 +1,4 @@
-import {ParseResults, TestCase} from "./types";
+import {Config, ParseResults, TestCase} from "./types";
 import {summaryOf, summaryTableOf} from "./summary";
 
 describe("summaryOf", () => {
@@ -170,7 +170,7 @@ describe("summaryTableOf", () => {
     });
 
     test("when summary is suites only, returns the expected result", () => {
-        const summary = summaryTableOf(results, 'suitesOnly', 'full', false);
+        const summary = summaryTableOf(results, {testsSummary: 'suitesOnly', checksSummary: 'full', filterPassedTests: false} as Config);
 
         expect(summary).toBe(`|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took
 |:-|-|-|-|-
@@ -192,7 +192,7 @@ describe("summaryTableOf", () => {
     });
 
     test("when summary is full, returns the expected result", () => {
-        const summary = summaryTableOf(results, 'full', 'full', false);
+        const summary = summaryTableOf(results, {testsSummary: 'full', checksSummary: 'full', filterPassedTests: false} as Config);
 
         expect(summary).toBe(`|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took
 |:-|-|-|-|-
@@ -214,7 +214,7 @@ describe("summaryTableOf", () => {
     });
 
     test("when summary is without passed, returns the expected result", () => {
-        const summary = summaryTableOf(results, 'suitesOnly', 'full', true);
+        const summary = summaryTableOf(results, {testsSummary: 'suitesOnly', checksSummary: 'full', filterPassedTests: true} as Config);
 
         expect(summary).toBe(`|Test Suites|✅ 2 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 1 failed|⌛ took
 |:-|-|-|-|-
@@ -255,7 +255,7 @@ describe("summaryTableOf", () => {
                     },
                 ], totals: {count: 6, errors: 0, warnings: 6, others: 0}
             }
-        }), 'off',  'full', false);
+        }), {testsSummary: 'off', checksSummary: 'full', filterPassedTests: false} as Config);
 
         expect(summary).toBe(`|suite1|🛑 0 errors|⚠️ 1 warning|💡 0 others|
 |:-|-|-|-|
@@ -270,14 +270,14 @@ describe("summaryTableOf", () => {
     });
 
     test("when summary is totals, returns the expected result", () => {
-        const summary = summaryTableOf(results, 'totals', 'totals', false);
+        const summary = summaryTableOf(results, {testsSummary: 'totals', checksSummary: 'totals', filterPassedTests: false} as Config);
 
         expect(summary).toBe('Tests: 4 tests: ✅ 2 passed, 🟡 1 skipped, ❌ 1 failed\n' +
             'Checks: 🛑 3 errors, ⚠️ 2 warnings, 💡 1 other');
     });
 
     test("when summary is off, returns an empty string", () => {
-        const summary = summaryTableOf(results, 'off', 'off', false);
+        const summary = summaryTableOf(results, {testsSummary: 'off', checksSummary: 'off', filterPassedTests: false} as Config);
 
         expect(summary).toBe('');
     });
@@ -294,7 +294,7 @@ describe("summaryTableOf", () => {
             }
             results.addTestSuite({ name: `suite${i}`, passed: 1, skipped: 0, failed: 0, took: "1", cases });
         }
-        const summary = summaryTableOf(results, 'full', 'full', false);
+        const summary = summaryTableOf(results, {testsSummary: 'full', checksSummary: 'full', filterPassedTests: false} as Config);
         const note = summary.substring(summary.indexOf('[^settingsChanged]: '));
 
         expect(summary.length).toBeLessThan(65500);

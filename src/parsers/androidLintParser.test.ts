@@ -1,12 +1,13 @@
 import {androidLintParser} from "./androidLintParser";
-import {ParseResults} from "../types";
+import {Config, ParseResults} from "../types";
 
-const fileFilter = jest.fn().mockReturnValue(true);
+const prFilesFilter = jest.fn().mockReturnValue(true);
+const config = { prFilesFilter } as unknown as Config;
 
 describe("androidLintParser", () => {
 
     test("given lint xml should obtain annotations", async () => {
-        const data = await androidLintParser.parse("samples/lint-results-debug.xml", fileFilter);
+        const data = await androidLintParser.parse("samples/lint-results-debug.xml", config);
 
         expect(data).toStrictEqual(new ParseResults({
             annotations: [
@@ -103,11 +104,11 @@ describe("androidLintParser", () => {
     });
 
     test("given lint xml, but filtering, expect no annotations", async () => {
-        fileFilter.mockReturnValue(false);
+        prFilesFilter.mockReturnValue(false);
 
-        const data = await androidLintParser.parse("samples/lint-results-debug.xml", fileFilter);
+        const data = await androidLintParser.parse("samples/lint-results-debug.xml", config);
 
-        expect(fileFilter).toHaveBeenCalledWith("sample-gradle/build.gradle.kts");
+        expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/build.gradle.kts");
         expect(data).toStrictEqual(new ParseResults({}));
     });
 

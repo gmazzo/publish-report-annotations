@@ -1,16 +1,15 @@
 import * as github from '@actions/github';
 import { type components } from '@octokit/openapi-types';
-import config from "./config";
 
 export type FileStatus = components['schemas']['diff-entry']['status'];
 
-export async function getPRFiles(...statuses: FileStatus[]) {
+export async function getPRFiles(githubToken: string, ...statuses: FileStatus[]) {
   const issue = github.context.issue;
   if (!issue.number) {
     return;
   }
 
-  const octokit = github.getOctokit(config.githubToken);
+  const octokit = github.getOctokit(githubToken);
   return octokit
     .paginate(octokit.rest.pulls.listFiles, {
       owner: issue.owner,

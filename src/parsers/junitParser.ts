@@ -1,9 +1,8 @@
 import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
-import {ParseResults, TestCase} from "../types";
+import {Config, ParseResults, TestCase} from "../types";
 import {Parser} from "./parser";
-import config from "../config";
 
 type JUnitTest = {
     _attributes: {
@@ -44,7 +43,7 @@ type JUnitData = {
 
 export const junitParser: Parser = {
 
-    async parse(filePath: string) {
+    async parse(filePath: string, config: Config) {
         const data: JUnitData = await readFile(filePath);
 
         if (data?.testsuite || data?.testsuites) {

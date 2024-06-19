@@ -1,8 +1,8 @@
-import {FileFilter, Parser} from "./parser";
+import {Parser} from "./parser";
 import {readFile} from "./readFile";
 import {asArray, join} from "../utils";
 import {resolveFile} from "./resolveFile";
-import {CheckSuite, ParseResults} from "../types";
+import {CheckSuite, Config, ParseResults} from "../types";
 
 type Severity = 'fatal' | 'error' | 'warning' | 'informational';
 
@@ -36,7 +36,7 @@ type LintData = {
 
 export const androidLintParser: Parser = {
 
-    parse: async function (filePath: string, fileFilter: FileFilter) {
+    parse: async function (filePath: string, config: Config) {
         const data: LintData = await readFile(filePath);
 
         if (data?.issues) {
@@ -50,7 +50,7 @@ export const androidLintParser: Parser = {
                     for (const location of asArray(testcase.location)) {
                         const file = await resolveFile(location._attributes.file);
 
-                        if (fileFilter(file)) {
+                        if (config.prFilesFilter(file)) {
                             const issue = `${testcase._attributes.category} / ${testcase._attributes.id}`;
 
                             result.addIssueToCheckSuite(suite, issue, type);

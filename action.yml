@@ -2,9 +2,15 @@ name: "Publish Reports"
 description: "Annotates files feeding from JUnit/AndroidLint/Checkstyle XML reports"
 inputs:
   token:
-    description: "Specify the token to use to publish the check."
-    required: true
+    description: "Specify the token to use to publish the check (required unless you set `appId` and `appSecret`)"
+    required: false
     default: ${{ github.token }}
+  appId:
+    description: "A GitHub App ID to use to publish the check (required unless you set `token`)"
+    required: false
+  appSecret:
+    description: "A GitHub App secret to use to publish the check (required unless you set `token`)"
+    required: false
   checkName:
     description: "Check name for test reports (only annotates if missing)"
     required: false

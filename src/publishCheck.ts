@@ -1,11 +1,10 @@
 import * as github from "@actions/github";
 import * as core from "@actions/core";
-import config from "./config";
-import {ParseResults} from "./types";
+import {Config, ParseResults} from "./types";
 import {shouldFail} from "./utils";
 import {summaryOf, summaryTableOf} from "./summary";
 
-export async function publishCheck(results: ParseResults) {
+export async function publishCheck(results: ParseResults, config: Config) {
     const octokit = github.getOctokit(config.githubToken);
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -16,10 +15,10 @@ export async function publishCheck(results: ParseResults) {
         name: config.checkName,
         head_sha: commit,
         status: 'completed' as const,
-        conclusion: getConclusion(results),
+        conclusion: shouldFail(results.totals, config.warningsAsErrors) ? "failure" : "success" as "failure" | "success",
         output: {
             title: summaryOf(results, true),
-            summary: summaryTableOf(results),
+            summary: summaryTableOf(results, config),
             annotations: results.annotations.slice(0, 50).map(annotation => ({
                 path: annotation.file || '',
                 start_line: annotation.startLine || 0,
@@ -51,10 +50,6 @@ export async function publishCheck(results: ParseResults) {
     if (results.annotations.length != params.output.annotations.length) {
         core.warning(`Due GitHub limitation, only ${params.output.annotations.length} of ${results.annotations.length} were reported.\nhttps://github.com/orgs/community/discussions/26680`);
     }
-}
-
-function getConclusion(results: ParseResults): 'success' | 'failure' {
-    return shouldFail(results.totals, config.warningsAsErrors) ? "failure" : "success";
 }
 
 function getAnnotationType(value: ParseResults['annotations'][0]['severity']): 'failure' | 'warning' | 'notice' {
