@@ -65,6 +65,23 @@ steps:
 | `warningsAsErrors`  | If any warning is reported should count as an error. Mostly used in conjunction with `failOnError`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `false`                                                          |
 | `failOnError`       | If the action should fail if any error is reported                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `false`                                                          |
 
+#### Reporting as a GitHub App
+By default, this action will use `${{ github.token }}` as the `token` for making the API call to create a check (only when `checkName` is also provided).
+
+You can impersonate the action as a GitHub App by using the official [create-github-app-token](https://github.com/actions/create-github-app-token):
+```yaml
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+      - uses: gmazzo/publish-report-annotations@v1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+```
+For further references about how to acquire a GitHub App installation token, check the former action documentation.
+
 ### Outputs
 The action will output the number of errors and warnings found in the reports, aggregated by `tests`, `checks` and totals:
 
