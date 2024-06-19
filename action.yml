@@ -9,7 +9,7 @@ inputs:
     description: "A GitHub App ID to use to publish the check (required unless you set `token`)"
     required: false
   appSecret:
-    description: "A GitHub App secret to use to publish the check (required unless you set `token`)"
+    description: "A GitHub App secret (private key) to use to publish the check (required unless you set `token`)"
     required: false
   checkName:
     description: "Check name for test reports (only annotates if missing)"

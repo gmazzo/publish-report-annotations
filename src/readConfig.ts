@@ -1,5 +1,5 @@
 import * as core from "@actions/core";
-import {getAppToken} from "./githubApp";
+import {getAppToken} from "./getAppToken";
 import {Config} from "./types";
 import {createFileFilter} from "./createFileFilter";
 

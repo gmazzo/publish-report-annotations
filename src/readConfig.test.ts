@@ -14,7 +14,7 @@ jest.mock("./createFileFilter", () => ({
     createFileFilter
 }));
 
-jest.mock("./githubApp", () => ({
+jest.mock("./getAppToken", () => ({
     getAppToken
 }));
 
