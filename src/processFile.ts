@@ -3,7 +3,7 @@ import {checkstyleParser} from "./parsers/checkstyleParser";
 import {androidLintParser} from "./parsers/androidLintParser";
 import {join} from "./utils";
 import * as core from "@actions/core";
-import {FileFilter} from "./parsers/parser";
+import {Config} from "./types";
 
 const parsers = [
     junitParser,
@@ -11,9 +11,11 @@ const parsers = [
     androidLintParser,
 ];
 
-export async function processFile(filepath: string, doNotAnnotate: boolean, fileFilter: FileFilter) {
+export async function processFile(filepath: string, config: Config) {
+    const doNotAnnotate = config.checkName != '';
+
     for (const parser of parsers) {
-        const result = await parser.parse(filepath, fileFilter);
+        const result = await parser.parse(filepath, config);
 
         if (result) {
             for (const annotation of result.annotations) {

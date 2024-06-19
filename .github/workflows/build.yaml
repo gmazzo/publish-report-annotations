@@ -27,7 +27,7 @@ jobs:
         run: npm run build
       - name: Report to Check
         uses: ./.
-        if: ${{ always() && github.event_name == 'pull_request' }}
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         with:
           checkName: "Test Reports (full)"
           reports: |
@@ -35,7 +35,7 @@ jobs:
           testsSummary: full
       - name: Report to Check (Omit ✅ passed)
         uses: ./.
-        if: ${{ always() && github.event_name == 'pull_request' }}
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         with:
           checkName: "Test Reports (omitting passed)"
           reports: |
@@ -44,7 +44,7 @@ jobs:
           filterPassedTests: true
       - name: Report to Check (Computing Flaky)
         uses: ./.
-        if: ${{ always() && github.event_name == 'pull_request' }}
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         with:
           checkName: "Test Reports (computing flaky)"
           reports: |
@@ -53,17 +53,21 @@ jobs:
           detectFlakyTests: true
       - name: Report to Check (PR filtered)
         uses: ./.
-        if: ${{ always() && github.event_name == 'pull_request' }}
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         with:
           checkName: "Test Reports (PR filtered)"
           reports: |
             samples/[!TEST]*.xml
           filterChecks: true
-      - name: Coverage report
-        uses: codecov/codecov-action@v4
-        if: always()
+      - name: Report to Check (GitHub App)
+        uses: ./.
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          appId: 925397
+          appSecret: ${{ secrets.GH_APP_SECRET }}
+          checkName: "Test Reports (GitHub App)"
+          reports: |
+            samples/
       - name: Run integrations tests
         if: ${{ github.event_name == 'pull_request' }}
         env:
@@ -72,7 +76,12 @@ jobs:
         run: npm run intTest
       - name: Report to PR
         uses: ./.
-        if: always()
+        if: ${{ !cancelled() }}
         with:
           reports: |
             lib/*-junit.xml
+      - name: Coverage report
+        uses: codecov/codecov-action@v4
+        if: ${{ !cancelled() }}
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

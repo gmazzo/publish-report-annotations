@@ -30,32 +30,26 @@ jest.mock('@actions/github', () => {
     };
 });
 
-jest.mock('./config', () => {
-    return {
-        githubToken: 'aToken',
-    };
-});
-
 import {getPRFiles} from './getPRFiles';
 
 describe('getPRFiles', () => {
 
     test('get without any statuses, returns all files', async () => {
-        const files = await getPRFiles();
+        const files = await getPRFiles('aToken');
 
         expect(getOctokit).toHaveBeenCalledWith('aToken');
         expect(files).toEqual(['file1', 'file2', 'file3', 'file4', 'file5']);
     });
 
     test('get for added, returns just added files', async () => {
-        const files = await getPRFiles('added');
+        const files = await getPRFiles('aToken', 'added');
 
         expect(getOctokit).toHaveBeenCalledWith('aToken');
         expect(files).toEqual(['file1', 'file4']);
     });
 
     test('get other statuses, returns the expected files', async () => {
-        const files = await getPRFiles('changed', 'modified');
+        const files = await getPRFiles('aToken', 'changed', 'modified');
 
         expect(getOctokit).toHaveBeenCalledWith('aToken');
         expect(files).toEqual(['file3', 'file5']);

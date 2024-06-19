@@ -14,7 +14,7 @@ import {createFileFilter} from "./createFileFilter";
 describe('fileFilter', () => {
 
     test('should return true, for files in the PR', async () => {
-        const fileFilter = await createFileFilter();
+        const fileFilter = await createFileFilter('aToken');
 
         expect(typeof fileFilter).toBe('function');
         expect(fileFilter('file1')).toBe(true);
@@ -23,7 +23,7 @@ describe('fileFilter', () => {
     });
 
     test('should return false and log, for files not in the PR', async () => {
-        const fileFilter = await createFileFilter();
+        const fileFilter = await createFileFilter('aToken');
 
         expect(typeof fileFilter).toBe('function');
         expect(fileFilter('file3')).toBe(false);
@@ -31,7 +31,7 @@ describe('fileFilter', () => {
     });
 
     test('if file is missing, it should not be filtered', async () => {
-        const fileFilter = await createFileFilter();
+        const fileFilter = await createFileFilter('aToken');
 
         expect(typeof fileFilter).toBe('function');
         expect(fileFilter(undefined)).toBe(true);

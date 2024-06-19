@@ -1,15 +1,15 @@
 import * as core from "@actions/core";
 import * as glob from "@actions/glob";
-import config from "./config";
 import {processFile} from "./processFile";
 import {relative} from "path";
 import {ParseResults} from "./types";
 import {publishCheck} from "./publishCheck";
 import {shouldFail} from "./utils";
 import {summaryOf, summaryTableOf} from "./summary";
-import {createFileFilter} from "./createFileFilter";
+import {readConfig} from "./readConfig";
 
 export default async function main() {
+    const config = await readConfig();
     const globber = await glob.create(config.reports.join('\n'), {implicitDescendants: true, matchDirectories: false});
     const files = (await globber.glob()).map(it => relative(process.cwd(), it));
     core.debug(`Found ${files.length} files to process matching: ${config.reports.join(', ')}`);
@@ -17,13 +17,11 @@ export default async function main() {
     const currentDir = process.cwd();
     const all = new ParseResults();
 
-    const fileFilter = config.filterChecks ? await createFileFilter() : () => true;
-
     for (const file of files) {
         const relativePath = relative(currentDir, file);
 
         core.startGroup(`Processing \`${relativePath}\``);
-        const result = await processFile(file, config.checkName != '', fileFilter);
+        const result = await processFile(file, config);
         if (result) {
             all.mergeWith(result);
         }
@@ -41,10 +39,10 @@ export default async function main() {
     }
 
     if (config.checkName) {
-        await publishCheck(all);
+        await publishCheck(all, config);
 
     } else {
-        core.summary.addRaw(summaryTableOf(all));
+        core.summary.addRaw(summaryTableOf(all, config));
         await core.summary.write();
     }
     if (config.failOnError && shouldFail(all.totals, config.warningsAsErrors)) {

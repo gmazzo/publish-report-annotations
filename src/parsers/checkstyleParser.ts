@@ -1,8 +1,8 @@
 import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
-import {FileFilter, Parser} from "./parser";
-import {ParseResults, CheckSuite} from "../types";
+import {Parser} from "./parser";
+import {ParseResults, CheckSuite, Config} from "../types";
 
 type Severity = 'error' | 'warning' | 'info' | 'ignore';
 
@@ -29,7 +29,7 @@ type CheckStyleData = {
 
 export const checkstyleParser: Parser = {
 
-    async parse(filePath: string, fileFilter: FileFilter) {
+    async parse(filePath: string, config: Config) {
         const data: CheckStyleData = await readFile(filePath);
 
         if (data?.checkstyle) {
@@ -43,7 +43,7 @@ export const checkstyleParser: Parser = {
                     if (type) {
                         const filePath = await resolveFile(file._attributes.name);
 
-                        if (fileFilter(filePath)) {
+                        if (config.prFilesFilter(filePath)) {
                             const source = error._attributes.source;
 
                             if (source) {

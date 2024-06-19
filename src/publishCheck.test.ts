@@ -1,4 +1,4 @@
-import {ParseResults} from "./types";
+import {Config, ParseResults} from "./types";
 
 const listForRef = jest.fn();
 const create = jest.fn().mockReturnValue({data: {html_url: "aUrl"}});
@@ -16,10 +16,10 @@ const coreInfo = jest.fn();
 const summaryOf = jest.fn().mockReturnValue("aSummary");
 const summaryTableOf = jest.fn().mockReturnValue("aSummaryTable");
 
-jest.mock("./config", () => ({
+const config = {
     githubToken: "aToken",
     checkName: "aCheckName",
-}));
+} as Config;
 
 jest.mock("./summary", () => ({
     summaryOf,
@@ -93,7 +93,7 @@ describe("publishCheck", () => {
                 title: "title1",
                 rawDetails: "rawDetails1"
             }]
-        }));
+        }), config);
 
         expect(getOctokit).toHaveBeenCalledWith("aToken");
         expect(listForRef).toHaveBeenCalledWith({

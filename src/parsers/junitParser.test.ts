@@ -1,29 +1,21 @@
-import {ParseResults} from "../types";
+import {Config, ParseResults} from "../types";
 
 const resolveFile = jest.fn().mockImplementation((file: string) => `<projectTestSrc>/${file}.kt`);
-const fileFilter = jest.fn().mockReturnValue(true);
+const prFilesFilter = jest.fn().mockReturnValue(true);
+const config = { prFilesFilter } as unknown as Config;
 
 jest.mock("./resolveFile", () => ({
     resolveFile
 }));
 
-const config = {
-    detectFlakyTests: false,
-};
-jest.mock("../config", () => (config));
-
 import {junitParser} from "./junitParser";
 
 describe("junitParser", () => {
 
-    beforeEach(() => {
-        config.detectFlakyTests = false;
-    });
-
     test("given junit xml should obtain annotations", async () => {
-        const data = await junitParser.parse("samples/TEST-org.test.sample.SampleTestSuite.xml", fileFilter);
+        const data = await junitParser.parse("samples/TEST-org.test.sample.SampleTestSuite.xml", config);
 
-        expect(fileFilter).not.toHaveBeenCalled();
+        expect(prFilesFilter).not.toHaveBeenCalled();
         expect(data).toStrictEqual(new ParseResults({
             annotations: [
                 {
@@ -97,9 +89,9 @@ describe("junitParser", () => {
     });
 
     test("given another junit xml should obtain annotations", async () => {
-        const data = await junitParser.parse("samples/TEST-org.test.sample.AnotherTestSuite.xml", fileFilter);
+        const data = await junitParser.parse("samples/TEST-org.test.sample.AnotherTestSuite.xml", config);
 
-        expect(fileFilter).not.toHaveBeenCalled();
+        expect(prFilesFilter).not.toHaveBeenCalled();
         expect(data).toStrictEqual(new ParseResults({
             tests: {
                 suites: [
@@ -148,9 +140,7 @@ describe("junitParser", () => {
     });
 
     test.each([[false], [true]])("given a junit xml with retries should process it correctly [detectFlakyTests=%p]", async (detectFlakyTests) => {
-        config.detectFlakyTests = detectFlakyTests;
-
-        const data = await junitParser.parse("samples/TEST-org.test.sample.FlakyTestSuite.xml", fileFilter);
+        const data = await junitParser.parse("samples/TEST-org.test.sample.FlakyTestSuite.xml", {...config, detectFlakyTests });
 
         expect(data).toStrictEqual(detectFlakyTests ? new ParseResults({
             annotations: [
@@ -282,9 +272,7 @@ describe("junitParser", () => {
     });
 
     test("given a junit xml with retries that always fails, should process it correctly", async () => {
-        config.detectFlakyTests = true;
-
-        const data = await junitParser.parse("samples/TEST-org.test.sample.FlakyFailingTestSuite.xml", fileFilter);
+        const data = await junitParser.parse("samples/TEST-org.test.sample.FlakyFailingTestSuite.xml", {...config, detectFlakyTests: true});
 
         expect(data).toStrictEqual(new ParseResults({
             annotations: [
@@ -342,9 +330,9 @@ describe("junitParser", () => {
     });
 
     test("given a jest junit xml should obtain annotations", async () => {
-        const data = await junitParser.parse("samples/TEST-jest.xml", fileFilter);
+        const data = await junitParser.parse("samples/TEST-jest.xml", config);
 
-        expect(fileFilter).not.toHaveBeenCalled();
+        expect(prFilesFilter).not.toHaveBeenCalled();
         expect(data).toStrictEqual(new ParseResults({
             annotations: [
                 {
@@ -566,9 +554,9 @@ describe("junitParser", () => {
     });
 
     test("given a Firebase TestLab junit xml should parse it and report flakiness", async () => {
-        const data = await junitParser.parse("samples/TEST-firebase-testlab-test_results_merged.xml", fileFilter);
+        const data = await junitParser.parse("samples/TEST-firebase-testlab-test_results_merged.xml", config);
 
-        expect(fileFilter).not.toHaveBeenCalled();
+        expect(prFilesFilter).not.toHaveBeenCalled();
         expect(data).toStrictEqual(new ParseResults({
             annotations: [
                 {

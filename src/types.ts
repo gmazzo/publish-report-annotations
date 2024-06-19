@@ -1,4 +1,19 @@
 import {AnnotationProperties} from "@actions/core";
+import {FileFilter} from "./parsers/parser";
+
+export interface Config {
+    githubToken: string;
+    checkName: string;
+    reports: string[];
+    testsSummary: 'full' | 'suitesOnly' | 'totals' | 'off';
+    checksSummary: 'full' | 'totals' | 'off';
+    filterPassedTests: boolean;
+    filterChecks: boolean;
+    prFilesFilter: FileFilter;
+    detectFlakyTests: boolean;
+    warningsAsErrors: boolean;
+    failOnError: boolean;
+}
 
 type Severity = 'error' | 'warning' | 'other';
 
