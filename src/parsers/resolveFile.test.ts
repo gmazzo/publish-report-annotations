@@ -3,7 +3,7 @@ import * as glob from "@actions/glob";
 import childProcess, {execSync} from "node:child_process";
 import {resetCache, resolveFile} from "./resolveFile";
 import {cwd} from "process";
-import {dirname} from "@actions/glob/lib/internal-path-helper";
+import {dirname} from "path";
 
 jest.spyOn(glob, 'create');
 jest.spyOn(childProcess, 'execSync');
