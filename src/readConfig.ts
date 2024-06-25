@@ -9,8 +9,6 @@ export async function readConfig(): Promise<Config> {
         await getAppToken(appId,  core.getInput("appSecret", {required: true})) :
         core.getInput("token", {required: true});
 
-    const legacySummary = parseLegacySummary();
-
     const filterChecks = core.getBooleanInput("filterChecks");
     const prFilesFilter = filterChecks ? await createFileFilter(githubToken) : () => true;
 
@@ -18,11 +16,9 @@ export async function readConfig(): Promise<Config> {
         githubToken,
         checkName: core.getInput("checkName"),
         reports: core.getMultilineInput("reports", {required: true}),
-        testsSummary: legacySummary?.testsSummary ||
-            getEnum("testsSummary", {full: null, suitesOnly: null, totals: null, off: null}),
-        checksSummary: legacySummary?.checksSummary ||
-            getEnum("checksSummary", {full: null, totals: null, off: null}),
-        filterPassedTests: legacySummary?.filterPassedTests || core.getBooleanInput("filterPassedTests"),
+        testsSummary: getEnum("testsSummary", {full: null, suitesOnly: null, totals: null, off: null}),
+        checksSummary: getEnum("checksSummary", {full: null, totals: null, off: null}),
+        filterPassedTests: core.getBooleanInput("filterPassedTests"),
         filterChecks,
         prFilesFilter,
         detectFlakyTests: core.getBooleanInput("detectFlakyTests"),
@@ -37,29 +33,4 @@ function getEnum<Enum extends object>(name: string, allowedValues: Enum) {
         throw new Error(`Invalid value for '${name}': ${input}`);
     }
     return input as keyof Enum;
-}
-
-// TODO: remove this function in the future
-function parseLegacySummary(): {
-    testsSummary: 'suitesOnly' | 'totals' | 'off',
-    checksSummary: 'full' | 'totals' | 'off',
-    filterPassedTests?: boolean
-} | undefined {
-    const summary = core.getInput("summary");
-    if (summary) {
-        switch (summary) {
-            case "detailed":
-                return {testsSummary: "suitesOnly", checksSummary: "full"};
-
-            case "detailedWithoutPassed":
-                return {testsSummary: "suitesOnly", checksSummary: "full", filterPassedTests: true};
-
-            case "totals":
-                return {testsSummary: "totals", checksSummary: "totals"};
-
-            case "off":
-                return {testsSummary: "off", checksSummary: "off"};
-        }
-        throw new Error(`Invalid value for 'summary': ${summary}`);
-    }
 }

@@ -20,10 +20,6 @@ inputs:
     default: |
       **/build/test-results/**/*.xml
       **/build/reports/**/*.xml
-  summary: # TODO: remove this input in the future
-    deprecationMessage: 'Use `testsSummary` and `checksSummary` instead'
-    description: "The kind summary to display in the check: `detailed`, `totals` or `off`"
-    required: false
   testsSummary:
     description: "The kind summary to report for the tests found: `full` (default), `suitesOnly`, `totals` or `off`"
     required: true
