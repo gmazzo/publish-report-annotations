@@ -76,7 +76,7 @@ describe('config', () => {
         expect(getBooleanInput).toHaveBeenCalledWith('detectFlakyTests');
         expect(getBooleanInput).toHaveBeenCalledWith('warningsAsErrors');
         expect(getBooleanInput).toHaveBeenCalledWith('failOnError');
-        expect(getInput).toHaveBeenCalledTimes(6);
+        expect(getInput).toHaveBeenCalledTimes(5);
         expect(getMultilineInput).toHaveBeenCalledTimes(1);
         expect(getBooleanInput).toHaveBeenCalledTimes(5);
     });
@@ -97,41 +97,6 @@ describe('config', () => {
         expect(getInput).not.toHaveBeenCalledWith('token', expect.anything());
         expect(config.githubToken).toBe('anAppToken');
         expect(getAppToken).toHaveBeenCalledWith('anAppId', 'anAppSecret');
-    });
-
-    test.each([
-        ['detailed', 'suitesOnly', 'full', undefined],
-        ['detailedWithoutPassed', 'suitesOnly', 'full', true],
-        ['totals', 'totals', 'totals', undefined],
-        ['off', 'off', 'off', undefined],
-        ['<other>', 'off', 'off', undefined],
-    ])('when legacy summary is given, overrides new ones [summary=%p]', async (summaryValue, expectedTestsSummary, expectedChecksSummary, expectedFilterPassedTests) => {
-        getInput.mockImplementation((name: string) => {
-            switch (name) {
-                case 'appId': return '';
-                case 'summary': return summaryValue;
-            }
-            return `value:${name}`;
-        });
-        getMultilineInput.mockImplementation((name: string) => `multiValue:${name}`);
-        getBooleanInput.mockImplementation((name: string) => `bool:${name}`);
-
-        if (summaryValue == '<other>') {
-            await expect(readConfig()).rejects.toThrow(`Invalid value for 'summary': <other>`);
-            return;
-        }
-
-        const config = await readConfig();
-
-        expect(config.testsSummary).toStrictEqual(expectedTestsSummary);
-        expect(config.checksSummary).toStrictEqual(expectedChecksSummary);
-        expect(config.filterPassedTests).toBe(expectedFilterPassedTests || 'bool:filterPassedTests');
-
-        expect(getInput).toHaveBeenCalledWith('token', {required: true});
-        expect(getInput).toHaveBeenCalledWith('checkName');
-        expect(getInput).toHaveBeenCalledWith('summary');
-        expect(getInput).not.toHaveBeenCalledWith('testsSummary', expect.anything());
-        expect(getInput).not.toHaveBeenCalledWith('checksSummary', expect.anything());
     });
 
 });
