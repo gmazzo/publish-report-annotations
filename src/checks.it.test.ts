@@ -154,6 +154,13 @@ describe('checks', () => {
 `,
                 title: "38 tests: ✅ 26 (❗1), 🟡 1, ❌ 11, checks: ⚠️ 5"
             },
+            "Test Reports (No Reports)": {
+                annotations: 0,
+                conclusion: "failure",
+                status: "completed",
+                summary: "",
+                title: "❗No report files found"
+            },
         });
     });
 });

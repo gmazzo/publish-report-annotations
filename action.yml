@@ -48,6 +48,10 @@ inputs:
     description: "Fail the action if any errors are found"
     required: false
     default: "false"
+  failIfNoReportsFound:
+    description: "Fail the action if no reports are found for the given `reports` input"
+    required: false
+    default: "false"
 runs:
   using: node20
   main: dist/index.js

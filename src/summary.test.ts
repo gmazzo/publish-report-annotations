@@ -119,6 +119,18 @@ describe("summaryOf", () => {
         expect(result).toBe("3 tests: ✅ 2, 🟡 1, checks: 🛑 1, ⚠️ 3");
     });
 
+    test("no issues found", () => {
+        const result = summaryOf(new ParseResults({files: ['aFile']}), true);
+
+        expect(result).toBe('No issues found');
+    });
+
+    test("no reports found", () => {
+        const result = summaryOf(new ParseResults({files: []}), true);
+
+        expect(result).toBe('❗No report files found');
+    });
+
 });
 
 describe("summaryTableOf", () => {

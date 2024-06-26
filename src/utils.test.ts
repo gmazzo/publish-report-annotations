@@ -1,4 +1,5 @@
-import {asArray, join, shouldFail} from "./utils";
+import {asArray, hasErrors, join, shouldFail} from "./utils";
+import {Config, ParseResults} from "./types";
 
 describe("asArray", () => {
 
@@ -40,26 +41,69 @@ describe("join", () => {
 
 describe("shouldFail", () => {
 
+    test("if error when no files, then true", () => {
+        const config = {failIfNoReportsFound: true} as Config;
+        const result = shouldFail(new ParseResults(), config);
+
+        expect(result).toBe(true);
+    });
+
     test("if error, then true", () => {
-        const result = shouldFail({errors: 3, warnings: 2, others: 1}, false);
+        const config = {warningsAsErrors: false} as Config;
+        const result = shouldFail(new ParseResults({totals: {errors: 3, warnings: 2, others: 1}}), config);
 
         expect(result).toBe(true);
     });
 
     test("if only warnings, then false", () => {
-        const result = shouldFail({errors: 0, warnings: 2, others: 1}, false);
+        const config = {warningsAsErrors: false} as Config;
+        const result = shouldFail(new ParseResults({totals: {errors: 0, warnings: 2, others: 1}}), config);
 
         expect(result).toBe(false);
     });
 
     test("if only warnings and counting as errors, then true", () => {
-        const result = shouldFail({errors: 0, warnings: 2, others: 1}, true);
+        const config = {warningsAsErrors: true} as Config;
+        const result = shouldFail(new ParseResults({totals: {errors: 0, warnings: 2, others: 1}}), config);
 
         expect(result).toBe(true);
     });
 
     test("if only others, then false", () => {
-        const result = shouldFail({errors: 0, warnings: 2, others: 1}, false);
+        const config = {warningsAsErrors: false} as Config;
+        const result = shouldFail(new ParseResults({totals: {errors: 0, warnings: 2, others: 1}}), config);
+
+        expect(result).toBe(false);
+    });
+
+});
+
+describe("hasErrors", () => {
+
+    test("if error, then true", () => {
+        const config = {warningsAsErrors: false} as Config;
+        const result = hasErrors(new ParseResults({totals: {errors: 3, warnings: 2, others: 1}}), config);
+
+        expect(result).toBe(true);
+    });
+
+    test("if only warnings, then false", () => {
+        const config = {warningsAsErrors: false} as Config;
+        const result = hasErrors(new ParseResults({totals: {errors: 0, warnings: 2, others: 1}}), config);
+
+        expect(result).toBe(false);
+    });
+
+    test("if only warnings and counting as errors, then true", () => {
+        const config = {warningsAsErrors: true} as Config;
+        const result = hasErrors(new ParseResults({totals: {errors: 0, warnings: 2, others: 1}}), config);
+
+        expect(result).toBe(true);
+    });
+
+    test("if only others, then false", () => {
+        const config = {warningsAsErrors: false} as Config;
+        const result = hasErrors(new ParseResults({totals: {errors: 0, warnings: 2, others: 1}}), config);
 
         expect(result).toBe(false);
     });

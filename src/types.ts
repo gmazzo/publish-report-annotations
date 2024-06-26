@@ -13,6 +13,7 @@ export interface Config {
     detectFlakyTests: boolean;
     warningsAsErrors: boolean;
     failOnError: boolean;
+    failIfNoReportsFound: boolean;
 }
 
 type Severity = 'error' | 'warning' | 'other';
@@ -71,6 +72,8 @@ export type ChecksResult = {
 };
 
 export class ParseResults {
+
+    files: string[] = [];
 
     annotations: Annotation[] = [];
 

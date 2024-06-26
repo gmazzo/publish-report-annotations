@@ -24,6 +24,7 @@ export async function readConfig(): Promise<Config> {
         detectFlakyTests: core.getBooleanInput("detectFlakyTests"),
         warningsAsErrors: core.getBooleanInput("warningsAsErrors"),
         failOnError: core.getBooleanInput("failOnError"),
+        failIfNoReportsFound: core.getBooleanInput("failIfNoReportsFound"),
     };
 }
 

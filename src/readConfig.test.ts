@@ -76,9 +76,10 @@ describe('config', () => {
         expect(getBooleanInput).toHaveBeenCalledWith('detectFlakyTests');
         expect(getBooleanInput).toHaveBeenCalledWith('warningsAsErrors');
         expect(getBooleanInput).toHaveBeenCalledWith('failOnError');
+        expect(getBooleanInput).toHaveBeenCalledWith('failIfNoReportsFound');
         expect(getInput).toHaveBeenCalledTimes(5);
         expect(getMultilineInput).toHaveBeenCalledTimes(1);
-        expect(getBooleanInput).toHaveBeenCalledTimes(5);
+        expect(getBooleanInput).toHaveBeenCalledTimes(6);
     });
 
     test('can resolve token',  async () => {
