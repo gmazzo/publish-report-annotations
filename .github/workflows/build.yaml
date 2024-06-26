@@ -59,6 +59,15 @@ jobs:
           reports: |
             samples/[!TEST]*.xml
           filterChecks: true
+      - name: Report to Check (No Reports)
+        uses: ./.
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        with:
+          checkName: "Test Reports (No Reports)"
+          reports: |
+            non-existing-folder/*.xml
+          failIfNoReportsFound: true
+        continue-on-error: true
       - name: Report to Check (GitHub App)
         uses: ./.
         if: ${{ !cancelled() && github.event_name == 'pull_request' }}

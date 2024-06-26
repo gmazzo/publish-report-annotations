@@ -4,18 +4,19 @@ import {processFile} from "./processFile";
 import {relative} from "path";
 import {ParseResults} from "./types";
 import {publishCheck} from "./publishCheck";
-import {shouldFail} from "./utils";
+import {hasErrors} from "./utils";
 import {summaryOf, summaryTableOf} from "./summary";
 import {readConfig} from "./readConfig";
 
 export default async function main() {
     const config = await readConfig();
     const globber = await glob.create(config.reports.join('\n'), {implicitDescendants: true, matchDirectories: false});
+
     const files = (await globber.glob()).map(it => relative(process.cwd(), it));
     core.debug(`Found ${files.length} files to process matching: ${config.reports.join(', ')}`);
 
     const currentDir = process.cwd();
-    const all = new ParseResults();
+    const all = new ParseResults({files});
 
     for (const file of files) {
         const relativePath = relative(currentDir, file);
@@ -35,7 +36,7 @@ export default async function main() {
     if (files.length > 0) {
         core.notice(`Processed ${files.length} files: ${summaryOf(all)}`);
     } else {
-        core.warning(`No files found to process matching: ${config.reports.join(', ')}`);
+        (config.failIfNoReportsFound ? core.setFailed : core.warning)(`No files found to process matching: ${config.reports.join(', ')}`);
     }
 
     if (config.checkName) {
@@ -45,7 +46,7 @@ export default async function main() {
         core.summary.addRaw(summaryTableOf(all, config));
         await core.summary.write();
     }
-    if (config.failOnError && shouldFail(all.totals, config.warningsAsErrors)) {
+    if (config.failOnError && hasErrors(all, config)) {
         core.setFailed(`Found ${all.totals.errors} errors and ${all.totals.warnings} warnings.`);
     }
 

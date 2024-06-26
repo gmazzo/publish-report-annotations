@@ -15,7 +15,7 @@ export async function publishCheck(results: ParseResults, config: Config) {
         name: config.checkName,
         head_sha: commit,
         status: 'completed' as const,
-        conclusion: shouldFail(results.totals, config.warningsAsErrors) ? "failure" : "success" as "failure" | "success",
+        conclusion: shouldFail(results, config) ? "failure" : "success" as "failure" | "success",
         output: {
             title: summaryOf(results, true),
             summary: summaryTableOf(results, config),

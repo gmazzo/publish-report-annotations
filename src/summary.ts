@@ -53,7 +53,7 @@ export function summaryOf(results: ParseResults, simplified = false) {
         summary += summary ? ', checks: ' : 'Checks: ';
         summary += summaryOfChecks(results.checks.totals, simplified);
     }
-    return summary ? summary : `No issues found`;
+    return summary ? summary : results.files.length ? 'No issues found' : '❗No report files found';
 }
 
 function summaryTableOfTests(
