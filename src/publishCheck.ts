@@ -45,11 +45,11 @@ export async function publishCheck(results: ParseResults, config: Config) {
         octokit.rest.checks.update({ ...params, check_run_id: checkRunId }) :
         octokit.rest.checks.create(params));
 
-    core.info(`Check \`${config.checkName}\` reported at ${html_url}`);
-
     if (results.annotations.length != params.output.annotations.length) {
         core.warning(`Due GitHub limitation, only ${params.output.annotations.length} of ${results.annotations.length} were reported.\nhttps://github.com/orgs/community/discussions/26680`);
     }
+
+    return html_url;
 }
 
 function getAnnotationType(value: ParseResults['annotations'][0]['severity']): 'failure' | 'warning' | 'notice' {
