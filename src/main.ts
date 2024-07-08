@@ -33,19 +33,22 @@ export default async function main() {
     }
     all.sort();
 
-    if (files.length > 0) {
-        core.notice(`Processed ${files.length} files: ${summaryOf(all)}`);
-    } else {
-        (config.failIfNoReportsFound ? core.setFailed : core.warning)(`No files found to process matching: ${config.reports.join(', ')}`);
-    }
-
+    let checkHtmlUrl;
     if (config.checkName) {
-        await publishCheck(all, config);
+        checkHtmlUrl = await publishCheck(all, config);
 
     } else {
         core.summary.addRaw(summaryTableOf(all, config));
         await core.summary.write();
     }
+
+    if (files.length > 0) {
+        core.notice(`Processed ${files.length} files: ${summaryOf(all)}` +
+            (checkHtmlUrl ? `\nCheck \`${config.checkName}\` reported at ${checkHtmlUrl}` : ''));
+    } else {
+        (config.failIfNoReportsFound ? core.setFailed : core.warning)(`No files found to process matching: ${config.reports.join(', ')}`);
+    }
+
     if (config.failOnError && hasErrors(all, config)) {
         core.setFailed(`Found ${all.totals.errors} errors and ${all.totals.warnings} warnings.`);
     }
