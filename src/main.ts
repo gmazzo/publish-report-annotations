@@ -44,7 +44,7 @@ export default async function main() {
 
     if (files.length > 0) {
         core.notice(`Processed ${files.length} files: ${summaryOf(all)}` +
-            (checkHtmlUrl ? `.\nSee \`${config.checkName}\` (${checkHtmlUrl})` : ''));
+            (checkHtmlUrl ? `.%0ASee \`${config.checkName}\` at ${checkHtmlUrl}` : ''));
     } else {
         (config.failIfNoReportsFound ? core.setFailed : core.warning)(`No files found to process matching: ${config.reports.join(', ')}`);
     }
