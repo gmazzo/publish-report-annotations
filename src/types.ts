@@ -5,6 +5,7 @@ export interface Config {
     githubToken: string;
     checkName: string;
     reports: string[];
+    workflowSummary: boolean;
     testsSummary: 'full' | 'suitesOnly' | 'totals' | 'off';
     checksSummary: 'full' | 'totals' | 'off';
     filterPassedTests: boolean;

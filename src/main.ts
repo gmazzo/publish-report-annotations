@@ -33,11 +33,9 @@ export default async function main() {
     }
     all.sort();
 
-    let checkHtmlUrl;
-    if (config.checkName) {
-        checkHtmlUrl = await publishCheck(all, config);
+    const checkHtmlUrl = config.checkName ? await publishCheck(all, config) : null;
 
-    } else {
+    if (config.workflowSummary) {
         core.summary.addRaw(summaryTableOf(all, config));
         await core.summary.write();
     }

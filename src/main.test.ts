@@ -20,6 +20,7 @@ const processFile = jest.fn().mockReturnValue(new ParseResults({
 
 const config = {
     reports: ["path1", "path2"],
+    workflowSummary: true,
     warningsAsErrors: false,
     failOnError: false,
     filterChecks: false,
