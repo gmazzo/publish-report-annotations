@@ -83,6 +83,7 @@ function isGitFile(path: string) {
         execSync(`git ls-files --error-unmatch -- ${path}`, {stdio: 'ignore'});
         return true;
 
+    // eslint-disable-next-line  @typescript-eslint/no-unused-vars
     } catch (e) {
         return false;
     }
