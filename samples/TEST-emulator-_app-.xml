@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="org.test.Test" tests="3" failures="1" errors="0" skipped="0" time="4.795" timestamp="2024-08-14T17:04:17" hostname="localhost">
+  <properties>
+    <property name="device" value="emulator" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="andAfterReset" classname="org.test.Test" time="0.077" />
+  <testcase name="isDeterministic" classname="org.test.Test" time="0.132" />
+  <testcase name="testScene[CLEAR at 2024-08-01T00:00+02:00[Europe/Madrid]]" classname="org.test.Test2" time="0.095">
+    <failure></failure>
+  </testcase>
+  <system-err>Test run failed to complete. Expected 50 tests, received 2
+</system-err>
+</testsuite>

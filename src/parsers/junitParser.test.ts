@@ -2,7 +2,7 @@ import {Config, ParseResults} from "../types";
 
 const resolveFile = jest.fn().mockImplementation((file: string) => `<projectTestSrc>/${file}.kt`);
 const prFilesFilter = jest.fn().mockReturnValue(true);
-const config = { prFilesFilter } as unknown as Config;
+const config = {prFilesFilter} as unknown as Config;
 
 jest.mock("./resolveFile", () => ({
     resolveFile
@@ -140,7 +140,10 @@ describe("junitParser", () => {
     });
 
     test.each([[false], [true]])("given a junit xml with retries should process it correctly [detectFlakyTests=%p]", async (detectFlakyTests) => {
-        const data = await junitParser.parse("samples/TEST-org.test.sample.FlakyTestSuite.xml", {...config, detectFlakyTests });
+        const data = await junitParser.parse("samples/TEST-org.test.sample.FlakyTestSuite.xml", {
+            ...config,
+            detectFlakyTests
+        });
 
         expect(data).toStrictEqual(detectFlakyTests ? new ParseResults({
             annotations: [
@@ -272,7 +275,10 @@ describe("junitParser", () => {
     });
 
     test("given a junit xml with retries that always fails, should process it correctly", async () => {
-        const data = await junitParser.parse("samples/TEST-org.test.sample.FlakyFailingTestSuite.xml", {...config, detectFlakyTests: true});
+        const data = await junitParser.parse("samples/TEST-org.test.sample.FlakyFailingTestSuite.xml", {
+            ...config,
+            detectFlakyTests: true
+        });
 
         expect(data).toStrictEqual(new ParseResults({
             annotations: [
@@ -645,6 +651,76 @@ describe("junitParser", () => {
                 errors: 2,
                 others: 0,
                 warnings: 1
+            }
+        }));
+    });
+
+    test("given an AndroidTest junit xml should parse it", async () => {
+        const data = await junitParser.parse("samples/TEST-emulator-_app-.xml", config);
+
+        expect(prFilesFilter).not.toHaveBeenCalled();
+        expect(data).toStrictEqual(new ParseResults({
+            annotations: [
+                {
+                    file: "<projectTestSrc>/org/test/Test2.kt",
+                    message: "testScene[CLEAR at 2024-08-01T00:00+02:00[Europe/Madrid]] failed",
+                    rawDetails: undefined,
+                    severity: "error",
+                    title: "testScene[CLEAR at 2024-08-01T00:00+02:00[Europe/Madrid]]",
+                    startLine: undefined,
+                    endLine: undefined
+                }
+            ],
+            checks: {
+                checks: [],
+                totals: {
+                    count: 0,
+                    errors: 0,
+                    others: 0,
+                    warnings: 0
+                }
+            },
+            tests: {
+                suites: [
+                    {
+                        cases: [
+                            {
+                                className: "org.test.Test",
+                                name: "andAfterReset",
+                                outcome: "passed",
+                                took: "0.077"
+                            },
+                            {
+                                className: "org.test.Test",
+                                name: "isDeterministic",
+                                outcome: "passed",
+                                took: "0.132"
+                            },
+                            {
+                                className: "org.test.Test2",
+                                name: "testScene[CLEAR at 2024-08-01T00:00+02:00[Europe/Madrid]]",
+                                outcome: "failed",
+                                took: "0.095"
+                            },
+                        ],
+                        failed: 1,
+                        name: "org.test.Test",
+                        passed: 2,
+                        skipped: 0,
+                        took: "4.795"
+                    }
+                ],
+                totals: {
+                    count: 3,
+                    failed: 1,
+                    passed: 2,
+                    skipped: 0
+                }
+            },
+            totals: {
+                errors: 1,
+                others: 0,
+                warnings: 0
             }
         }));
     });

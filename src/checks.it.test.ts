@@ -30,10 +30,10 @@ describe('checks', () => {
                 title: "No issues found"
             },
             "Test Reports (computing flaky)": {
-                annotations: 13,
+                annotations: 14,
                 conclusion: "failure",
                 status: "completed",
-                summary: `|Test Suites|✅ 26 passed|🟡 1 skipped|❌ 5 failed|⌛ took
+                summary: `|Test Suites|✅ 28 passed|🟡 1 skipped|❌ 6 failed|⌛ took
 |:-|-|-|-|-
 |<details><summary>❌❗ [^flakyDisclaimer]</summary><ul><li>❌ flakyTest (⌛ <time>)</li><li>❎❗[^flakyDisclaimer]i_can_see_map_screen_for_delivering_orders (⌛ <time>)</li><li>✅ userCanApplyGroupFilters (⌛ <time>)</li><li>✅ userCanOpenAndApplyFilters (⌛ <time>)</li></ul></details>|3|0|1|<time>
 |<details><summary>✅ androidLintParser</summary><ul><li>✅ androidLintParser given lint xml should obtain annotations (⌛ <time>)</li></ul></details>|1|0|0|<time>
@@ -45,6 +45,7 @@ describe('checks', () => {
 |<details><summary>❌ org.test.sample.FlakyFailingTestSuite</summary><ul><li>❌ failingTest() (⌛ <time>)</li></ul></details>|0|0|1|<time>
 |<details><summary>❎❗org.test.sample.FlakyTestSuite [^flakyDisclaimer]</summary><ul><li>❎❗[^flakyDisclaimer]flakyTest() (⌛ <time>)</li></ul></details>|1|0|0|<time>
 |<details><summary>❌ org.test.sample.SampleTestSuite</summary><ul><li>🟡 a test skipped() (⌛ <time>)</li><li>❌ a test that fails() (⌛ <time>)</li><li>✅ a test that passes() (⌛ <time>)</li><li>❌ a test that throws an exception() (⌛ <time>)</li></ul></details>|1|1|2|<time>
+|<details><summary>❌ org.test.Test</summary><ul><li>✅ andAfterReset (⌛ <time>)</li><li>✅ isDeterministic (⌛ <time>)</li><li>❌ testScene[CLEAR at 2024-08-01T00:00+02:00[Europe/Madrid]] (⌛ <time>)</li></ul></details>|2|0|1|<time>
 |<details><summary>✅ processFile</summary><ul><li>✅ processFile delegates to parsers and reports results (⌛ <time>)</li></ul></details>|1|0|0|<time>
 |<details><summary>✅ readFile</summary><ul><li>✅ readFile should return parsed XML file as JSON (⌛ <time>)</li></ul></details>|1|0|0|<time>
 |<details><summary>✅ resolveFile</summary><ul><li>✅ resolveFile when file exists, just returns itself (⌛ <time>)</li><li>✅ resolveFile when is absolute path, just returns itself (⌛ <time>)</li><li>✅ resolveFile when looking for a file but extension does not matches, it returns the same (⌛ <time>)</li><li>✅ resolveFile when looking for a file with possible extensions, it returns a match (⌛ <time>)</li><li>✅ resolveFile when looking for a file, it returns a match (⌛ <time>)</li></ul></details>|5|0|0|<time>
@@ -60,13 +61,13 @@ describe('checks', () => {
 |NewLineAtEndOfFile|0|1|0|
 
 `,
-                title: "32 tests: ✅ 26 (❗2), 🟡 1, ❌ 5, checks: ⚠️ 5"
+                title: "35 tests: ✅ 28 (❗2), 🟡 1, ❌ 6, checks: ⚠️ 5"
             },
             "Test Reports (full)": {
-                annotations: 18,
+                annotations: 19,
                 conclusion: "failure",
                 status: "completed",
-                summary: `|Test Suites|✅ 26 passed|🟡 1 skipped|❌ 11 failed|⌛ took
+                summary: `|Test Suites|✅ 28 passed|🟡 1 skipped|❌ 12 failed|⌛ took
 |:-|-|-|-|-
 |<details><summary>❌❗ [^flakyDisclaimer]</summary><ul><li>❌ flakyTest (⌛ <time>)</li><li>❎❗[^flakyDisclaimer]i_can_see_map_screen_for_delivering_orders (⌛ <time>)</li><li>✅ userCanApplyGroupFilters (⌛ <time>)</li><li>✅ userCanOpenAndApplyFilters (⌛ <time>)</li></ul></details>|3|0|1|<time>
 |<details><summary>✅ androidLintParser</summary><ul><li>✅ androidLintParser given lint xml should obtain annotations (⌛ <time>)</li></ul></details>|1|0|0|<time>
@@ -78,6 +79,7 @@ describe('checks', () => {
 |<details><summary>❌ org.test.sample.FlakyFailingTestSuite</summary><ul><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li></ul></details>|0|0|5|<time>
 |<details><summary>❌ org.test.sample.FlakyTestSuite</summary><ul><li>❌ flakyTest() (⌛ <time>)</li><li>❌ flakyTest() (⌛ <time>)</li><li>✅ flakyTest() (⌛ <time>)</li></ul></details>|1|0|2|<time>
 |<details><summary>❌ org.test.sample.SampleTestSuite</summary><ul><li>🟡 a test skipped() (⌛ <time>)</li><li>❌ a test that fails() (⌛ <time>)</li><li>✅ a test that passes() (⌛ <time>)</li><li>❌ a test that throws an exception() (⌛ <time>)</li></ul></details>|1|1|2|<time>
+|<details><summary>❌ org.test.Test</summary><ul><li>✅ andAfterReset (⌛ <time>)</li><li>✅ isDeterministic (⌛ <time>)</li><li>❌ testScene[CLEAR at 2024-08-01T00:00+02:00[Europe/Madrid]] (⌛ <time>)</li></ul></details>|2|0|1|<time>
 |<details><summary>✅ processFile</summary><ul><li>✅ processFile delegates to parsers and reports results (⌛ <time>)</li></ul></details>|1|0|0|<time>
 |<details><summary>✅ readFile</summary><ul><li>✅ readFile should return parsed XML file as JSON (⌛ <time>)</li></ul></details>|1|0|0|<time>
 |<details><summary>✅ resolveFile</summary><ul><li>✅ resolveFile when file exists, just returns itself (⌛ <time>)</li><li>✅ resolveFile when is absolute path, just returns itself (⌛ <time>)</li><li>✅ resolveFile when looking for a file but extension does not matches, it returns the same (⌛ <time>)</li><li>✅ resolveFile when looking for a file with possible extensions, it returns a match (⌛ <time>)</li><li>✅ resolveFile when looking for a file, it returns a match (⌛ <time>)</li></ul></details>|5|0|0|<time>
@@ -93,19 +95,20 @@ describe('checks', () => {
 |NewLineAtEndOfFile|0|1|0|
 
 `,
-                title: "38 tests: ✅ 26 (❗1), 🟡 1, ❌ 11, checks: ⚠️ 5"
+                title: "41 tests: ✅ 28 (❗1), 🟡 1, ❌ 12, checks: ⚠️ 5"
             },
             "Test Reports (omitting passed)": {
-                annotations: 18,
+                annotations: 19,
                 conclusion: "failure",
                 status: "completed",
-                summary: `|Test Suites|✅ 26 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 11 failed|⌛ took
+                summary: `|Test Suites|✅ 28 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 12 failed|⌛ took
 |:-|-|-|-|-
 |<details><summary>❌❗ [^flakyDisclaimer]</summary><ul><li>❌ flakyTest (⌛ <time>)</li><li>❎❗[^flakyDisclaimer]i_can_see_map_screen_for_delivering_orders (⌛ <time>)</li></ul></details>|3|0|1|<time>
 |<details><summary>❌ junitParser</summary><ul><li>❌ junitParser given a jest junit xml should obtain annotations (⌛ <time>)</li></ul></details>|2|0|1|<time>
 |<details><summary>❌ org.test.sample.FlakyFailingTestSuite</summary><ul><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li></ul></details>|0|0|5|<time>
 |<details><summary>❌ org.test.sample.FlakyTestSuite</summary><ul><li>❌ flakyTest() (⌛ <time>)</li><li>❌ flakyTest() (⌛ <time>)</li></ul></details>|1|0|2|<time>
 |<details><summary>❌ org.test.sample.SampleTestSuite</summary><ul><li>🟡 a test skipped() (⌛ <time>)</li><li>❌ a test that fails() (⌛ <time>)</li><li>❌ a test that throws an exception() (⌛ <time>)</li></ul></details>|1|1|2|<time>
+|<details><summary>❌ org.test.Test</summary><ul><li>❌ testScene[CLEAR at 2024-08-01T00:00+02:00[Europe/Madrid]] (⌛ <time>)</li></ul></details>|2|0|1|<time>
 [^passedSkipDisclaimer]: ✅ passed suites were not reported
 [^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 
@@ -119,13 +122,13 @@ describe('checks', () => {
 |NewLineAtEndOfFile|0|1|0|
 
 `,
-                title: "38 tests: ✅ 26 (❗1), 🟡 1, ❌ 11, checks: ⚠️ 5"
+                title: "41 tests: ✅ 28 (❗1), 🟡 1, ❌ 12, checks: ⚠️ 5"
             },
             "Test Reports (GitHub App)": {
-                annotations: 18,
+                annotations: 19,
                 conclusion: "failure",
                 status: "completed",
-                summary: `|Test Suites|✅ 26 passed|🟡 1 skipped|❌ 11 failed|⌛ took
+                summary: `|Test Suites|✅ 28 passed|🟡 1 skipped|❌ 12 failed|⌛ took
 |:-|-|-|-|-
 |<details><summary>❌❗ [^flakyDisclaimer]</summary><ul><li>❌ flakyTest (⌛ <time>)</li><li>❎❗[^flakyDisclaimer]i_can_see_map_screen_for_delivering_orders (⌛ <time>)</li><li>✅ userCanApplyGroupFilters (⌛ <time>)</li><li>✅ userCanOpenAndApplyFilters (⌛ <time>)</li></ul></details>|3|0|1|<time>
 |<details><summary>✅ androidLintParser</summary><ul><li>✅ androidLintParser given lint xml should obtain annotations (⌛ <time>)</li></ul></details>|1|0|0|<time>
@@ -137,6 +140,7 @@ describe('checks', () => {
 |<details><summary>❌ org.test.sample.FlakyFailingTestSuite</summary><ul><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li><li>❌ failingTest() (⌛ <time>)</li></ul></details>|0|0|5|<time>
 |<details><summary>❌ org.test.sample.FlakyTestSuite</summary><ul><li>❌ flakyTest() (⌛ <time>)</li><li>❌ flakyTest() (⌛ <time>)</li><li>✅ flakyTest() (⌛ <time>)</li></ul></details>|1|0|2|<time>
 |<details><summary>❌ org.test.sample.SampleTestSuite</summary><ul><li>🟡 a test skipped() (⌛ <time>)</li><li>❌ a test that fails() (⌛ <time>)</li><li>✅ a test that passes() (⌛ <time>)</li><li>❌ a test that throws an exception() (⌛ <time>)</li></ul></details>|1|1|2|<time>
+|<details><summary>❌ org.test.Test</summary><ul><li>✅ andAfterReset (⌛ <time>)</li><li>✅ isDeterministic (⌛ <time>)</li><li>❌ testScene[CLEAR at 2024-08-01T00:00+02:00[Europe/Madrid]] (⌛ <time>)</li></ul></details>|2|0|1|<time>
 |<details><summary>✅ processFile</summary><ul><li>✅ processFile delegates to parsers and reports results (⌛ <time>)</li></ul></details>|1|0|0|<time>
 |<details><summary>✅ readFile</summary><ul><li>✅ readFile should return parsed XML file as JSON (⌛ <time>)</li></ul></details>|1|0|0|<time>
 |<details><summary>✅ resolveFile</summary><ul><li>✅ resolveFile when file exists, just returns itself (⌛ <time>)</li><li>✅ resolveFile when is absolute path, just returns itself (⌛ <time>)</li><li>✅ resolveFile when looking for a file but extension does not matches, it returns the same (⌛ <time>)</li><li>✅ resolveFile when looking for a file with possible extensions, it returns a match (⌛ <time>)</li><li>✅ resolveFile when looking for a file, it returns a match (⌛ <time>)</li></ul></details>|5|0|0|<time>
@@ -152,7 +156,7 @@ describe('checks', () => {
 |NewLineAtEndOfFile|0|1|0|
 
 `,
-                title: "38 tests: ✅ 26 (❗1), 🟡 1, ❌ 11, checks: ⚠️ 5"
+                title: "41 tests: ✅ 28 (❗1), 🟡 1, ❌ 12, checks: ⚠️ 5"
             },
             "Test Reports (No Reports)": {
                 annotations: 0,
