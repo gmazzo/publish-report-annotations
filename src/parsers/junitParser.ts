@@ -127,7 +127,7 @@ export const junitParser: Parser = {
                                 file: filePath,
                                 severity: testCase.flaky ? 'warning' : 'error',
                                 title: testCase.flaky ? `(❗Flaky) ${testCase._attributes.name}` : testCase._attributes.name,
-                                message: failure._attributes?.message || failure._text,
+                                message: failure._attributes?.message || failure._text || `${testCase._attributes.name} failed`,
                                 rawDetails: failure._text,
                                 startLine: line,
                                 endLine: line,
