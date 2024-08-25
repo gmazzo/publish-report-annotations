@@ -72,8 +72,6 @@ export const junitParser: Parser = {
                             } else {
                                 entry.passed = true;
                             }
-
-                            // eslint-disable-next-line @typescript-eslint/no-array-delete
                             delete testCases[entry.previousIndex];
 
                             entry.previous = testCase;
