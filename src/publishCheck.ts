@@ -7,7 +7,6 @@ import {summaryOf, summaryTableOf} from "./summary";
 export async function publishCheck(results: ParseResults, config: Config) {
     const octokit = github.getOctokit(config.githubToken);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const commit = (github.context.payload?.pull_request?.head?.sha || github.context.sha) as string;
 
     const params= {

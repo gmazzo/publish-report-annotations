@@ -13,7 +13,6 @@ export async function readFile<Type>(filepath: string) {
             return xml2js(await data, {compact: true, ignoreDeclaration: true}) as Type;
 
         default:
-            // eslint-disable-next-line @typescript-eslint/only-throw-error
             throw `Unsupported file type: ${extension || '<none>'}`;
     }
 }
