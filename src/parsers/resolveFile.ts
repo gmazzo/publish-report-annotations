@@ -47,8 +47,10 @@ export async function resolveFile(filepath: string, ...possibleExtensions: strin
         core.debug(`File \`${relativePath}\` found for \`${filepath}\` with possible extensions ${possibleExtensions.join(', ')}`);
 
         const location = relative(process.cwd(), file.substring(0, file.indexOf(filepath)));
-        core.debug(`Adding to known locations: ${location}`);
-        knownLocations.push(location);
+        if (!knownLocations.includes(location)) {
+            core.debug(`Adding to known locations: ${location}`);
+            knownLocations.push(location);
+        }
 
         return relativePath;
     }

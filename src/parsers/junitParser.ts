@@ -41,6 +41,8 @@ type JUnitData = {
     testsuite?: JUnitSuite
 };
 
+const possibleExtensions = ['java', 'kt', 'groovy']
+
 export const junitParser: Parser = {
 
     async parse(filePath: string, config: Config) {
@@ -54,7 +56,15 @@ export const junitParser: Parser = {
 
                 // removes cases with same `className` and `name`, as they are considered retries of the same test
                 if (config.detectFlakyTests) {
-                    const seenAt: { [key: string]: { mostSignificant: JUnitTest, previous: JUnitTest, previousIndex: number, passed: boolean, failed: boolean } } = {};
+                    const seenAt: {
+                        [key: string]: {
+                            mostSignificant: JUnitTest,
+                            previous: JUnitTest,
+                            previousIndex: number,
+                            passed: boolean,
+                            failed: boolean
+                        }
+                    } = {};
 
                     for (const [index, testCase] of testCases.entries()) {
                         if (testCase.skipped) continue;
@@ -114,9 +124,22 @@ export const junitParser: Parser = {
                     if (testCase.failure) {
                         if (!testCase.flaky) failed++;
 
-                        const filePath = testCase._attributes.file ?
-                            await resolveFile(testCase._attributes.file) :
-                            await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), 'java', 'kt', 'groovy');
+                        let filePath: string
+                        if (testCase._attributes.file) {
+                            filePath = await resolveFile(testCase._attributes.file);
+
+                        } else {
+                            filePath = await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), ...possibleExtensions, '*');
+
+                            const extensionIndex = filePath.lastIndexOf('.');
+                            if (extensionIndex) {
+                                const extension = filePath.substring(extensionIndex + 1);
+
+                                if (!possibleExtensions.includes(extension)) {
+                                    possibleExtensions.push(extension);
+                                }
+                            }
+                        }
 
                         for (const failure of asArray(testCase.failure)) {
                             const line = getLine(testCase, failure._text);
@@ -141,7 +164,7 @@ export const junitParser: Parser = {
                         className: testCase._attributes.classname,
                         took: testCase._attributes.time,
                         outcome: testCase.flaky ? 'flaky' : testCase.failure ? 'failed' : testCase.skipped ? 'skipped' : 'passed',
-                        ...testCase.retries !== undefined  ? {retries: testCase.retries} : {},
+                        ...testCase.retries !== undefined ? {retries: testCase.retries} : {},
                     });
                 }
 
