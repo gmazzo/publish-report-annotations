@@ -22,7 +22,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.12",
+    "@types/jest": "^29.5.13",
     "@types/node": "^22.5.4",
     "@vercel/ncc": "^0.38.1",
     "eslint": "^9.10.0",
