@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   pull_request:
 
-concurrency: release
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
   id-token: write
