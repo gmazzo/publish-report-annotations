@@ -1,4 +1,10 @@
 import * as core from "@actions/core";
 import main from "./main";
 
-main().catch(core.setFailed);
+function handleError(err: string | Error): void {
+    console.error(err)
+    core.setFailed(`Unhandled error: ${err}`)
+}
+
+process.on('unhandledRejection', handleError)
+main().catch(handleError)
