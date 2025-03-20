@@ -30,6 +30,9 @@ type LintIssue = {
 
 type LintData = {
     issues?: {
+        _attributes: {
+            by: string,
+        }
         issue: LintIssue | LintIssue[],
     }
 };
@@ -41,7 +44,7 @@ export const androidLintParser: Parser = {
 
         if (data?.issues) {
             const result = new ParseResults();
-            const suite: CheckSuite = {name: 'Android Lint', errors: 0, warnings: 0, others: 0, issues: {}};
+            const suite: CheckSuite = {name: data.issues._attributes.by || 'Android Lint', errors: 0, warnings: 0, others: 0, issues: {}};
 
             for (const testcase of asArray(data.issues.issue)) {
                 const type = computeType(testcase._attributes.severity);

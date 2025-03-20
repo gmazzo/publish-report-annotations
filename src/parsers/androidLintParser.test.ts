@@ -79,7 +79,7 @@ describe("androidLintParser", () => {
             checks: {
                 checks: [
                     {
-                        name: "Android Lint",
+                        name: "lint 8.4.0",
                         errors: 0,
                         others: 0,
                         warnings: 4,
