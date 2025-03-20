@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<issues by="LeakCanary" format="6">
+
+    <issue
+            category="Performance"
+            explanation="9403 bytes retained by leaking objects"
+            id="LeakCanary"
+            message="LeakCanary detected a memory leak"
+            severity="Error"
+            summary="LeakingActivity.current"/>
+
+</issues>

@@ -2,7 +2,7 @@ import {Parser} from "./parser";
 import {readFile} from "./readFile";
 import {asArray, join} from "../utils";
 import {resolveFile} from "./resolveFile";
-import {CheckSuite, Config, ParseResults} from "../types";
+import {Annotation, CheckSuite, Config, ParseResults} from "../types";
 
 type Severity = 'fatal' | 'error' | 'warning' | 'informational';
 
@@ -10,7 +10,7 @@ type Location = {
     _attributes: {
         file: string,
         line: string,
-        column: string,
+        column?: string,
     }
 };
 
@@ -44,32 +44,32 @@ export const androidLintParser: Parser = {
 
         if (data?.issues) {
             const result = new ParseResults();
-            const suite: CheckSuite = {name: data.issues._attributes.by || 'Android Lint', errors: 0, warnings: 0, others: 0, issues: {}};
+            const suite: CheckSuite = {
+                name: data.issues._attributes.by || 'Android Lint',
+                errors: 0,
+                warnings: 0,
+                others: 0,
+                issues: {}
+            };
 
-            for (const testcase of asArray(data.issues.issue)) {
-                const type = computeType(testcase._attributes.severity);
+            for (const issue of asArray(data.issues.issue)) {
+                const type = computeType(issue._attributes.severity)
+                if (!type) continue
 
-                if (type) {
-                    for (const location of asArray(testcase.location)) {
-                        const file = await resolveFile(location._attributes.file);
+                const locations = asArray(issue.location)
 
-                        if (config.prFilesFilter(file)) {
-                            const issue = `${testcase._attributes.category} / ${testcase._attributes.id}`;
-
-                            result.addIssueToCheckSuite(suite, issue, type);
-                            result.addAnnotation({
-                                file,
-                                severity: type,
-                                title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
-                                message: testcase._attributes.message,
-                                rawDetails: join(testcase._attributes.explanation, testcase._attributes.errorLine1, testcase._attributes.errorLine2),
-                                startLine: Number(location._attributes.line),
-                                endLine: Number(location._attributes.line),
-                                startColumn: Number(location._attributes.column),
-                                endColumn: Number(location._attributes.column),
-                            }, suite);
-                        }
+                if (locations.length > 0) {
+                    for (const location of locations) {
+                        await reportIssue(config, issue, suite, result, type, location)
                     }
+
+                } else {
+                    await reportIssue(config, issue, suite, result, type, {
+                        _attributes: {
+                            file: filePath,
+                            line: '1',
+                        }
+                    })
                 }
             }
 
@@ -89,5 +89,33 @@ function computeType(severity: Severity) {
             return 'warning';
         case 'informational':
             return 'other';
+    }
+}
+
+async function reportIssue(
+    config: Config,
+    issue: LintIssue,
+    suite: CheckSuite,
+    result: ParseResults,
+    type: Annotation['severity'],
+    location: Location,
+) {
+    const file = await resolveFile(location._attributes.file);
+
+    if (config.prFilesFilter(file)) {
+        const issueMessage = `${issue._attributes.category} / ${issue._attributes.id}`
+
+        result.addIssueToCheckSuite(suite, issueMessage, type);
+        result.addAnnotation({
+            file,
+            severity: type,
+            title: `${issue._attributes.category}: ${issue._attributes.summary}`,
+            message: issue._attributes.message,
+            rawDetails: join(issue._attributes.explanation, issue._attributes.errorLine1, issue._attributes.errorLine2),
+            startLine: Number(location._attributes.line),
+            endLine: Number(location._attributes.line),
+            startColumn: Number(location._attributes.column) || undefined,
+            endColumn: Number(location._attributes.column) || undefined,
+        }, suite);
     }
 }

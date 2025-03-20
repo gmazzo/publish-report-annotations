@@ -2,7 +2,7 @@ import {androidLintParser} from "./androidLintParser";
 import {Config, ParseResults} from "../types";
 
 const prFilesFilter = jest.fn().mockReturnValue(true);
-const config = { prFilesFilter } as unknown as Config;
+const config = {prFilesFilter} as unknown as Config;
 
 describe("androidLintParser", () => {
 
@@ -84,8 +84,9 @@ describe("androidLintParser", () => {
                         others: 0,
                         warnings: 4,
                         issues: {
-                            'Correctness / GradleDependency': { count: 1, severity: 'warning' },
-                            'Performance / VectorPath': { count: 3, severity: "warning" }}
+                            'Correctness / GradleDependency': {count: 1, severity: 'warning'},
+                            'Performance / VectorPath': {count: 3, severity: "warning"}
+                        }
                     }
                 ],
                 totals: {
@@ -98,6 +99,48 @@ describe("androidLintParser", () => {
             totals: {
                 errors: 0,
                 warnings: 4,
+                others: 0
+            }
+        }));
+    });
+
+    test("given lint xml without location should still obtain annotations", async () => {
+        const data = await androidLintParser.parse("samples/lint-results-nolocation.xml", config);
+
+        expect(data).toStrictEqual(new ParseResults({
+            annotations: [
+                {
+                    file: "samples/lint-results-nolocation.xml",
+                    startLine: 1,
+                    startColumn: undefined,
+                    endLine: 1,
+                    endColumn: undefined,
+                    message: "LeakCanary detected a memory leak",
+                    rawDetails: '9403 bytes retained by leaking objects',
+                    title: "Performance: LeakingActivity.current",
+                    severity: "error"
+                }
+            ],
+            checks: {
+                checks: [
+                    {
+                        name: "LeakCanary",
+                        errors: 1,
+                        others: 0,
+                        warnings: 0,
+                        issues: {'Performance / LeakCanary': {count: 1, severity: "error"}}
+                    }
+                ],
+                totals: {
+                    count: 1,
+                    errors: 1,
+                    others: 0,
+                    warnings: 0
+                }
+            },
+            totals: {
+                errors: 1,
+                warnings: 0,
                 others: 0
             }
         }));

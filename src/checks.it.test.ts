@@ -55,16 +55,20 @@ describe('checks', () => {
 |:-|-|-|-|
 |NewLineAtEndOfFile|0|1|0|
 
+|LeakCanary|🛑 1 error|⚠️ 0 warnings|💡 0 others|
+|:-|-|-|-|
+|Performance / LeakCanary|1|0|0|
+
 |lint 8.4.0|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
 |:-|-|-|-|
 |Correctness / GradleDependency|0|1|0|
 |Performance / VectorPath|0|3|0|
 
 `,
-                title: "35 tests: ✅ 28 (❗2), 🟡 1, ❌ 6, checks: ⚠️ 5"
+                title: "35 tests: ✅ 28 (❗2), 🟡 1, ❌ 6, checks: 🛑 1, ⚠️ 5"
             },
             "Test Reports (full)": {
-                annotations: 19,
+                annotations: 20,
                 conclusion: "failure",
                 status: "completed",
                 summary: `|Test Suites|✅ 28 passed|🟡 1 skipped|❌ 12 failed|⌛ took
@@ -89,16 +93,20 @@ describe('checks', () => {
 |:-|-|-|-|
 |NewLineAtEndOfFile|0|1|0|
 
+|LeakCanary|🛑 1 error|⚠️ 0 warnings|💡 0 others|
+|:-|-|-|-|
+|Performance / LeakCanary|1|0|0|
+
 |lint 8.4.0|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
 |:-|-|-|-|
 |Correctness / GradleDependency|0|1|0|
 |Performance / VectorPath|0|3|0|
 
 `,
-                title: "41 tests: ✅ 28 (❗1), 🟡 1, ❌ 12, checks: ⚠️ 5"
+                title: "41 tests: ✅ 28 (❗1), 🟡 1, ❌ 12, checks: 🛑 1, ⚠️ 5"
             },
             "Test Reports (omitting passed)": {
-                annotations: 19,
+                annotations: 20,
                 conclusion: "failure",
                 status: "completed",
                 summary: `|Test Suites|✅ 28 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 12 failed|⌛ took
@@ -116,16 +124,20 @@ describe('checks', () => {
 |:-|-|-|-|
 |NewLineAtEndOfFile|0|1|0|
 
+|LeakCanary|🛑 1 error|⚠️ 0 warnings|💡 0 others|
+|:-|-|-|-|
+|Performance / LeakCanary|1|0|0|
+
 |lint 8.4.0|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
 |:-|-|-|-|
 |Correctness / GradleDependency|0|1|0|
 |Performance / VectorPath|0|3|0|
 
 `,
-                title: "41 tests: ✅ 28 (❗1), 🟡 1, ❌ 12, checks: ⚠️ 5"
+                title: "41 tests: ✅ 28 (❗1), 🟡 1, ❌ 12, checks: 🛑 1, ⚠️ 5"
             },
             "Test Reports (GitHub App)": {
-                annotations: 19,
+                annotations: 20,
                 conclusion: "failure",
                 status: "completed",
                 summary: `|Test Suites|✅ 28 passed|🟡 1 skipped|❌ 12 failed|⌛ took
@@ -150,13 +162,17 @@ describe('checks', () => {
 |:-|-|-|-|
 |NewLineAtEndOfFile|0|1|0|
 
+|LeakCanary|🛑 1 error|⚠️ 0 warnings|💡 0 others|
+|:-|-|-|-|
+|Performance / LeakCanary|1|0|0|
+
 |lint 8.4.0|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
 |:-|-|-|-|
 |Correctness / GradleDependency|0|1|0|
 |Performance / VectorPath|0|3|0|
 
 `,
-                title: "41 tests: ✅ 28 (❗1), 🟡 1, ❌ 12, checks: ⚠️ 5"
+                title: "41 tests: ✅ 28 (❗1), 🟡 1, ❌ 12, checks: 🛑 1, ⚠️ 5"
             },
             "Test Reports (No Reports)": {
                 annotations: 0,
