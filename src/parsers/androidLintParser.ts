@@ -46,23 +46,23 @@ export const androidLintParser: Parser = {
             const result = new ParseResults();
             const suite: CheckSuite = {name: data.issues._attributes.by || 'Android Lint', errors: 0, warnings: 0, others: 0, issues: {}};
 
-            for (const testcase of asArray(data.issues.issue)) {
-                const type = computeType(testcase._attributes.severity);
+            for (const issue of asArray(data.issues.issue)) {
+                const type = computeType(issue._attributes.severity);
 
                 if (type) {
-                    for (const location of asArray(testcase.location)) {
+                    for (const location of asArray(issue.location)) {
                         const file = await resolveFile(location._attributes.file);
 
                         if (config.prFilesFilter(file)) {
-                            const issue = `${testcase._attributes.category} / ${testcase._attributes.id}`;
+                            const issueSummary = `${issue._attributes.category} / ${issue._attributes.id}`;
 
-                            result.addIssueToCheckSuite(suite, issue, type);
+                            result.addIssueToCheckSuite(suite, issueSummary, type);
                             result.addAnnotation({
                                 file,
                                 severity: type,
-                                title: `${testcase._attributes.category}: ${testcase._attributes.summary}`,
-                                message: testcase._attributes.message,
-                                rawDetails: join(testcase._attributes.explanation, testcase._attributes.errorLine1, testcase._attributes.errorLine2),
+                                title: `${issue._attributes.category}: ${issue._attributes.summary}`,
+                                message: issue._attributes.message,
+                                rawDetails: join(issue._attributes.explanation, issue._attributes.errorLine1, issue._attributes.errorLine2),
                                 startLine: Number(location._attributes.line),
                                 endLine: Number(location._attributes.line),
                                 startColumn: Number(location._attributes.column),
