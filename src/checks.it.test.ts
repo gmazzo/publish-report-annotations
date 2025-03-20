@@ -51,14 +51,14 @@ describe('checks', () => {
 |<details><summary>✅ resolveFile</summary><ul><li>✅ resolveFile when file exists, just returns itself (⌛ <time>)</li><li>✅ resolveFile when is absolute path, just returns itself (⌛ <time>)</li><li>✅ resolveFile when looking for a file but extension does not matches, it returns the same (⌛ <time>)</li><li>✅ resolveFile when looking for a file with possible extensions, it returns a match (⌛ <time>)</li><li>✅ resolveFile when looking for a file, it returns a match (⌛ <time>)</li></ul></details>|5|0|0|<time>
 [^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 
-|Android Lint|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
-|:-|-|-|-|
-|Correctness / GradleDependency|0|1|0|
-|Performance / VectorPath|0|3|0|
-
 |Detekt|🛑 0 errors|⚠️ 1 warning|💡 0 others|
 |:-|-|-|-|
 |NewLineAtEndOfFile|0|1|0|
+
+|lint 8.4.0|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
+|:-|-|-|-|
+|Correctness / GradleDependency|0|1|0|
+|Performance / VectorPath|0|3|0|
 
 `,
                 title: "35 tests: ✅ 28 (❗2), 🟡 1, ❌ 6, checks: ⚠️ 5"
@@ -85,14 +85,14 @@ describe('checks', () => {
 |<details><summary>✅ resolveFile</summary><ul><li>✅ resolveFile when file exists, just returns itself (⌛ <time>)</li><li>✅ resolveFile when is absolute path, just returns itself (⌛ <time>)</li><li>✅ resolveFile when looking for a file but extension does not matches, it returns the same (⌛ <time>)</li><li>✅ resolveFile when looking for a file with possible extensions, it returns a match (⌛ <time>)</li><li>✅ resolveFile when looking for a file, it returns a match (⌛ <time>)</li></ul></details>|5|0|0|<time>
 [^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 
-|Android Lint|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
-|:-|-|-|-|
-|Correctness / GradleDependency|0|1|0|
-|Performance / VectorPath|0|3|0|
-
 |Detekt|🛑 0 errors|⚠️ 1 warning|💡 0 others|
 |:-|-|-|-|
 |NewLineAtEndOfFile|0|1|0|
+
+|lint 8.4.0|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
+|:-|-|-|-|
+|Correctness / GradleDependency|0|1|0|
+|Performance / VectorPath|0|3|0|
 
 `,
                 title: "41 tests: ✅ 28 (❗1), 🟡 1, ❌ 12, checks: ⚠️ 5"
@@ -112,14 +112,14 @@ describe('checks', () => {
 [^passedSkipDisclaimer]: ✅ passed suites were not reported
 [^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 
-|Android Lint|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
-|:-|-|-|-|
-|Correctness / GradleDependency|0|1|0|
-|Performance / VectorPath|0|3|0|
-
 |Detekt|🛑 0 errors|⚠️ 1 warning|💡 0 others|
 |:-|-|-|-|
 |NewLineAtEndOfFile|0|1|0|
+
+|lint 8.4.0|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
+|:-|-|-|-|
+|Correctness / GradleDependency|0|1|0|
+|Performance / VectorPath|0|3|0|
 
 `,
                 title: "41 tests: ✅ 28 (❗1), 🟡 1, ❌ 12, checks: ⚠️ 5"
@@ -146,14 +146,14 @@ describe('checks', () => {
 |<details><summary>✅ resolveFile</summary><ul><li>✅ resolveFile when file exists, just returns itself (⌛ <time>)</li><li>✅ resolveFile when is absolute path, just returns itself (⌛ <time>)</li><li>✅ resolveFile when looking for a file but extension does not matches, it returns the same (⌛ <time>)</li><li>✅ resolveFile when looking for a file with possible extensions, it returns a match (⌛ <time>)</li><li>✅ resolveFile when looking for a file, it returns a match (⌛ <time>)</li></ul></details>|5|0|0|<time>
 [^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 
-|Android Lint|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
-|:-|-|-|-|
-|Correctness / GradleDependency|0|1|0|
-|Performance / VectorPath|0|3|0|
-
 |Detekt|🛑 0 errors|⚠️ 1 warning|💡 0 others|
 |:-|-|-|-|
 |NewLineAtEndOfFile|0|1|0|
+
+|lint 8.4.0|🛑 0 errors|⚠️ 4 warnings|💡 0 others|
+|:-|-|-|-|
+|Correctness / GradleDependency|0|1|0|
+|Performance / VectorPath|0|3|0|
 
 `,
                 title: "41 tests: ✅ 28 (❗1), 🟡 1, ❌ 12, checks: ⚠️ 5"
