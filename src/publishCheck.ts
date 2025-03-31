@@ -3,13 +3,14 @@ import * as core from "@actions/core";
 import {Config, ParseResults} from "./types";
 import {shouldFail} from "./utils";
 import {summaryOf, summaryTableOf} from "./summary";
+import {RequestError} from "@octokit/request-error";
 
 export async function publishCheck(results: ParseResults, config: Config) {
     const octokit = github.getOctokit(config.githubToken);
 
     const commit = (github.context.payload?.pull_request?.head?.sha || github.context.sha) as string;
 
-    const params= {
+    const params = {
         ...github.context.repo,
         name: config.checkName,
         head_sha: commit,
@@ -30,19 +31,20 @@ export async function publishCheck(results: ParseResults, config: Config) {
         }
     };
 
-    const {data: checks} = await octokit.rest.checks.listForRef({
+    const {data: checks} = await onErrorRetry(() => octokit.rest.checks.listForRef({
         ...github.context.repo,
         ref: commit,
         check_name: config.checkName,
         status: 'in_progress',
         filter: 'latest'
-    });
+    }));
 
     const checkRunId: number | null = checks.check_runs[0]?.id;
 
-    const {data: {html_url}} = await (checkRunId ?
-        octokit.rest.checks.update({ ...params, check_run_id: checkRunId }) :
-        octokit.rest.checks.create(params));
+    const {html_url} = await onErrorRetry(() => (checkRunId ?
+        octokit.rest.checks.update({...params, check_run_id: checkRunId}) :
+        octokit.rest.checks.create(params))
+        .then((it) => it.data))
 
     if (results.annotations.length != params.output.annotations.length) {
         core.warning(`Due GitHub limitation, only ${params.output.annotations.length} of ${results.annotations.length} were reported.\nhttps://github.com/orgs/community/discussions/26680`);
@@ -60,4 +62,33 @@ function getAnnotationType(value: ParseResults['annotations'][0]['severity']): '
         case 'other':
             return 'notice';
     }
+}
+
+async function onErrorRetry<Type>(request: () => Promise<Type>) {
+    return request().catch(async (ex: RequestError) => {
+        let delaySeconds;
+
+        switch (ex.status) {
+            case 504:
+                delaySeconds = 30;
+                break
+
+            case 403:
+            case 429:
+                const retryAfter = ex.response?.headers['retry-after'];
+                if (retryAfter) {
+                    delaySeconds = Number(retryAfter);
+                    break
+                }
+        }
+
+        if (!delaySeconds) {
+            throw ex
+        }
+
+        core.warning(`Request failed with status ${ex.status}: ${ex.message}`)
+        core.info(`Retrying in ${delaySeconds} seconds...`)
+        await new Promise((it) => setTimeout(it, delaySeconds * 1000))
+        return request()
+    })
 }

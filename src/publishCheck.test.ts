@@ -1,8 +1,8 @@
 import {Config, ParseResults} from "./types";
 
 const listForRef = jest.fn();
-const create = jest.fn().mockReturnValue({data: {html_url: "aUrl"}});
-const update = jest.fn().mockReturnValue({data: {html_url: "aUrl"}});
+const create = jest.fn().mockResolvedValue({data: {html_url: "aUrl"}});
+const update = jest.fn().mockResolvedValue({data: {html_url: "aUrl"}});
 const getOctokit = jest.fn().mockReturnValue({
     rest: {
         checks: {
@@ -13,6 +13,7 @@ const getOctokit = jest.fn().mockReturnValue({
     }
 });
 const coreInfo = jest.fn();
+const coreWarning = jest.fn();
 const summaryOf = jest.fn().mockReturnValue("aSummary");
 const summaryTableOf = jest.fn().mockReturnValue("aSummaryTable");
 
@@ -35,7 +36,12 @@ jest.mock("@actions/github", () => ({
 }));
 
 jest.mock("@actions/core", () => ({
-    info: coreInfo
+    info: coreInfo,
+    warning: coreWarning
+}));
+
+jest.mock("@octokit/request-error", () => ({
+    RequestError: RequestErrorMock
 }));
 
 import {publishCheck} from "./publishCheck";
@@ -43,7 +49,7 @@ import {publishCheck} from "./publishCheck";
 describe("publishCheck", () => {
 
     test.each([[false], [true]])("publishes check [checkExists=%p]", async (checkExists) => {
-        listForRef.mockReturnValue({data: {check_runs: checkExists ? [{id: 123}] : []}});
+        listForRef.mockResolvedValue({data: {check_runs: checkExists ? [{id: 123}] : []}});
 
         await publishCheck(new ParseResults({
             tests: {
@@ -135,4 +141,64 @@ describe("publishCheck", () => {
         }
     });
 
+    test.each([
+        [403, false, 3],
+        [403, true, 3],
+        [429, false, '2'],
+        [500, true, null],
+        [504, false, null],
+        [504, true, null],
+    ])("when HTTP failure publishing a check, it should retry [http=%p]", async (httpCode, alwaysFail, retryAfter) => {
+        jest.useFakeTimers({advanceTimers: 2});
+
+        const retryableError = httpCode != 500
+        const error = new RequestErrorMock(httpCode, retryAfter ? {'retry-after': retryAfter} : undefined);
+        try {
+            listForRef.mockResolvedValue({data: {check_runs: []}});
+            if (alwaysFail) {
+                create.mockRejectedValue(error);
+
+            } else {
+                create.mockRejectedValueOnce(error);
+                create.mockResolvedValue({data: {html_url: "aUrl"}});
+            }
+
+            const promise = publishCheck(new ParseResults({}), config)
+            // noinspection ES6MissingAwait
+            jest.runAllTimersAsync()
+            if (alwaysFail) {
+                await expect(promise).rejects.toEqual(error)
+
+            } else {
+                await expect(promise).resolves.toBe("aUrl");
+            }
+
+            if (retryableError) {
+                expect(coreWarning).toHaveBeenCalledWith(`Request failed with status ${httpCode}: anHttpError`);
+                expect(coreInfo).toHaveBeenCalledWith(`Retrying in ${retryAfter || 30} seconds...`)
+                expect(create).toHaveBeenCalledTimes(2)
+
+            } else {
+                expect(create).toHaveBeenCalledTimes(1)
+            }
+
+        } finally {
+            jest.useRealTimers()
+        }
+    })
+
 });
+
+type Headers = { [key: string]: string | number }
+
+class RequestErrorMock extends Error {
+    name = "HttpError";
+    status: number;
+    response?: { headers?: Headers };
+
+    constructor(status: number, headers?: Headers) {
+        super("anHttpError");
+        this.status = status;
+        this.response = {headers};
+    }
+}
