@@ -4,6 +4,8 @@
 [![codecov](https://codecov.io/gh/gmazzo/publish-report-annotations/branch/main/graph/badge.svg)](https://codecov.io/gh/gmazzo/publish-report-annotations)
 [![Users](https://img.shields.io/badge/users_by-Sourcegraph-purple)](https://sourcegraph.com/search?q=content:gmazzo/publish-report-annotations%40+-repo:github.com/gmazzo/publish-report-annotations)
 
+[![Contributors](https://contrib.rocks/image?repo=gmazzo/publish-report-annotations)](https://github.com/gmazzo/publish-report-annotations/graphs/contributors)
+
 # publish-report-annotations
 Reports JUnit, Android Lint, Detekt and any other CheckStyle compatible XML reports as GitHub Actions annotations.
 Mostly targeting Gradle builds
