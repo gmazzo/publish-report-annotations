@@ -29,6 +29,10 @@ type CheckStyleData = {
 
 export const checkstyleParser: Parser = {
 
+    accept(filePath: string) {
+        return filePath.endsWith('.xml')
+    },
+
     async parse(filePath: string, config: Config) {
         const data: CheckStyleData = await readFile(filePath);
 

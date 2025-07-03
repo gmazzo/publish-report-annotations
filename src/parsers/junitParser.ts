@@ -45,6 +45,10 @@ const possibleExtensions = ['java', 'kt', 'groovy']
 
 export const junitParser: Parser = {
 
+    accept(filePath: string) {
+        return filePath.endsWith('.xml')
+    },
+
     async parse(filePath: string, config: Config) {
         const data: JUnitData = await readFile(filePath);
 

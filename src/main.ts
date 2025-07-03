@@ -7,10 +7,11 @@ import {publishCheck} from "./publishCheck";
 import {hasErrors} from "./utils";
 import {summaryOf, summaryTableOf} from "./summary";
 import {readConfig} from "./readConfig";
+import {parsers} from "./parsers/parsers";
 
 export default async function main() {
     const config = await readConfig();
-    const globber = await glob.create(config.reports.join('\n'), {implicitDescendants: true, matchDirectories: false});
+    const globber = await glob.create(config.reports.join('\n'), {implicitDescendants: true, matchDirectories: true});
 
     const files = (await globber.glob()).map(it => relative(process.cwd(), it));
     core.debug(`Found ${files.length} files to process matching: ${config.reports.join(', ')}`);
@@ -19,6 +20,8 @@ export default async function main() {
     const all = new ParseResults({files});
 
     for (const file of files) {
+        if (!parsers.some(parser => parser.accept(file))) continue;
+
         const relativePath = relative(currentDir, file);
 
         core.startGroup(`Processing \`${relativePath}\``);

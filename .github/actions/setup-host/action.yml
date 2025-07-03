@@ -4,6 +4,10 @@ description: 'Configures the host runner to run the build'
 runs:
   using: "composite"
   steps:
+    - name: Setup Xcode
+      if: ${{ runner.os == 'macOS' }}
+      shell: bash
+      run: xcodes select $(xcodes installed | tail -n1 | grep -Eo '^\S+')
     - name: Setup Node
       uses: actions/setup-node@v4
       with:

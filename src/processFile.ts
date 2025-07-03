@@ -1,20 +1,13 @@
-import {junitParser} from "./parsers/junitParser";
-import {checkstyleParser} from "./parsers/checkstyleParser";
-import {androidLintParser} from "./parsers/androidLintParser";
 import {join} from "./utils";
 import * as core from "@actions/core";
 import {Config} from "./types";
-
-const parsers = [
-    junitParser,
-    checkstyleParser,
-    androidLintParser,
-];
+import {parsers} from "./parsers/parsers";
 
 export async function processFile(filepath: string, config: Config) {
     const doNotAnnotate = config.checkName != '';
 
     for (const parser of parsers) {
+        if (!parser.accept(filepath)) continue;
         const result = await parser.parse(filepath, config);
 
         if (result) {

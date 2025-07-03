@@ -19,6 +19,11 @@ Mostly targeting Gradle builds
 #### Android Lint's reports
 ![android lint](https://github.com/gmazzo/publish-report-annotations/assets/513566/cedf8726-0633-43d4-ae6a-3371362f3e8c)
 
+#### iOS's XCResult reports
+This action can automatically parse `.xcresult` files from Xcode builds and report them as annotations.
+> [!NOTE]
+> This feature requires `macOS` and at least `Xcode 16.4` or later.
+
 #### Detailed logs
 ![logs](https://github.com/gmazzo/publish-report-annotations/assets/513566/4d2a3224-c326-4948-bf58-6aec18715818)
 

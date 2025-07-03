@@ -2,6 +2,7 @@ import {Config, ParseResults} from "./types";
 import {Parser} from "./parsers/parser";
 
 const junitParser: Parser = {
+    accept: jest.fn().mockReturnValue(true),
     parse: jest.fn().mockImplementation(file => {
         if (file == 'junit.xml') {
             return new ParseResults({
@@ -20,6 +21,7 @@ const junitParser: Parser = {
 };
 
 const checkstyleParser: Parser = {
+    accept: jest.fn().mockReturnValue(true),
     parse: jest.fn().mockImplementation(file => {
         if (file == 'checkstyle.xml') {
             return new ParseResults({
@@ -44,6 +46,7 @@ const checkstyleParser: Parser = {
 };
 
 const androidLintParser: Parser = {
+    accept: jest.fn().mockReturnValue(true),
     parse: jest.fn().mockImplementation(file => {
         if (file == 'lint.xml') {
             return new ParseResults({
@@ -64,23 +67,15 @@ const androidLintParser: Parser = {
     })
 };
 
+jest.mock("./parsers/parsers", () => ({
+    parsers: [junitParser, checkstyleParser, androidLintParser]
+}));
+
 const coreError = jest.fn();
 const coreWarning = jest.fn();
 const coreNotice = jest.fn();
 const prFilesFilter = jest.fn();
 const baseConfig = {prFilesFilter} as unknown as Config ;
-
-jest.mock("./parsers/junitParser", () => ({
-    junitParser
-}));
-
-jest.mock("./parsers/checkstyleParser", () => ({
-    checkstyleParser
-}));
-
-jest.mock("./parsers/androidLintParser", () => ({
-    androidLintParser
-}));
 
 jest.mock("@actions/core", () => ({
     error: coreError,

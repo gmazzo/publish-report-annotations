@@ -21,6 +21,7 @@ inputs:
       **/build/test-results/**/*.xml
       **/build/reports/**/*.xml
       **/build/outputs/androidTest-results/**/*.xml
+      **/*.xcresult
   workflowSummary:
     description: "Whether to report the summary to the running workflow or not. Defaults to `true` if `checkName` is not set, or `false` otherwise"
     required: false

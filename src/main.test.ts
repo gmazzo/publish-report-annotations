@@ -50,6 +50,10 @@ jest.mock("./readConfig", () => ({
     readConfig
 }));
 
+jest.mock("./parsers/parsers", () => ({
+    parsers: [{accept: jest.fn().mockReturnValue(true)}]
+}))
+
 import main from "./main";
 
 describe("main", () => {
