@@ -6,6 +6,7 @@ export async function readFile<Type>(filepath: string) {
     const data = fs.promises.readFile(filepath, {encoding: "utf-8"});
 
     switch (extension) {
+        case "json":
         case "sarif":
             return JSON.parse(await data) as Type;
 
