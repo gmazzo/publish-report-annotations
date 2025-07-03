@@ -39,6 +39,10 @@ type LintData = {
 
 export const androidLintParser: Parser = {
 
+    accept(filePath: string) {
+        return filePath.endsWith('.xml')
+    },
+
     parse: async function (filePath: string, config: Config) {
         const data: LintData = await readFile(filePath);
 

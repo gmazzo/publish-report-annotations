@@ -1,0 +1,101 @@
+{
+  "devices" : [
+    {
+      "architecture" : "arm64",
+      "deviceId" : "8193F1ED-EEFE-4D70-89C5-9A5A2E8347B7",
+      "deviceName" : "iPhone 16",
+      "modelName" : "iPhone 16",
+      "osBuildNumber" : "22F77",
+      "osVersion" : "18.5",
+      "platform" : "iOS Simulator"
+    }
+  ],
+  "testNodes" : [
+    {
+      "children" : [
+        {
+          "children" : [
+            {
+              "children" : [
+                {
+                  "children" : [
+                    {
+                      "name" : "SampleTests.swift:20: XCTAssertTrue failed",
+                      "nodeType" : "Failure Message",
+                      "result" : "Failed"
+                    }
+                  ],
+                  "duration" : "0,36s",
+                  "durationInSeconds" : 0.3648279905319214,
+                  "name" : "testFailure()",
+                  "nodeIdentifier" : "SampleTests/testFailure()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/TrackingUI/TrackingUITests/SampleTests/testFailure",
+                  "nodeType" : "Test Case",
+                  "result" : "Failed"
+                },
+                {
+                  "children" : [
+                    {
+                      "name" : "SampleTests.swift:29: XCTAssertTrue failed",
+                      "nodeType" : "Failure Message",
+                      "result" : "Failed"
+                    }
+                  ],
+                  "duration" : "0,0012s",
+                  "durationInSeconds" : 0.0011839866638183594,
+                  "name" : "testFlaky()",
+                  "nodeIdentifier" : "SampleTests/testFlaky()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/TrackingUI/TrackingUITests/SampleTests/testFlaky",
+                  "nodeType" : "Test Case",
+                  "result" : "Failed"
+                },
+                {
+                  "children" : [
+                    {
+                      "name" : "Test skipped - skipped test",
+                      "nodeType" : "Failure Message",
+                      "result" : "Skipped"
+                    }
+                  ],
+                  "duration" : "0,005s",
+                  "durationInSeconds" : 0.004992961883544922,
+                  "name" : "testSkipped()",
+                  "nodeIdentifier" : "SampleTests/testSkipped()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/TrackingUI/TrackingUITests/SampleTests/testSkipped",
+                  "nodeType" : "Test Case",
+                  "result" : "Skipped"
+                },
+                {
+                  "duration" : "0,00072s",
+                  "durationInSeconds" : 0.0007169246673583984,
+                  "name" : "testSuccess()",
+                  "nodeIdentifier" : "SampleTests/testSuccess()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/TrackingUI/TrackingUITests/SampleTests/testSuccess",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                }
+              ],
+              "name" : "SampleTests",
+              "nodeIdentifierURL" : "test://com.apple.xcode/TrackingUI/TrackingUITests/SampleTests",
+              "nodeType" : "Test Suite",
+              "result" : "Failed"
+            }
+          ],
+          "name" : "TrackingUITests",
+          "nodeIdentifierURL" : "test://com.apple.xcode/TrackingUI/TrackingUITests",
+          "nodeType" : "Unit test bundle",
+          "result" : "Failed"
+        }
+      ],
+      "name" : "TrackingUI",
+      "nodeType" : "Test Plan",
+      "result" : "Failed"
+    }
+  ],
+  "testPlanConfigurations" : [
+    {
+      "configurationId" : "1",
+      "configurationName" : "Test Scheme Action"
+    }
+  ]
+}

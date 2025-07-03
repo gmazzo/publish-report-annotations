@@ -5,7 +5,11 @@ export function asArray<Value>(value: Value | Value[] | undefined): Value[] {
 }
 
 export function join(...values: (string | null | undefined)[]): string {
-    return values.filter(it => it).join('\n');
+    return joinSeparator('\n', ...values);
+}
+
+export function joinSeparator(separator: string, ...values: (string | null | undefined)[]): string {
+    return values.filter(it => it).join(separator);
 }
 
 export function shouldFail(results: ParseResults, config: Config) {

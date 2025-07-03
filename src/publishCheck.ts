@@ -10,6 +10,21 @@ export async function publishCheck(results: ParseResults, config: Config) {
 
     const commit = (github.context.payload?.pull_request?.head?.sha || github.context.sha) as string;
 
+    const sanitizedAnnotations = results.annotations.flatMap(annotation => {
+        if (annotation.file) {
+            return [{
+                path: annotation.file,
+                start_line: annotation.startLine || 1,
+                end_line: annotation.endLine || 1,
+                annotation_level: getAnnotationType(annotation.severity),
+                message: annotation.message || 'No message provided',
+                title: annotation.title,
+                raw_details: annotation.rawDetails
+            }]
+        }
+        return []
+    })
+
     const params = {
         ...github.context.repo,
         name: config.checkName,
@@ -19,15 +34,7 @@ export async function publishCheck(results: ParseResults, config: Config) {
         output: {
             title: summaryOf(results, true),
             summary: summaryTableOf(results, config),
-            annotations: results.annotations.slice(0, 50).map(annotation => ({
-                path: annotation.file || '',
-                start_line: annotation.startLine || 0,
-                end_line: annotation.endLine || 0,
-                annotation_level: getAnnotationType(annotation.severity),
-                message: annotation.message || '',
-                title: annotation.title || '',
-                raw_details: annotation.rawDetails
-            }))
+            annotations: sanitizedAnnotations.slice(0, 50), // GitHub limit is 50 annotations per check run
         }
     };
 
@@ -46,7 +53,7 @@ export async function publishCheck(results: ParseResults, config: Config) {
         octokit.rest.checks.create(params))
         .then((it) => it.data))
 
-    if (results.annotations.length != params.output.annotations.length) {
+    if (sanitizedAnnotations.length != params.output.annotations.length) {
         core.warning(`Due GitHub limitation, only ${params.output.annotations.length} of ${results.annotations.length} were reported.\nhttps://github.com/orgs/community/discussions/26680`);
     }
 

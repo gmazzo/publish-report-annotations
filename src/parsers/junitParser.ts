@@ -45,6 +45,10 @@ const possibleExtensions = ['java', 'kt', 'groovy']
 
 export const junitParser: Parser = {
 
+    accept(filePath: string) {
+        return filePath.endsWith('.xml')
+    },
+
     async parse(filePath: string, config: Config) {
         const data: JUnitData = await readFile(filePath);
 
@@ -124,16 +128,16 @@ export const junitParser: Parser = {
                     if (testCase.failure) {
                         if (!testCase.flaky) failed++;
 
-                        let filePath: string
+                        let file: string
                         if (testCase._attributes.file) {
-                            filePath = await resolveFile(testCase._attributes.file);
+                            file = await resolveFile(testCase._attributes.file);
 
                         } else {
-                            filePath = await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), ...possibleExtensions, '*');
+                            file = await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), ...possibleExtensions, '*');
 
-                            const extensionIndex = filePath.lastIndexOf('.');
+                            const extensionIndex = file.lastIndexOf('.');
                             if (extensionIndex) {
-                                const extension = filePath.substring(extensionIndex + 1);
+                                const extension = file.substring(extensionIndex + 1);
 
                                 if (!possibleExtensions.includes(extension)) {
                                     possibleExtensions.push(extension);
@@ -145,7 +149,7 @@ export const junitParser: Parser = {
                             const line = getLine(testCase, failure._text);
 
                             result.addAnnotation({
-                                file: filePath,
+                                file,
                                 severity: testCase.flaky ? 'warning' : 'error',
                                 title: testCase.flaky ? `(❗Flaky) ${testCase._attributes.name}` : testCase._attributes.name,
                                 message: failure._attributes?.message || failure._text || `${testCase._attributes.name} failed`,
