@@ -12,7 +12,7 @@ import {xcresultParser} from "./xcresultParser";
 
 describe("xcresultParser", () => {
 
-    test("given junit xml should obtain annotations", async () => {
+    test("given xcresult json should obtain annotations", async () => {
         const data = await xcresultParser.parse("samples/test-results.xcresult.json", config);
 
         expect(data).toStrictEqual(new ParseResults({
@@ -96,7 +96,69 @@ describe("xcresultParser", () => {
         }));
     });
 
-    test("given another junit xml should obtain annotations", async () => {
+    test("given another xcresult json should obtain annotations", async () => {
+        const data = await xcresultParser.parse("samples/test-results-other.xcresult.json", config);
+
+        expect(data).toStrictEqual(new ParseResults({
+            "annotations": [],
+            "checks": {
+                "checks": [],
+                "totals": {
+                    "count": 0,
+                    "errors": 0,
+                    "others": 0,
+                    "warnings": 0
+                }
+            },
+            "files": [],
+            "tests": {
+                "suites": [
+                    {
+                        "cases": [
+                            {
+                                "className": "TrackingUIGoogleMapTests",
+                                "name": "exampleUsage()",
+                                "outcome": "passed"
+                            }
+                        ],
+                        "failed": 0,
+                        "flaky": 0,
+                        "name": "TrackingUIGoogleMapTests",
+                        "passed": 1,
+                        "skipped": 0
+                    },
+                    {
+                        "cases": [
+                            {
+                                "className": "TrackingUITests",
+                                "name": "example()",
+                                "outcome": "passed"
+                            }
+                        ],
+                        "failed": 0,
+                        "flaky": 0,
+                        "name": "TrackingUITests",
+                        "passed": 1,
+                        "skipped": 0
+                    }
+                ],
+                "totals": {
+                    "count": 2,
+                    "failed": 0,
+                    "flaky": 0,
+                    "passed": 2,
+                    "skipped": 0
+                }
+            },
+            "totals": {
+                "errors": 0,
+                "others": 0,
+                "warnings": 0
+            }
+        }));
+    })
+
+    test("given a retry xcresult json should obtain annotations", async () => {
         const data = await xcresultParser.parse("samples/test-results-retry.xcresult.json", config);
 
         expect(data).toStrictEqual(new ParseResults({

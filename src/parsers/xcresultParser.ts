@@ -37,11 +37,8 @@ export const xcresultParser: Parser = {
         const data: XCResult = await readFile(filePath);
 
         if (data?.testNodes) {
-            const suites = asArray(data.testNodes)
-                .flatMap(it => asArray(it.children))
-                .flatMap(it => asArray(it.children))
-
             const result = new ParseResults();
+            const suites = computeSuites(asArray(data.testNodes))
 
             for (const testSuite of suites) {
                 let failed = 0;
@@ -76,13 +73,13 @@ export const xcresultParser: Parser = {
                         hasFailedRepetitions
                     } = computeChildren(testCase.children)
 
-                    const isFlaky = hasFailedRepetitions && outcome == 'passed'
+                    const isFlaky = hasFailedRepetitions && outcome === 'passed'
                     if (isFlaky) {
                         flaky++
                         outcome = 'flaky'
                     }
 
-                    if (outcome == 'failed' || isFlaky) {
+                    if (outcome === 'failed' || isFlaky) {
                         const file = className && await resolveFile(className)
 
                         result.addAnnotation({
@@ -97,8 +94,8 @@ export const xcresultParser: Parser = {
                     cases.push({
                         name: testCase.name,
                         className: className || testSuite.name,
-                        took: testCase.duration,
                         outcome: outcome,
+                        ...testCase.duration ? {took: testCase.duration} : {},
                         ...retries > 0 ? {retries: retries - 1} : {},
                     })
                 }
@@ -121,6 +118,24 @@ export const xcresultParser: Parser = {
 
 function isXCResultDir(filePath: string) {
     return filePath.endsWith('.xcresult') && lstatSync(filePath).isDirectory()
+}
+
+function computeSuites(testNodes: TestNode[]) {
+    const suites: TestNode[] = [];
+    for (const bundle of testNodes.flatMap(it => asArray(it.children))) {
+        const suite = {...bundle, children: []}
+        const childSuites: TestNode[] = []
+
+        for (const node of asArray(bundle.children)) {
+            (node.nodeType === 'Test Suite' ? childSuites : suite.children).push(node)
+        }
+
+        if (suite.children.length > 0) {
+            suites.push(suite);
+        }
+        suites.push(...childSuites);
+    }
+    return suites
 }
 
 function computeChildren(children: TestNode[] | undefined) {
