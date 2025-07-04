@@ -21,6 +21,8 @@ Mostly targeting Gradle builds
 
 #### iOS's XCResult reports
 This action can automatically parse `.xcresult` files from Xcode builds and report them as annotations.
+![xcresult](https://github.com/user-attachments/assets/0ddaaf79-3650-4928-8d8f-8cd26b9e1a8d)
+
 > [!NOTE]
 > This feature requires `macOS` and at least `Xcode 16.4` or later.
 
