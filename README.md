@@ -7,8 +7,7 @@
 [![Contributors](https://contrib.rocks/image?repo=gmazzo/publish-report-annotations)](https://github.com/gmazzo/publish-report-annotations/graphs/contributors)
 
 # publish-report-annotations
-Reports JUnit, Android Lint, Detekt and any other CheckStyle compatible XML reports as GitHub Actions annotations.
-Mostly targeting Gradle builds
+Reports `JUnit`, `Android Lint`, Xcode's `XCResult`s, `Detekt` and any other `CheckStyle` compatible `XML` reports as GitHub Actions annotations. Mostly targeting `Gradle` builds
 
 #### JUnit's reports
 ![junit](https://github.com/gmazzo/publish-report-annotations/assets/513566/57ba4328-0318-48b5-9d91-22113c4387bb)
