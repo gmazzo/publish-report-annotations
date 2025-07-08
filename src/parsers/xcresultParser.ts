@@ -1,4 +1,5 @@
 import {lstatSync} from 'fs';
+import path from 'path';
 import {spawnSync} from "node:child_process";
 import {Parser} from "./parser";
 import {readFile} from "./readFile";
@@ -172,7 +173,7 @@ function computeChildren(children: TestNode[] | undefined) {
 }
 
 function extractXcResultFile(filePath: string) {
-    const jsonFile = `${filePath}.json`
+    const jsonFile = path.resolve(filePath, 'results.json')
 
     const result = spawnSync("xcrun", ["xcresulttool", "get", "test-results", "tests", "--path", filePath], {
         encoding: "utf8",
