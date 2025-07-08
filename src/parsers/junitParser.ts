@@ -3,6 +3,7 @@ import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
 import {Config, ParseResults, TestCase} from "../types";
 import {Parser} from "./parser";
+import {dirname, extname} from "path";
 
 type JUnitTest = {
     _attributes: {
@@ -128,25 +129,8 @@ export const junitParser: Parser = {
                     if (testCase.failure) {
                         if (!testCase.flaky) failed++;
 
-                        let file: string
-                        if (testCase._attributes.file) {
-                            file = await resolveFile(testCase._attributes.file);
-
-                        } else {
-                            file = await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), ...possibleExtensions, '*');
-
-                            const extensionIndex = file.lastIndexOf('.');
-                            if (extensionIndex) {
-                                const extension = file.substring(extensionIndex + 1);
-
-                                if (!possibleExtensions.includes(extension)) {
-                                    possibleExtensions.push(extension);
-                                }
-                            }
-                        }
-
                         for (const failure of asArray(testCase.failure)) {
-                            const line = getLine(testCase, failure._text);
+                            const {file, line} = await resolveFileAndLine(testCase, failure._text);
 
                             result.addAnnotation({
                                 file,
@@ -190,18 +174,41 @@ export const junitParser: Parser = {
 
 };
 
-function getLine(testCase: JUnitTest, stackTrace: string): number | undefined {
-    if (testCase._attributes.line) {
-        return Number(testCase._attributes.line);
+async function resolveFileAndLine(testCase: JUnitTest, stackTrace: string) {
+    let fileName = testCase._attributes.file
+    let line = testCase._attributes.line ? Number(testCase._attributes.line) : undefined;
+
+    if (!fileName || !line) {
+        const fromStacktrace = findFileLineFromStacktrace(testCase, stackTrace);
+
+        if (!fileName) fileName = fromStacktrace?.fileName;
+        if (!line) line = fromStacktrace?.line;
     }
 
+    const file = fileName ?
+        await resolveFile(fileName) :
+        await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), ...possibleExtensions, '*');
+
+    if (file && !fileName) { // looked by class name
+        const extension = extname(file)
+        if (!possibleExtensions.includes(extension)) {
+            // stores a new known extension if it was not already in the list
+            possibleExtensions.push(extension);
+        }
+    }
+
+    return {file, line};
+}
+
+function findFileLineFromStacktrace(testCase: JUnitTest, stackTrace: string) {
     const className = testCase._attributes.classname;
 
     if (className && stackTrace) {
-        const match = new RegExp(`\\s*at\\s+${className}\\..*?\\(.*?:(\\d+)\\)`).exec(stackTrace);
-
-        if (match) {
-            return Number(match[1]);
+        for (const match of stackTrace.matchAll(/\s*at\s+(.+?)\((.*?):(\d+)\)/g)) {
+            if (match[1].startsWith(className)) {
+                const packageDir = dirname(className.replace(/\./g, '/'));
+                return {fileName: packageDir ? `${packageDir}/${match[2]}` : match[2], line: Number(match[3])}
+            }
         }
     }
 }
