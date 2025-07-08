@@ -15,7 +15,7 @@ permissions:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: macos-latest # for xcresultParser tests to be able to extract a json from .xcresult folder
     needs: sample-checks
     if: ${{ always() }}
     steps:
@@ -50,7 +50,7 @@ jobs:
   sample-checks:
     name: Sample Checks
     if: ${{ github.event_name == 'pull_request' }}
-    runs-on: macos-latest # for xcresultParser tests to be able to extract a json from .xcresult folder
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
