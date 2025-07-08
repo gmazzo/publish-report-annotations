@@ -1,4 +1,5 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const base  = require('./jest.config')
 
 base.reporters.find(it => it[0] === 'jest-junit')[1].outputFile = 'lib/jest-it-junit.xml'

@@ -6,3 +6,5 @@ lib/
 build/
 coverage/
 local.properties
+**/*.xcresult/database.sqlite3
+**/*.xcresult/results.json

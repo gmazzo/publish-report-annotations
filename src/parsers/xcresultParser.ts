@@ -172,7 +172,7 @@ function computeChildren(children: TestNode[] | undefined) {
     return {className, lineNumber, failureMessage, retries, hasFailedRepetitions}
 }
 
-function extractXcResultFile(filePath: string) {
+export function extractXcResultFile(filePath: string) {
     const jsonFile = path.resolve(filePath, 'results.json')
 
     const result = spawnSync("xcrun", ["xcresulttool", "get", "test-results", "tests", "--path", filePath], {
