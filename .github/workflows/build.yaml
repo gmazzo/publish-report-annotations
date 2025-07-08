@@ -50,10 +50,7 @@ jobs:
   sample-checks:
     name: Sample Checks
     if: ${{ github.event_name == 'pull_request' }}
-    strategy:
-      matrix:
-        runner: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.runner }}
+    runs-on: macos-latest # for xcresultParser tests to be able to extract a json from .xcresult folder
     steps:
       - name: Checkout
         uses: actions/checkout@v4
