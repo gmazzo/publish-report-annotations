@@ -1,6 +1,7 @@
 import {Config, ParseResults} from "../types";
 
-const resolveFile = jest.fn().mockImplementation((file: string) => `<projectTestSrc>/${file}.kt`);
+const resolveFile = jest.fn().mockImplementation((file: string) =>
+    extname(file) ? `<projectTestSrc>/${file}` : `<projectTestSrc>/${file}.kt`);
 const prFilesFilter = jest.fn().mockReturnValue(true);
 const config = {prFilesFilter} as unknown as Config;
 
@@ -9,6 +10,7 @@ jest.mock("./resolveFile", () => ({
 }));
 
 import {junitParser} from "./junitParser";
+import {extname} from "path";
 
 describe("junitParser", () => {
 
