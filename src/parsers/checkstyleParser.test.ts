@@ -1,16 +1,19 @@
-import {checkstyleParser} from "./checkstyleParser";
 import {Config, ParseResults} from "../types";
+import {readFile} from "../readFile";
 
 const prFilesFilter = jest.fn().mockReturnValue(true);
 const config = { prFilesFilter } as unknown as Config;
 
+import {checkstyleParser, CheckStyleData} from "./checkstyleParser";
+
 describe("checkstyleParser", () => {
 
     test("given detekt xml should obtain annotations", async () => {
-        const data = await checkstyleParser.parse("samples/detekt-debug.xml", config);
+        const data = readFile<CheckStyleData>("samples/detekt-debug.xml")!;
+        const results = await checkstyleParser.process(data(), config);
 
         expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/src/main/kotlin/org/test/sample/App.kt");
-        expect(data).toStrictEqual(new ParseResults({
+        expect(results).toStrictEqual(new ParseResults({
             annotations: [
                 {
                     endColumn: 11,
@@ -51,10 +54,11 @@ describe("checkstyleParser", () => {
     test("given detekt xml, but filtering, expect no annotations", async () => {
         prFilesFilter.mockReturnValue(false);
 
-        const data = await checkstyleParser.parse("samples/detekt-debug.xml", config);
+        const data = readFile<CheckStyleData>("samples/detekt-debug.xml")!;
+        const results = await checkstyleParser.process(data(), config);
 
         expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/src/main/kotlin/org/test/sample/App.kt");
-        expect(data).toStrictEqual(new ParseResults({}));
+        expect(results).toStrictEqual(new ParseResults({}));
     });
 
 });

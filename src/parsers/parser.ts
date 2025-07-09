@@ -2,10 +2,8 @@ import {Config, ParseResults} from "../types";
 
 export type FileFilter = (file?: string) => boolean;
 
-export interface Parser {
+export interface Parser<Type> {
 
-    accept(filePath: string): boolean
-
-    parse(this: void, filePath: string, config: Config): Promise<ParseResults | null>
+    process(this: void, data: Type, config: Config): Promise<ParseResults | null>
 
 }

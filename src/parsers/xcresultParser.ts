@@ -1,13 +1,7 @@
-import {lstatSync} from 'fs';
-import path from 'path';
-import {spawnSync} from "node:child_process";
 import {Parser} from "./parser";
-import {readFile} from "./readFile";
-import {asArray, join, joinSeparator} from "../utils";
+import {asArray, joinSeparator} from "../utils";
 import {ParseResults, TestCase} from "../types";
 import {resolveFile} from "./resolveFile";
-import * as core from "@actions/core";
-import {writeFileSync} from "node:fs";
 
 type TestNode = {
     name: string,
@@ -18,25 +12,13 @@ type TestNode = {
     children?: TestNode[]
 };
 
-type XCResult = {
+export type XCResultData = {
     "testNodes": TestNode[]
 }
 
-export const xcresultParser: Parser = {
+export const xcresultParser: Parser<XCResultData> = {
 
-    accept(filePath: string) {
-        return filePath.endsWith('.xcresult.json') || isXCResultDir(filePath)
-    },
-
-    parse: async function (filePath: string) {
-        if (isXCResultDir(filePath)) {
-            const jsonFile = extractXcResultFile(filePath)
-            if (!jsonFile) return null
-            filePath = jsonFile;
-        }
-
-        const data: XCResult = await readFile(filePath);
-
+    process: async function (data: XCResultData) {
         if (data?.testNodes) {
             const result = new ParseResults();
             const suites = computeSuites(asArray(data.testNodes))
@@ -117,10 +99,6 @@ export const xcresultParser: Parser = {
 
 }
 
-function isXCResultDir(filePath: string) {
-    return filePath.endsWith('.xcresult') && lstatSync(filePath).isDirectory()
-}
-
 function computeSuites(testNodes: TestNode[]) {
     const suites: TestNode[] = [];
     for (const bundle of testNodes.flatMap(it => asArray(it.children))) {
@@ -170,20 +148,4 @@ function computeChildren(children: TestNode[] | undefined) {
         }
     }
     return {className, lineNumber, failureMessage, retries, hasFailedRepetitions}
-}
-
-export function extractXcResultFile(filePath: string) {
-    const jsonFile = path.resolve(filePath, 'results.json')
-
-    const result = spawnSync("xcrun", ["xcresulttool", "get", "test-results", "tests", "--path", filePath], {
-        encoding: "utf8",
-    })
-    if (result.error || result.stderr) {
-        core.warning(`Failed to extract XCResults json file: ${join(result.error?.message, result.stderr)}`)
-        return
-    }
-    core.debug('JSON output from xcresulttool:')
-    core.debug(result.stdout)
-    writeFileSync(jsonFile, result.stdout)
-    return jsonFile
 }

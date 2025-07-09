@@ -1,4 +1,3 @@
-import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
 import {Config, ParseResults, TestCase} from "../types";
@@ -15,7 +14,7 @@ type JUnitTest = {
         flaky?: string,
     }
     skipped?: boolean,
-    failure: [{
+    failure?: [{
         _attributes: {
             message: string,
             type: string,
@@ -35,7 +34,7 @@ type JUnitSuite = {
     testcase: JUnitTest | JUnitTest[],
 };
 
-type JUnitData = {
+export type JUnitData = {
     testsuites?: {
         testsuite: JUnitSuite | JUnitSuite[],
     },
@@ -44,15 +43,9 @@ type JUnitData = {
 
 const possibleExtensions = ['java', 'kt', 'groovy']
 
-export const junitParser: Parser = {
+export const junitParser: Parser<JUnitData> = {
 
-    accept(filePath: string) {
-        return filePath.endsWith('.xml')
-    },
-
-    async parse(filePath: string, config: Config) {
-        const data: JUnitData = await readFile(filePath);
-
+    async process(data: JUnitData, config: Config) {
         if (data?.testsuite || data?.testsuites) {
             const result = new ParseResults();
 

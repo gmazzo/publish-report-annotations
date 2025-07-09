@@ -12,10 +12,17 @@ const coreSummaryWrite = jest.fn();
 const globCreate = jest.fn().mockImplementation(() => ({
     glob: jest.fn().mockReturnValue(["file1", "file2"])
 }));
+const reader1 = () => ({file: "file1"})
+const reader2 = () => ({file: "file2"});
+const readFile = jest.fn().mockImplementation(file=> {switch (file) {
+    case "file1": return reader1;
+    case "file2": return reader2;
+    default: throw new Error(`Unexpected file: ${file}`);
+}})
 const processFile = jest.fn().mockReturnValue(new ParseResults({
-    tests: { suites: [], totals: { count: 4, passed: 2, skipped: 1, failed: 1 } },
-    checks: { checks: [], totals: { count: 6, errors: 3, warnings: 2, others: 1 } },
-    totals: { errors: 10, warnings: 4, others: 6 }
+    tests: {suites: [], totals: {count: 4, passed: 2, skipped: 1, failed: 1}},
+    checks: {checks: [], totals: {count: 6, errors: 3, warnings: 2, others: 1}},
+    totals: {errors: 10, warnings: 4, others: 6}
 }));
 
 const config = {
@@ -39,7 +46,11 @@ jest.mock("@actions/core", () => ({
     endGroup: coreEndGroup,
     setFailed: coreSetFailed,
     setOutput: coreSetOutput,
-    summary: { addRaw: coreSummaryAddRaw, write: coreSummaryWrite }
+    summary: {addRaw: coreSummaryAddRaw, write: coreSummaryWrite}
+}));
+
+jest.mock("./readFile", () => ({
+    readFile
 }));
 
 jest.mock("./processFile", () => ({
@@ -49,10 +60,6 @@ jest.mock("./processFile", () => ({
 jest.mock("./readConfig", () => ({
     readConfig
 }));
-
-jest.mock("./parsers/parsers", () => ({
-    parsers: [{accept: jest.fn().mockReturnValue(true)}]
-}))
 
 import main from "./main";
 
@@ -65,13 +72,13 @@ describe("main", () => {
         expect(coreStartGroup).toHaveBeenCalledWith("Processing `file1`");
         expect(coreStartGroup).toHaveBeenCalledWith("Processing `file2`");
         expect(coreEndGroup).toHaveBeenCalledTimes(2);
-        expect(processFile).toHaveBeenCalledWith("file1", config);
-        expect(processFile).toHaveBeenCalledWith("file2", config);
+        expect(processFile).toHaveBeenCalledWith(reader1, config);
+        expect(processFile).toHaveBeenCalledWith(reader2, config);
         expect(coreNotice).toHaveBeenCalledWith("Processed 2 files: 8 tests: ✅ 4 passed, 🟡 2 skipped, ❌ 2 failed, checks: 🛑 6 errors, ⚠️ 4 warnings, 💡 2 others");
         expect(coreSetFailed).not.toHaveBeenCalled();
-        expect(coreSetOutput).toHaveBeenCalledWith("tests", { count: 8, passed: 4, skipped: 2, failed: 2 });
-        expect(coreSetOutput).toHaveBeenCalledWith("checks", { count: 12, errors: 6, warnings: 4, others: 2 });
-        expect(coreSetOutput).toHaveBeenCalledWith("total", { errors: 20, warnings: 8, others: 12 });
+        expect(coreSetOutput).toHaveBeenCalledWith("tests", {count: 8, passed: 4, skipped: 2, failed: 2});
+        expect(coreSetOutput).toHaveBeenCalledWith("checks", {count: 12, errors: 6, warnings: 4, others: 2});
+        expect(coreSetOutput).toHaveBeenCalledWith("total", {errors: 20, warnings: 8, others: 12});
         expect(coreSummaryAddRaw).toHaveBeenCalled();
         expect(coreSummaryWrite).toHaveBeenCalled();
     });

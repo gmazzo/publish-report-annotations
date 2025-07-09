@@ -1,5 +1,4 @@
 import {Parser} from "./parser";
-import {readFile} from "./readFile";
 import {asArray, join} from "../utils";
 import {resolveFile} from "./resolveFile";
 import {CheckSuite, Config, ParseResults} from "../types";
@@ -28,7 +27,7 @@ type LintIssue = {
     location: Location | Location[],
 };
 
-type LintData = {
+export type LintData = {
     issues?: {
         _attributes: {
             by: string,
@@ -37,15 +36,9 @@ type LintData = {
     }
 };
 
-export const androidLintParser: Parser = {
+export const androidLintParser: Parser<LintData> = {
 
-    accept(filePath: string) {
-        return filePath.endsWith('.xml')
-    },
-
-    parse: async function (filePath: string, config: Config) {
-        const data: LintData = await readFile(filePath);
-
+    process: async function (data: LintData, config: Config) {
         if (data?.issues) {
             const result = new ParseResults();
             const suite: CheckSuite = {name: data.issues._attributes.by || 'Android Lint', errors: 0, warnings: 0, others: 0, issues: {}};
