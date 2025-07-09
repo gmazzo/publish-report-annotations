@@ -3,7 +3,7 @@ import {readFile} from "./readFile";
 describe("readFile", () => {
 
     test("should return parsed XML file as JSON", async () => {
-        const data = await readFile("samples/TEST-org.test.sample.SampleTestSuite.xml");
+        const data = readFile("samples/TEST-org.test.sample.SampleTestSuite.xml")!();
 
         expect(data).toStrictEqual({
             testsuite: {

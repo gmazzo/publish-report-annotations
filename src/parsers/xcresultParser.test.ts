@@ -1,4 +1,5 @@
 import {Config, ParseResults} from "../types";
+import {readFile} from "../readFile";
 
 const resolveFile = jest.fn().mockImplementation((file: string) => `<projectTestSrc>/${file}`);
 
@@ -8,14 +9,15 @@ jest.mock("./resolveFile", () => ({
 
 const config = {  } as unknown as Config;
 
-import {xcresultParser} from "./xcresultParser";
+import {xcresultParser, XCResultData} from "./xcresultParser";
 
 describe("xcresultParser", () => {
 
     test("given xcresult json should obtain annotations", async () => {
-        const data = await xcresultParser.parse("samples/test-results.xcresult.json", config);
+        const data = readFile<XCResultData>("samples/test-results.xcresult.json")!;
+        const results = await xcresultParser.process(data(), config);
 
-        expect(data).toStrictEqual(new ParseResults({
+        expect(results).toStrictEqual(new ParseResults({
             "annotations": [
                 {
                     "endLine": 20,
@@ -97,9 +99,10 @@ describe("xcresultParser", () => {
     });
 
     test("given another xcresult json should obtain annotations", async () => {
-        const data = await xcresultParser.parse("samples/test-results-other.xcresult.json", config);
+        const data = readFile<XCResultData>("samples/test-results-other.xcresult.json")!;
+        const results = await xcresultParser.process(data(), config);
 
-        expect(data).toStrictEqual(new ParseResults({
+        expect(results).toStrictEqual(new ParseResults({
             "annotations": [],
             "checks": {
                 "checks": [],
@@ -159,9 +162,10 @@ describe("xcresultParser", () => {
     })
 
     test("given a retry xcresult json should obtain annotations", async () => {
-        const data = await xcresultParser.parse("samples/test-results-retry.xcresult.json", config);
+        const data = readFile<XCResultData>("samples/test-results-retry.xcresult.json")!;
+        const results = await xcresultParser.process(data(), config);
 
-        expect(data).toStrictEqual(new ParseResults({
+        expect(results).toStrictEqual(new ParseResults({
             "annotations": [
                 {
                     "endLine": 20,

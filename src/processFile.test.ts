@@ -1,10 +1,10 @@
 import {Config, ParseResults} from "./types";
 import {Parser} from "./parsers/parser";
 
-const junitParser: Parser = {
-    accept: jest.fn().mockReturnValue(true),
-    parse: jest.fn().mockImplementation(file => {
-        if (file == 'junit.xml') {
+const junitData = {junit: true}
+const junitParser: Parser<object> = {
+    process: jest.fn().mockImplementation(data => {
+        if (data === junitData) {
             return new ParseResults({
                 annotations: [{
                     severity: "error",
@@ -20,10 +20,10 @@ const junitParser: Parser = {
     })
 };
 
-const checkstyleParser: Parser = {
-    accept: jest.fn().mockReturnValue(true),
-    parse: jest.fn().mockImplementation(file => {
-        if (file == 'checkstyle.xml') {
+const checkstyleData = {checkstyle: true}
+const checkstyleParser: Parser<object> = {
+    process: jest.fn().mockImplementation(data => {
+        if (data === checkstyleData) {
             return new ParseResults({
                 annotations: [{
                     severity: "error",
@@ -45,10 +45,10 @@ const checkstyleParser: Parser = {
     })
 };
 
-const androidLintParser: Parser = {
-    accept: jest.fn().mockReturnValue(true),
-    parse: jest.fn().mockImplementation(file => {
-        if (file == 'lint.xml') {
+const androidLintData = {lint: true}
+const androidLintParser: Parser<object> = {
+    process: jest.fn().mockImplementation(data => {
+        if (data === androidLintData) {
             return new ParseResults({
                 annotations: [{
                     severity: "error",
@@ -89,7 +89,7 @@ describe("processFile", () => {
 
     test.each([[''],['aCheck']])("for a junit file [checkName=%p]", async (checkName) => {
         const config = {...baseConfig, checkName};
-        const all = await processFile("junit.xml", config);
+        const all = await processFile(() => junitData, config);
 
         expect(all).toStrictEqual(new ParseResults({
             annotations: [{
@@ -103,9 +103,9 @@ describe("processFile", () => {
             }
         }));
 
-        expect(junitParser.parse).toHaveBeenCalledWith("junit.xml", config);
-        expect(checkstyleParser.parse).not.toHaveBeenCalled();
-        expect(androidLintParser.parse).not.toHaveBeenCalled();
+        expect(junitParser.process).toHaveBeenCalledWith(junitData, config);
+        expect(checkstyleParser.process).not.toHaveBeenCalled();
+        expect(androidLintParser.process).not.toHaveBeenCalled();
 
         expect(coreError).toHaveBeenCalledWith("junit test failed", checkName ? undefined : {severity: "error", message: "junit test failed"});
         expect(coreWarning).not.toHaveBeenCalled();
@@ -114,7 +114,7 @@ describe("processFile", () => {
 
     test.each([[''],['aCheck']])("for a checkstyle file [checkName=%p]", async (checkName) => {
         const config = {...baseConfig, checkName};
-        const all = await processFile("checkstyle.xml", config);
+        const all = await processFile(() => checkstyleData, config);
 
         expect(all).toStrictEqual(new ParseResults({
             annotations: [{
@@ -134,9 +134,9 @@ describe("processFile", () => {
             }
         }));
 
-        expect(junitParser.parse).toHaveBeenCalledWith("checkstyle.xml", config);
-        expect(checkstyleParser.parse).toHaveBeenCalledWith("checkstyle.xml", config);
-        expect(androidLintParser.parse).not.toHaveBeenCalled();
+        expect(junitParser.process).toHaveBeenCalledWith(checkstyleData, config);
+        expect(checkstyleParser.process).toHaveBeenCalledWith(checkstyleData, config);
+        expect(androidLintParser.process).not.toHaveBeenCalled();
 
 
         expect(coreError).toHaveBeenCalledWith("checkstyle error", checkName ? undefined : {severity: "error", message: "checkstyle error"});
@@ -146,7 +146,7 @@ describe("processFile", () => {
 
     test.each([[''],['aCheck']])("for a android lint file [checkName=%p]", async (checkName) => {
         const config = {...baseConfig, checkName};
-        const all = await processFile("lint.xml", config);
+        const all = await processFile(() => androidLintData, config);
 
         expect(all).toStrictEqual(new ParseResults({
             annotations: [{
@@ -163,9 +163,9 @@ describe("processFile", () => {
             }
         }));
 
-        expect(junitParser.parse).toHaveBeenCalledWith("lint.xml", config);
-        expect(checkstyleParser.parse).toHaveBeenCalledWith("lint.xml", config);
-        expect(androidLintParser.parse).toHaveBeenCalledWith("lint.xml", config);
+        expect(junitParser.process).toHaveBeenCalledWith(androidLintData, config);
+        expect(checkstyleParser.process).toHaveBeenCalledWith(androidLintData, config);
+        expect(androidLintParser.process).toHaveBeenCalledWith(androidLintData, config);
 
         expect(coreError).toHaveBeenCalledWith("android failure 1", checkName ? undefined : {severity: "error", message: "android failure 1"});
         expect(coreError).toHaveBeenCalledWith("android failure 2", checkName ? undefined : {severity: "error", message: "android failure 2"});

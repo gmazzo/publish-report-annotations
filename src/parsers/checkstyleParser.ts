@@ -1,4 +1,3 @@
-import {readFile} from "./readFile";
 import {asArray} from "../utils";
 import {resolveFile} from "./resolveFile";
 import {Parser} from "./parser";
@@ -21,21 +20,15 @@ type CheckStyleFile = {
     }
 };
 
-type CheckStyleData = {
+export type CheckStyleData = {
     checkstyle?: {
         file: CheckStyleFile | CheckStyleFile[],
     }
 };
 
-export const checkstyleParser: Parser = {
+export const checkstyleParser: Parser<CheckStyleData> = {
 
-    accept(filePath: string) {
-        return filePath.endsWith('.xml')
-    },
-
-    async parse(filePath: string, config: Config) {
-        const data: CheckStyleData = await readFile(filePath);
-
+    async process(data: CheckStyleData, config: Config) {
         if (data?.checkstyle) {
             const result = new ParseResults();
             const suite: CheckSuite = {name: 'CheckStyle', errors: 0, warnings: 0, others: 0, issues: {}};

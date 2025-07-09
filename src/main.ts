@@ -7,7 +7,7 @@ import {publishCheck} from "./publishCheck";
 import {hasErrors} from "./utils";
 import {summaryOf, summaryTableOf} from "./summary";
 import {readConfig} from "./readConfig";
-import {parsers} from "./parsers/parsers";
+import {readFile} from "./readFile";
 
 export default async function main() {
     const config = await readConfig();
@@ -20,12 +20,13 @@ export default async function main() {
     const all = new ParseResults({files});
 
     for (const file of files) {
-        if (!parsers.some(parser => parser.accept(file))) continue;
+        const reader = readFile<object>(file)
+        if (!reader) continue;
 
         const relativePath = relative(currentDir, file);
 
         core.startGroup(`Processing \`${relativePath}\``);
-        const result = await processFile(file, config);
+        const result = await processFile(reader, config);
         if (result) {
             all.mergeWith(result);
         }

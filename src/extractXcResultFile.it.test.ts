@@ -1,6 +1,6 @@
 import * as fs from "fs";
 
-import {extractXcResultFile} from "./xcresultParser";
+import {extractXcResultFile} from "./extractXcResultFile";
 
 describe("extractXcResultFile", () => {
 

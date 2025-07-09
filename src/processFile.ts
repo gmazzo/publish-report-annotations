@@ -3,12 +3,12 @@ import * as core from "@actions/core";
 import {Config} from "./types";
 import {parsers} from "./parsers/parsers";
 
-export async function processFile(filepath: string, config: Config) {
+export async function processFile(reader: () => object, config: Config) {
     const doNotAnnotate = config.checkName != '';
+    const data = reader();
 
     for (const parser of parsers) {
-        if (!parser.accept(filepath)) continue;
-        const result = await parser.parse(filepath, config);
+        const result = await parser.process(data as never, config);
 
         if (result) {
             for (const annotation of result.annotations) {
