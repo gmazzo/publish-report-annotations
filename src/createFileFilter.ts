@@ -1,7 +1,7 @@
-import {relative} from "path";
+import { relative } from "path";
 import * as core from "@actions/core";
-import {getPRFiles} from "./getPRFiles";
-import {FileFilter} from "./parsers/parser";
+import { getPRFiles } from "./getPRFiles";
+import { FileFilter } from "./parsers/parser";
 
 export async function createFileFilter(githubToken: string): Promise<FileFilter> {
     const prFiles = await getPRFiles(githubToken);

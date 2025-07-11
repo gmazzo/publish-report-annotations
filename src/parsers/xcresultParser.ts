@@ -1,27 +1,26 @@
-import {Parser} from "./parser";
-import {asArray, joinSeparator} from "../utils";
-import {ParseResults, TestCase} from "../types";
-import {resolveFile} from "./resolveFile";
+import { Parser } from "./parser";
+import { asArray, joinSeparator } from "../utils";
+import { ParseResults, TestCase } from "../types";
+import { resolveFile } from "./resolveFile";
 
 type TestNode = {
-    name: string,
-    details?: string,
-    result: 'Passed' | 'Failed' | 'Skipped',
-    duration?: string,
-    nodeType: 'Test Plan' | 'Unit test bundle' | 'Test Suite' | 'Test Case' | 'Repetition' | 'Failure Message',
-    children?: TestNode[]
+    name: string;
+    details?: string;
+    result: "Passed" | "Failed" | "Skipped";
+    duration?: string;
+    nodeType: "Test Plan" | "Unit test bundle" | "Test Suite" | "Test Case" | "Repetition" | "Failure Message";
+    children?: TestNode[];
 };
 
 export type XCResultData = {
-    "testNodes": TestNode[]
-}
+    testNodes: TestNode[];
+};
 
 export const xcresultParser: Parser<XCResultData> = {
-
     process: async function (data: XCResultData) {
         if (data?.testNodes) {
             const result = new ParseResults();
-            const suites = computeSuites(asArray(data.testNodes))
+            const suites = computeSuites(asArray(data.testNodes));
 
             for (const testSuite of suites) {
                 let failed = 0;
@@ -30,57 +29,53 @@ export const xcresultParser: Parser<XCResultData> = {
 
                 const cases: TestCase[] = [];
                 for (const testCase of asArray(testSuite.children)) {
-                    let outcome: TestCase['outcome']
+                    let outcome: TestCase["outcome"];
 
                     switch (testCase.result) {
-                        case 'Passed':
-                            outcome = 'passed'
-                            break
+                        case "Passed":
+                            outcome = "passed";
+                            break;
 
-                        case 'Failed':
-                            outcome = 'failed'
-                            failed++
-                            break
+                        case "Failed":
+                            outcome = "failed";
+                            failed++;
+                            break;
 
-                        case 'Skipped':
-                            outcome = 'skipped'
-                            skipped++
-                            break
+                        case "Skipped":
+                            outcome = "skipped";
+                            skipped++;
+                            break;
                     }
 
-                    const {
-                        className,
-                        lineNumber,
-                        failureMessage,
-                        retries,
-                        hasFailedRepetitions
-                    } = computeChildren(testCase.children)
+                    const { className, lineNumber, failureMessage, retries, hasFailedRepetitions } = computeChildren(
+                        testCase.children,
+                    );
 
-                    const isFlaky = hasFailedRepetitions && outcome === 'passed'
+                    const isFlaky = hasFailedRepetitions && outcome === "passed";
                     if (isFlaky) {
-                        flaky++
-                        outcome = 'flaky'
+                        flaky++;
+                        outcome = "flaky";
                     }
 
-                    if (outcome === 'failed' || isFlaky) {
-                        const file = className && await resolveFile(className)
+                    if (outcome === "failed" || isFlaky) {
+                        const file = className && (await resolveFile(className));
 
                         result.addAnnotation({
-                            ...file ? {file} : {},
-                            severity: isFlaky ? 'warning' : 'error',
+                            ...(file ? { file } : {}),
+                            severity: isFlaky ? "warning" : "error",
                             title: isFlaky ? `(❗Flaky) ${testCase.name}` : testCase.name,
-                            message: joinSeparator(": ", testCase.details, failureMessage) || 'Test failed',
-                            ...lineNumber ? {startLine: lineNumber, endLine: lineNumber} : {},
-                        })
+                            message: joinSeparator(": ", testCase.details, failureMessage) || "Test failed",
+                            ...(lineNumber ? { startLine: lineNumber, endLine: lineNumber } : {}),
+                        });
                     }
 
                     cases.push({
                         name: testCase.name,
                         className: className || testSuite.name,
                         outcome: outcome,
-                        ...testCase.duration ? {took: testCase.duration} : {},
-                        ...retries > 0 ? {retries: retries - 1} : {},
-                    })
+                        ...(testCase.duration ? { took: testCase.duration } : {}),
+                        ...(retries > 0 ? { retries: retries - 1 } : {}),
+                    });
                 }
 
                 result.addTestSuite({
@@ -95,18 +90,17 @@ export const xcresultParser: Parser<XCResultData> = {
             return result;
         }
         return null;
-    }
-
-}
+    },
+};
 
 function computeSuites(testNodes: TestNode[]) {
     const suites: TestNode[] = [];
-    for (const bundle of testNodes.flatMap(it => asArray(it.children))) {
-        const suite = {...bundle, children: []}
-        const childSuites: TestNode[] = []
+    for (const bundle of testNodes.flatMap((it) => asArray(it.children))) {
+        const suite = { ...bundle, children: [] };
+        const childSuites: TestNode[] = [];
 
         for (const node of asArray(bundle.children)) {
-            (node.nodeType === 'Test Suite' ? childSuites : suite.children).push(node)
+            (node.nodeType === "Test Suite" ? childSuites : suite.children).push(node);
         }
 
         if (suite.children.length > 0) {
@@ -114,38 +108,37 @@ function computeSuites(testNodes: TestNode[]) {
         }
         suites.push(...childSuites);
     }
-    return suites
+    return suites;
 }
 
 function computeChildren(children: TestNode[] | undefined) {
     let hasFailedRepetitions = false;
     let retries = 0;
-    let className: string | undefined
-    let lineNumber: number | undefined
-    let failureMessage: string | undefined
+    let className: string | undefined;
+    let lineNumber: number | undefined;
+    let failureMessage: string | undefined;
 
     for (const child of asArray(children)) {
         switch (child.nodeType) {
-            case 'Repetition':
+            case "Repetition":
                 retries++;
-                if (child.result == 'Failed') {
+                if (child.result == "Failed") {
                     hasFailedRepetitions = true;
                 }
-                ({className, lineNumber, failureMessage} = computeChildren(child.children))
-                break
+                ({ className, lineNumber, failureMessage } = computeChildren(child.children));
+                break;
 
-            case 'Failure Message':
-                const match = /(.+?):(\d+):\s*(.*)/g.exec(child.name)
+            case "Failure Message":
+                const match = /(.+?):(\d+):\s*(.*)/g.exec(child.name);
                 if (match) {
-                    className = match[1]
-                    lineNumber = Number(match[2])
-                    failureMessage = match[3]
-
+                    className = match[1];
+                    lineNumber = Number(match[2]);
+                    failureMessage = match[3];
                 } else {
-                    failureMessage = child.name
+                    failureMessage = child.name;
                 }
-                break
+                break;
         }
     }
-    return {className, lineNumber, failureMessage, retries, hasFailedRepetitions}
+    return { className, lineNumber, failureMessage, retries, hasFailedRepetitions };
 }

@@ -1,12 +1,12 @@
-import {type components} from '@octokit/openapi-types';
+import { type components } from "@octokit/openapi-types";
 
 const listFiles = jest.fn().mockResolvedValue([
-    {filename: 'file1', status: 'added'},
-    {filename: 'file2', status: 'removed'},
-    {filename: 'file3', status: 'changed'},
-    {filename: 'file4', status: 'added'},
-    {filename: 'file5', status: 'modified'},
-] as components['schemas']['diff-entry'][]);
+    { filename: "file1", status: "added" },
+    { filename: "file2", status: "removed" },
+    { filename: "file3", status: "changed" },
+    { filename: "file4", status: "added" },
+    { filename: "file5", status: "modified" },
+] as components["schemas"]["diff-entry"][]);
 
 const getOctokit = jest.fn().mockReturnValue({
     paginate: <P>(fn: (it: P) => P, params: P) => fn(params),
@@ -17,42 +17,40 @@ const getOctokit = jest.fn().mockReturnValue({
     },
 });
 
-jest.mock('@actions/github', () => {
+jest.mock("@actions/github", () => {
     return {
         getOctokit,
         context: {
             issue: {
-                owner: 'anOwner',
-                repo: 'aRepo',
+                owner: "anOwner",
+                repo: "aRepo",
                 number: 101,
             },
         },
     };
 });
 
-import {getPRFiles} from './getPRFiles';
+import { getPRFiles } from "./getPRFiles";
 
-describe('getPRFiles', () => {
+describe("getPRFiles", () => {
+    test("get without any statuses, returns all files", async () => {
+        const files = await getPRFiles("aToken");
 
-    test('get without any statuses, returns all files', async () => {
-        const files = await getPRFiles('aToken');
-
-        expect(getOctokit).toHaveBeenCalledWith('aToken');
-        expect(files).toEqual(['file1', 'file2', 'file3', 'file4', 'file5']);
+        expect(getOctokit).toHaveBeenCalledWith("aToken");
+        expect(files).toEqual(["file1", "file2", "file3", "file4", "file5"]);
     });
 
-    test('get for added, returns just added files', async () => {
-        const files = await getPRFiles('aToken', 'added');
+    test("get for added, returns just added files", async () => {
+        const files = await getPRFiles("aToken", "added");
 
-        expect(getOctokit).toHaveBeenCalledWith('aToken');
-        expect(files).toEqual(['file1', 'file4']);
+        expect(getOctokit).toHaveBeenCalledWith("aToken");
+        expect(files).toEqual(["file1", "file4"]);
     });
 
-    test('get other statuses, returns the expected files', async () => {
-        const files = await getPRFiles('aToken', 'changed', 'modified');
+    test("get other statuses, returns the expected files", async () => {
+        const files = await getPRFiles("aToken", "changed", "modified");
 
-        expect(getOctokit).toHaveBeenCalledWith('aToken');
-        expect(files).toEqual(['file3', 'file5']);
+        expect(getOctokit).toHaveBeenCalledWith("aToken");
+        expect(files).toEqual(["file3", "file5"]);
     });
-
 });

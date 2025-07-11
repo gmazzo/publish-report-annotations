@@ -1,37 +1,36 @@
-import {asArray} from "../utils";
-import {resolveFile} from "./resolveFile";
-import {Parser} from "./parser";
-import {ParseResults, CheckSuite, Config} from "../types";
+import { asArray } from "../utils";
+import { resolveFile } from "./resolveFile";
+import { Parser } from "./parser";
+import { ParseResults, CheckSuite, Config } from "../types";
 
-type Severity = 'error' | 'warning' | 'info' | 'ignore';
+type Severity = "error" | "warning" | "info" | "ignore";
 
 type CheckStyleFile = {
     _attributes: {
-        name: string,
-    }
+        name: string;
+    };
     error?: {
         _attributes: {
-            line: string,
-            column: string,
-            severity: Severity,
-            message: string,
-            source: string,
-        }
-    }
+            line: string;
+            column: string;
+            severity: Severity;
+            message: string;
+            source: string;
+        };
+    };
 };
 
 export type CheckStyleData = {
     checkstyle?: {
-        file: CheckStyleFile | CheckStyleFile[],
-    }
+        file: CheckStyleFile | CheckStyleFile[];
+    };
 };
 
 export const checkstyleParser: Parser<CheckStyleData> = {
-
     async process(data: CheckStyleData, config: Config) {
         if (data?.checkstyle) {
             const result = new ParseResults();
-            const suite: CheckSuite = {name: 'CheckStyle', errors: 0, warnings: 0, others: 0, issues: {}};
+            const suite: CheckSuite = { name: "CheckStyle", errors: 0, warnings: 0, others: 0, issues: {} };
 
             for (const file of asArray(data.checkstyle.file)) {
                 for (const error of asArray(file.error)) {
@@ -45,24 +44,27 @@ export const checkstyleParser: Parser<CheckStyleData> = {
 
                             if (source) {
                                 let issue = source;
-                                if (source.startsWith('detekt.')) {
-                                    suite.name = 'Detekt';
-                                    issue = source.substring('detekt.'.length);
+                                if (source.startsWith("detekt.")) {
+                                    suite.name = "Detekt";
+                                    issue = source.substring("detekt.".length);
                                 }
 
                                 result.addIssueToCheckSuite(suite, issue, type);
                             }
 
-                            result.addAnnotation({
-                                severity: type,
-                                file: filePath,
-                                title: error._attributes.source,
-                                message: error._attributes.message,
-                                startLine: Number(error._attributes.line),
-                                endLine: Number(error._attributes.line),
-                                startColumn: Number(error._attributes.column),
-                                endColumn: Number(error._attributes.column),
-                            }, suite);
+                            result.addAnnotation(
+                                {
+                                    severity: type,
+                                    file: filePath,
+                                    title: error._attributes.source,
+                                    message: error._attributes.message,
+                                    startLine: Number(error._attributes.line),
+                                    endLine: Number(error._attributes.line),
+                                    startColumn: Number(error._attributes.column),
+                                    endColumn: Number(error._attributes.column),
+                                },
+                                suite,
+                            );
                         }
                     }
                 }
@@ -71,17 +73,16 @@ export const checkstyleParser: Parser<CheckStyleData> = {
             return result;
         }
         return null;
-    }
-
+    },
 };
 
 function computeType(severity: Severity) {
     switch (severity) {
-        case 'error':
-            return 'error';
-        case 'warning':
-            return 'warning';
-        case 'info':
-            return 'other';
+        case "error":
+            return "error";
+        case "warning":
+            return "warning";
+        case "info":
+            return "other";
     }
 }

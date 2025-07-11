@@ -1,15 +1,15 @@
-import {Config, ParseResults} from "./types";
+import { Config, ParseResults } from "./types";
 
 export function asArray<Value>(value: Value | Value[] | undefined): Value[] {
-    return value ? Array.isArray(value) ? value : [value] : [];
+    return value ? (Array.isArray(value) ? value : [value]) : [];
 }
 
 export function join(...values: (string | null | undefined)[]): string {
-    return joinSeparator('\n', ...values);
+    return joinSeparator("\n", ...values);
 }
 
 export function joinSeparator(separator: string, ...values: (string | null | undefined)[]): string {
-    return values.filter(it => it).join(separator);
+    return values.filter((it) => it).join(separator);
 }
 
 export function shouldFail(results: ParseResults, config: Config) {

@@ -1,16 +1,16 @@
-import {Config, ParseResults} from "./types";
+import { Config, ParseResults } from "./types";
 
 const listForRef = jest.fn();
-const create = jest.fn().mockResolvedValue({data: {html_url: "aUrl"}});
-const update = jest.fn().mockResolvedValue({data: {html_url: "aUrl"}});
+const create = jest.fn().mockResolvedValue({ data: { html_url: "aUrl" } });
+const update = jest.fn().mockResolvedValue({ data: { html_url: "aUrl" } });
 const getOctokit = jest.fn().mockReturnValue({
     rest: {
         checks: {
             listForRef,
             create,
-            update
-        }
-    }
+            update,
+        },
+    },
 });
 const coreInfo = jest.fn();
 const coreWarning = jest.fn();
@@ -24,82 +24,96 @@ const config = {
 
 jest.mock("./summary", () => ({
     summaryOf,
-    summaryTableOf
+    summaryTableOf,
 }));
 
 jest.mock("@actions/github", () => ({
     context: {
-        repo: {owner: "anOwner", repo: "aRepo"},
-        sha: "aCommit"
+        repo: { owner: "anOwner", repo: "aRepo" },
+        sha: "aCommit",
     },
-    getOctokit
+    getOctokit,
 }));
 
 jest.mock("@actions/core", () => ({
     info: coreInfo,
-    warning: coreWarning
+    warning: coreWarning,
 }));
 
 jest.mock("@octokit/request-error", () => ({
-    RequestError: RequestErrorMock
+    RequestError: RequestErrorMock,
 }));
 
-import {publishCheck} from "./publishCheck";
+import { publishCheck } from "./publishCheck";
 
 describe("publishCheck", () => {
-
     test.each([[false], [true]])("publishes check [checkExists=%p]", async (checkExists) => {
-        listForRef.mockResolvedValue({data: {check_runs: checkExists ? [{id: 123}] : []}});
+        listForRef.mockResolvedValue({ data: { check_runs: checkExists ? [{ id: 123 }] : [] } });
 
-        await publishCheck(new ParseResults({
-            tests: {
-                suites: [
+        await publishCheck(
+            new ParseResults({
+                tests: {
+                    suites: [
+                        {
+                            name: "suite1",
+                            passed: 3,
+                            skipped: 1,
+                            failed: 1,
+                            cases: [
+                                { name: "test1", className: "class1", outcome: "passed" },
+                                { name: "test2", className: "class2", outcome: "passed" },
+                                { name: "test3", className: "class3", outcome: "passed" },
+                                { name: "test4", className: "class4", outcome: "failed" },
+                                { name: "test5", className: "class5", outcome: "skipped" },
+                            ],
+                        },
+                        {
+                            name: "suite2",
+                            passed: 2,
+                            skipped: 0,
+                            failed: 0,
+                            cases: [
+                                { name: "test1", className: "class1", outcome: "passed" },
+                                { name: "test2", className: "class2", outcome: "passed" },
+                            ],
+                        },
+                    ],
+                    totals: { count: 4, passed: 2, skipped: 1, failed: 1 },
+                },
+                checks: {
+                    checks: [
+                        {
+                            name: "check1",
+                            errors: 3,
+                            warnings: 1,
+                            others: 2,
+                            issues: { check1: { severity: "warning", count: 1 } },
+                        },
+                        {
+                            name: "check2",
+                            errors: 7,
+                            warnings: 3,
+                            others: 4,
+                            issues: { check2: { severity: "warning", count: 3 } },
+                        },
+                    ],
+                    totals: { count: 6, errors: 3, warnings: 2, others: 1 },
+                },
+                totals: { errors: 10, warnings: 4, others: 6 },
+                annotations: [
                     {
-                        name: "suite1", passed: 3, skipped: 1, failed: 1, cases: [
-                            {name: 'test1', className: 'class1', outcome: 'passed'},
-                            {name: 'test2', className: 'class2', outcome: 'passed'},
-                            {name: 'test3', className: 'class3', outcome: 'passed'},
-                            {name: 'test4', className: 'class4', outcome: 'failed'},
-                            {name: 'test5', className: 'class5', outcome: 'skipped'},
-                        ]
+                        file: "file1",
+                        startLine: 1,
+                        endLine: 2,
+                        severity: "error",
+                        message: "message1",
+                        title: "title1",
+                        rawDetails: "rawDetails1",
                     },
-                    {
-                        name: "suite2", passed: 2, skipped: 0, failed: 0, cases: [
-                            {name: 'test1', className: 'class1', outcome: 'passed'},
-                            {name: 'test2', className: 'class2', outcome: 'passed'},
-                        ]
-                    }
-                ], totals: {count: 4, passed: 2, skipped: 1, failed: 1}
-            },
-            checks: {
-                checks: [
-                    {
-                        name: "check1",
-                        errors: 3,
-                        warnings: 1,
-                        others: 2,
-                        issues: {'check1': {severity: 'warning', count: 1}}
-                    },
-                    {
-                        name: "check2",
-                        errors: 7,
-                        warnings: 3,
-                        others: 4,
-                        issues: {'check2': {severity: 'warning', count: 3}}
-                    },
-                ], totals: {count: 6, errors: 3, warnings: 2, others: 1}
-            },
-            totals: {errors: 10, warnings: 4, others: 6},
-            annotations: [{
-                file: "file1",
-                startLine: 1,
-                endLine: 2,
-                severity: "error",
-                message: "message1",
-                title: "title1",
-                rawDetails: "rawDetails1"
-            }]
-        }), config);
+                ],
+            }),
+            config,
+        );
 
         expect(getOctokit).toHaveBeenCalledWith("aToken");
         expect(listForRef).toHaveBeenCalledWith({
@@ -108,7 +122,7 @@ describe("publishCheck", () => {
             ref: "aCommit",
             check_name: "aCheckName",
             status: "in_progress",
-            filter: "latest"
+            filter: "latest",
         });
 
         const params = {
@@ -121,20 +135,22 @@ describe("publishCheck", () => {
             output: {
                 title: "aSummary",
                 summary: "aSummaryTable",
-                annotations: [{
-                    path: "file1",
-                    start_line: 1,
-                    end_line: 2,
-                    annotation_level: "failure",
-                    message: "message1",
-                    title: "title1",
-                    raw_details: "rawDetails1"
-                }]
-            }
+                annotations: [
+                    {
+                        path: "file1",
+                        start_line: 1,
+                        end_line: 2,
+                        annotation_level: "failure",
+                        message: "message1",
+                        title: "title1",
+                        raw_details: "rawDetails1",
+                    },
+                ],
+            },
         };
         if (checkExists) {
             expect(create).not.toHaveBeenCalled();
-            expect(update).toHaveBeenCalledWith({...params, check_run_id: 123});
+            expect(update).toHaveBeenCalledWith({ ...params, check_run_id: 123 });
         } else {
             expect(create).toHaveBeenCalledWith(params);
             expect(update).not.toHaveBeenCalled();
@@ -144,52 +160,47 @@ describe("publishCheck", () => {
     test.each([
         [403, false, 3],
         [403, true, 3],
-        [429, false, '2'],
+        [429, false, "2"],
         [500, true, null],
         [504, false, null],
         [504, true, null],
     ])("when HTTP failure publishing a check, it should retry [http=%p]", async (httpCode, alwaysFail, retryAfter) => {
-        jest.useFakeTimers({advanceTimers: 2});
+        jest.useFakeTimers({ advanceTimers: 2 });
 
-        const retryableError = httpCode != 500
-        const error = new RequestErrorMock(httpCode, retryAfter ? {'retry-after': retryAfter} : undefined);
+        const retryableError = httpCode != 500;
+        const error = new RequestErrorMock(httpCode, retryAfter ? { "retry-after": retryAfter } : undefined);
         try {
-            listForRef.mockResolvedValue({data: {check_runs: []}});
+            listForRef.mockResolvedValue({ data: { check_runs: [] } });
             if (alwaysFail) {
                 create.mockRejectedValue(error);
-
             } else {
                 create.mockRejectedValueOnce(error);
-                create.mockResolvedValue({data: {html_url: "aUrl"}});
+                create.mockResolvedValue({ data: { html_url: "aUrl" } });
             }
 
-            const promise = publishCheck(new ParseResults({}), config)
+            const promise = publishCheck(new ParseResults({}), config);
             // noinspection ES6MissingAwait
-            jest.runAllTimersAsync()
+            jest.runAllTimersAsync();
             if (alwaysFail) {
-                await expect(promise).rejects.toEqual(error)
-
+                await expect(promise).rejects.toEqual(error);
             } else {
                 await expect(promise).resolves.toBe("aUrl");
             }
 
             if (retryableError) {
                 expect(coreWarning).toHaveBeenCalledWith(`Request failed with status ${httpCode}: anHttpError`);
-                expect(coreInfo).toHaveBeenCalledWith(`Retrying in ${retryAfter || 30} seconds...`)
-                expect(create).toHaveBeenCalledTimes(2)
-
+                expect(coreInfo).toHaveBeenCalledWith(`Retrying in ${retryAfter || 30} seconds...`);
+                expect(create).toHaveBeenCalledTimes(2);
             } else {
-                expect(create).toHaveBeenCalledTimes(1)
+                expect(create).toHaveBeenCalledTimes(1);
             }
-
         } finally {
-            jest.useRealTimers()
+            jest.useRealTimers();
         }
-    })
-
+    });
 });
 
-type Headers = { [key: string]: string | number }
+type Headers = { [key: string]: string | number };
 
 class RequestErrorMock extends Error {
     name = "HttpError";
@@ -199,6 +210,6 @@ class RequestErrorMock extends Error {
     constructor(status: number, headers?: Headers) {
         super("anHttpError");
         this.status = status;
-        this.response = {headers};
+        this.response = { headers };
     }
 }
