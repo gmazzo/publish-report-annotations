@@ -1,13 +1,13 @@
-import {AnnotationProperties} from "@actions/core";
-import {FileFilter} from "./parsers/parser";
+import { AnnotationProperties } from "@actions/core";
+import { FileFilter } from "./parsers/parser";
 
 export interface Config {
     githubToken: string;
     checkName: string;
     reports: string[];
     workflowSummary: boolean;
-    testsSummary: 'full' | 'suitesOnly' | 'totals' | 'off';
-    checksSummary: 'full' | 'totals' | 'off';
+    testsSummary: "full" | "suitesOnly" | "totals" | "off";
+    checksSummary: "full" | "totals" | "off";
     filterPassedTests: boolean;
     filterChecks: boolean;
     prFilesFilter: FileFilter;
@@ -17,72 +17,71 @@ export interface Config {
     failIfNoReportsFound: boolean;
 }
 
-type Severity = 'error' | 'warning' | 'other';
+type Severity = "error" | "warning" | "other";
 
 export type Annotation = {
-    message: string
-    severity: 'error' | 'warning' | 'other'
-    rawDetails?: string
+    message: string;
+    severity: "error" | "warning" | "other";
+    rawDetails?: string;
 } & AnnotationProperties;
 
 export type TestCase = {
-    name: string
-    className: string
-    took?: string
-    outcome: 'passed' | 'failed' | 'skipped' | 'flaky'
-    retries?: number
+    name: string;
+    className: string;
+    took?: string;
+    outcome: "passed" | "failed" | "skipped" | "flaky";
+    retries?: number;
 };
 
 export type TestSuite = {
-    name: string
-    took?: string
-    passed: number
-    failed: number
-    skipped: number
-    flaky?: number
-    cases: TestCase[]
+    name: string;
+    took?: string;
+    passed: number;
+    failed: number;
+    skipped: number;
+    flaky?: number;
+    cases: TestCase[];
 };
 
 export type TestResult = {
-    suites: TestSuite[]
+    suites: TestSuite[];
     totals: {
-        count: number
-        passed: number
-        failed: number
-        skipped: number
-        flaky?: number
-    }
+        count: number;
+        passed: number;
+        failed: number;
+        skipped: number;
+        flaky?: number;
+    };
 };
 
 export type CheckSuite = {
-    name: string
-    errors: number
-    warnings: number
-    others: number
-    issues: { [key: string]: { severity: Severity, count: number } }
+    name: string;
+    errors: number;
+    warnings: number;
+    others: number;
+    issues: { [key: string]: { severity: Severity; count: number } };
 };
 
 export type ChecksResult = {
-    checks: CheckSuite[]
+    checks: CheckSuite[];
     totals: {
-        count: number,
-        errors: number
-        warnings: number
-        others: number
-    }
+        count: number;
+        errors: number;
+        warnings: number;
+        others: number;
+    };
 };
 
 export class ParseResults {
-
     files: string[] = [];
 
     annotations: Annotation[] = [];
 
-    tests: TestResult = {suites: [], totals: {count: 0, passed: 0, failed: 0, skipped: 0}};
+    tests: TestResult = { suites: [], totals: { count: 0, passed: 0, failed: 0, skipped: 0 } };
 
-    checks: ChecksResult = {checks: [], totals: {count: 0, errors: 0, warnings: 0, others: 0}};
+    checks: ChecksResult = { checks: [], totals: { count: 0, errors: 0, warnings: 0, others: 0 } };
 
-    totals = {errors: 0, warnings: 0, others: 0};
+    totals = { errors: 0, warnings: 0, others: 0 };
 
     constructor(init?: Partial<ParseResults>) {
         Object.assign(this, init);
@@ -92,11 +91,11 @@ export class ParseResults {
         this.annotations.push(annotation);
 
         switch (annotation.severity) {
-            case 'error':
+            case "error":
                 if (ofCheck) ofCheck.errors++;
                 this.totals.errors++;
                 break;
-            case 'warning':
+            case "warning":
                 if (ofCheck) ofCheck.warnings++;
                 this.totals.warnings++;
                 break;
@@ -131,9 +130,8 @@ export class ParseResults {
         const current = suite.issues[issue];
         if (current) {
             current.count++;
-
         } else {
-            suite.issues[issue] = {severity: severity, count: 1};
+            suite.issues[issue] = { severity: severity, count: 1 };
         }
     }
 
@@ -150,13 +148,12 @@ export class ParseResults {
         }
 
         for (const check of results.checks.checks) {
-            const existingCheck = this.checks.checks.find(it => it.name === check.name);
+            const existingCheck = this.checks.checks.find((it) => it.name === check.name);
             if (existingCheck) {
                 for (const issue in check.issues) {
                     const existingIssue = existingCheck.issues[issue];
                     if (existingIssue) {
                         existingIssue.count += check.issues[issue].count;
-
                     } else {
                         existingCheck.issues[issue] = check.issues[issue];
                     }
@@ -164,7 +161,6 @@ export class ParseResults {
                 existingCheck.errors += check.errors;
                 existingCheck.warnings += check.warnings;
                 existingCheck.others += check.others;
-
             } else {
                 this.checks.checks.push(check);
             }
@@ -183,5 +179,4 @@ export class ParseResults {
         this.tests.suites.sort((a, b) => a.name.localeCompare(b.name));
         this.checks.checks.sort((a, b) => a.name.localeCompare(b.name));
     }
-
 }

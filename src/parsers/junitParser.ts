@@ -1,50 +1,51 @@
-import {asArray} from "../utils";
-import {resolveFile} from "./resolveFile";
-import {Config, ParseResults, TestCase} from "../types";
-import {Parser} from "./parser";
-import {dirname, extname} from "path";
+import { asArray } from "../utils";
+import { resolveFile } from "./resolveFile";
+import { Config, ParseResults, TestCase } from "../types";
+import { Parser } from "./parser";
+import { dirname, extname } from "path";
 
 type JUnitTest = {
     _attributes: {
-        name: string,
-        classname: string,
-        time?: string,
-        file?: string,
-        line?: string,
-        flaky?: string,
-    }
-    skipped?: boolean,
-    failure?: [{
-        _attributes: {
-            message: string,
-            type: string,
-        }
-        _text: string,
-    }]
-    flaky?: boolean
-    retries?: number
+        name: string;
+        classname: string;
+        time?: string;
+        file?: string;
+        line?: string;
+        flaky?: string;
+    };
+    skipped?: boolean;
+    failure?: [
+        {
+            _attributes: {
+                message: string;
+                type: string;
+            };
+            _text: string;
+        },
+    ];
+    flaky?: boolean;
+    retries?: number;
 };
 
 type JUnitSuite = {
     _attributes: {
-        name: string
-        time?: string,
-        retries?: number
-    }
-    testcase: JUnitTest | JUnitTest[],
+        name: string;
+        time?: string;
+        retries?: number;
+    };
+    testcase: JUnitTest | JUnitTest[];
 };
 
 export type JUnitData = {
     testsuites?: {
-        testsuite: JUnitSuite | JUnitSuite[],
-    },
-    testsuite?: JUnitSuite
+        testsuite: JUnitSuite | JUnitSuite[];
+    };
+    testsuite?: JUnitSuite;
 };
 
-const possibleExtensions = ['java', 'kt', 'groovy']
+const possibleExtensions = ["java", "kt", "groovy"];
 
 export const junitParser: Parser<JUnitData> = {
-
     async process(data: JUnitData, config: Config) {
         if (data?.testsuite || data?.testsuites) {
             const result = new ParseResults();
@@ -56,12 +57,12 @@ export const junitParser: Parser<JUnitData> = {
                 if (config.detectFlakyTests) {
                     const seenAt: {
                         [key: string]: {
-                            mostSignificant: JUnitTest,
-                            previous: JUnitTest,
-                            previousIndex: number,
-                            passed: boolean,
-                            failed: boolean
-                        }
+                            mostSignificant: JUnitTest;
+                            previous: JUnitTest;
+                            previousIndex: number;
+                            passed: boolean;
+                            failed: boolean;
+                        };
                     } = {};
 
                     for (const [index, testCase] of testCases.entries()) {
@@ -84,7 +85,6 @@ export const junitParser: Parser<JUnitData> = {
 
                             entry.previous = testCase;
                             entry.previousIndex = index;
-
                         } else {
                             testCase.retries = 0;
                             seenAt[key] = {
@@ -116,26 +116,30 @@ export const junitParser: Parser<JUnitData> = {
                 for (const testCase of testCases) {
                     if (!testCase) continue;
 
-                    if (testCase._attributes.flaky === 'true') testCase.flaky = true;
+                    if (testCase._attributes.flaky === "true") testCase.flaky = true;
                     if (testCase.flaky) flaky = (flaky || 0) + 1;
 
                     if (testCase.failure) {
                         if (!testCase.flaky) failed++;
 
                         for (const failure of asArray(testCase.failure)) {
-                            const {file, line} = await resolveFileAndLine(testCase, failure._text);
+                            const { file, line } = await resolveFileAndLine(testCase, failure._text);
 
                             result.addAnnotation({
                                 file,
-                                severity: testCase.flaky ? 'warning' : 'error',
-                                title: testCase.flaky ? `(❗Flaky) ${testCase._attributes.name}` : testCase._attributes.name,
-                                message: failure._attributes?.message || failure._text || `${testCase._attributes.name} failed`,
+                                severity: testCase.flaky ? "warning" : "error",
+                                title: testCase.flaky
+                                    ? `(❗Flaky) ${testCase._attributes.name}`
+                                    : testCase._attributes.name,
+                                message:
+                                    failure._attributes?.message ||
+                                    failure._text ||
+                                    `${testCase._attributes.name} failed`,
                                 rawDetails: failure._text,
                                 startLine: line,
                                 endLine: line,
                             });
                         }
-
                     } else if (testCase.skipped) {
                         skipped++;
                     }
@@ -144,8 +148,14 @@ export const junitParser: Parser<JUnitData> = {
                         name: testCase._attributes.name,
                         className: testCase._attributes.classname,
                         took: testCase._attributes.time,
-                        outcome: testCase.flaky ? 'flaky' : testCase.failure ? 'failed' : testCase.skipped ? 'skipped' : 'passed',
-                        ...testCase.retries !== undefined ? {retries: testCase.retries} : {},
+                        outcome: testCase.flaky
+                            ? "flaky"
+                            : testCase.failure
+                              ? "failed"
+                              : testCase.skipped
+                                ? "skipped"
+                                : "passed",
+                        ...(testCase.retries !== undefined ? { retries: testCase.retries } : {}),
                     });
                 }
 
@@ -156,19 +166,18 @@ export const junitParser: Parser<JUnitData> = {
                     failed,
                     skipped,
                     passed: cases.length - failed - skipped,
-                    ...flaky !== undefined ? {flaky} : {},
+                    ...(flaky !== undefined ? { flaky } : {}),
                     cases,
                 });
             }
             return result;
         }
         return null;
-    }
-
+    },
 };
 
 async function resolveFileAndLine(testCase: JUnitTest, stackTrace: string) {
-    let fileName = testCase._attributes.file
+    let fileName = testCase._attributes.file;
     let line = testCase._attributes.line ? Number(testCase._attributes.line) : undefined;
 
     if (!fileName || !line) {
@@ -178,19 +187,20 @@ async function resolveFileAndLine(testCase: JUnitTest, stackTrace: string) {
         if (!line) line = fromStacktrace?.line;
     }
 
-    const file = fileName ?
-        await resolveFile(fileName) :
-        await resolveFile(testCase._attributes.classname.replace(/\./g, '/'), ...possibleExtensions, '*');
+    const file = fileName
+        ? await resolveFile(fileName)
+        : await resolveFile(testCase._attributes.classname.replace(/\./g, "/"), ...possibleExtensions, "*");
 
-    if (file && !fileName) { // looked by class name
-        const extension = extname(file)
+    if (file && !fileName) {
+        // looked by class name
+        const extension = extname(file);
         if (!possibleExtensions.includes(extension)) {
             // stores a new known extension if it was not already in the list
             possibleExtensions.push(extension);
         }
     }
 
-    return {file, line};
+    return { file, line };
 }
 
 function findFileLineFromStacktrace(testCase: JUnitTest, stackTrace: string) {
@@ -199,8 +209,8 @@ function findFileLineFromStacktrace(testCase: JUnitTest, stackTrace: string) {
     if (className && stackTrace) {
         for (const match of stackTrace.matchAll(/\s*at\s+(.+?)\((.*?):(\d+)\)/g)) {
             if (match[1].startsWith(className)) {
-                const packageDir = dirname(className.replace(/\./g, '/'));
-                return {fileName: packageDir ? `${packageDir}/${match[2]}` : match[2], line: Number(match[3])}
+                const packageDir = dirname(className.replace(/\./g, "/"));
+                return { fileName: packageDir ? `${packageDir}/${match[2]}` : match[2], line: Number(match[3]) };
             }
         }
     }
