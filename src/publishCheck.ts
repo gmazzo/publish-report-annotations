@@ -20,9 +20,9 @@ export async function publishCheck(results: ParseResults, config: Config) {
                     start_line: annotation.startLine || 1,
                     end_line: annotation.endLine || 1,
                     annotation_level: getAnnotationType(annotation.severity),
-                    message: annotation.message || "No message provided",
-                    title: annotation.title,
-                    raw_details: annotation.rawDetails,
+                    message: annotation.message.truncate(65536) || "No message provided",
+                    title: annotation.title?.truncate(255),
+                    raw_details: annotation.rawDetails?.truncate(65536) || "No details provided",
                 },
             ];
         }
@@ -37,7 +37,7 @@ export async function publishCheck(results: ParseResults, config: Config) {
         conclusion: shouldFail(results, config) ? "failure" : ("success" as "failure" | "success"),
         output: {
             title: summaryOf(results, true),
-            summary: summaryTableOf(results, config),
+            summary: summaryTableOf(results, config).truncate(65535),
             annotations: sanitizedAnnotations.slice(0, MAX_ANNOTATIONS_PER_API_CALL),
         },
     };
