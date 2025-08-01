@@ -1,5 +1,15 @@
 import { Config, ParseResults } from "./types";
 
+declare global {
+    interface String {
+        truncate(limit: number): string;
+    }
+}
+
+String.prototype.truncate = function (limit: number): string {
+    return this.length > limit ? `${this.substring(0, limit - 1)}…` : this.toString();
+};
+
 export function asArray<Value>(value: Value | Value[] | undefined): Value[] {
     return value ? (Array.isArray(value) ? value : [value]) : [];
 }
