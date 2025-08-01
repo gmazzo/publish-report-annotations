@@ -5,6 +5,8 @@ import { shouldFail } from "./utils";
 import { summaryOf, summaryTableOf } from "./summary";
 import { RequestError } from "@octokit/request-error";
 
+const MAX_ANNOTATIONS_PER_API_CALL = 50;
+
 export async function publishCheck(results: ParseResults, config: Config) {
     const octokit = github.getOctokit(config.githubToken);
 
@@ -36,7 +38,7 @@ export async function publishCheck(results: ParseResults, config: Config) {
         output: {
             title: summaryOf(results, true),
             summary: summaryTableOf(results, config),
-            annotations: sanitizedAnnotations.slice(0, 50), // GitHub limit is 50 annotations per check run
+            annotations: sanitizedAnnotations.slice(0, MAX_ANNOTATIONS_PER_API_CALL),
         },
     };
 
@@ -50,18 +52,28 @@ export async function publishCheck(results: ParseResults, config: Config) {
         }),
     );
 
-    const checkRunId: number | null = checks.check_runs[0]?.id;
+    let check_run_id = checks.check_runs[0]?.id;
 
     const { html_url } = await onErrorRetry(() =>
-        (checkRunId
-            ? octokit.rest.checks.update({ ...params, check_run_id: checkRunId })
-            : octokit.rest.checks.create(params)
+        (check_run_id
+            ? octokit.rest.checks.update({ ...params, check_run_id })
+            : octokit.rest.checks.create(params).then((it) => {
+                  check_run_id = it.data.id;
+                  return it;
+              })
         ).then((it) => it.data),
     );
 
-    if (sanitizedAnnotations.length != params.output.annotations.length) {
-        core.warning(
-            `Due GitHub limitation, only ${params.output.annotations.length} of ${results.annotations.length} were reported.\nhttps://github.com/orgs/community/discussions/26680`,
+    for (let i = MAX_ANNOTATIONS_PER_API_CALL; i < sanitizedAnnotations.length; i += MAX_ANNOTATIONS_PER_API_CALL) {
+        await onErrorRetry(() =>
+            octokit.rest.checks.update({
+                ...github.context.repo,
+                check_run_id,
+                output: {
+                    ...params.output,
+                    annotations: sanitizedAnnotations.slice(i, i + MAX_ANNOTATIONS_PER_API_CALL),
+                },
+            }),
         );
     }
 
