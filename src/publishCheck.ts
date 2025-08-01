@@ -22,7 +22,7 @@ export async function publishCheck(results: ParseResults, config: Config) {
                     annotation_level: getAnnotationType(annotation.severity),
                     message: annotation.message.truncate(65536) || "No message provided",
                     title: annotation.title?.truncate(255),
-                    raw_details: annotation.rawDetails?.truncate(65536) || "No details provided",
+                    raw_details: annotation.rawDetails?.truncate(65536),
                 },
             ];
         }
