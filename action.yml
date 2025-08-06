@@ -1,5 +1,5 @@
 name: "Publish Reports"
-description: "Annotates files feeding from JUnit/AndroidLint/Checkstyle XML reports"
+description: "Reports JUnit, Android Lint, Xcode's XCResults, Detekt and any other CheckStyle compatible XML reports as GitHub Actions annotations"
 inputs:
   token:
     description: "Specify the token to use to publish the check (required unless you set `appId` and `appSecret`)"
