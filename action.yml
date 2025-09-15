@@ -61,8 +61,8 @@ inputs:
     description: "Maximum size of a single report file to be processed (examples: 1KB, 3MB). Defaults to 10MB"
     required: false
     default: "10MB"
-  reportFileExceedSizeAction:
-    description: "The action when a report file exceeds the `reportFileMaxSize`. Can be `fail`, `error` (default), `warn`, `notice` or `ignore`"
+  invalidFileAction:
+    description: "The action when a report file fails to be read. Can be `fail`, `error` (default), `warning`, `other` or `ignore`"
     required: false
     default: "error"
 runs:

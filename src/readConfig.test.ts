@@ -49,7 +49,7 @@ describe("config", () => {
                         return testsSummaryInput;
                     case "checksSummary":
                         return checksSummaryInput;
-                    case "reportFileExceedSizeAction":
+                    case "invalidFileAction":
                         return "warning";
                 }
                 return `value:${name}`;
@@ -82,7 +82,7 @@ describe("config", () => {
             expect(config.warningsAsErrors).toBe("bool:warningsAsErrors");
             expect(config.failOnError).toBe("bool:failOnError");
             expect(config.reportFileMaxSize).toBe(1234);
-            expect(config.reportFileExceedSizeAction).toBe("warning");
+            expect(config.invalidFileAction).toBe("warning");
             expect(config.prFilesFilter).toBe("aFileFilter");
 
             expect(getInput).toHaveBeenCalledWith("appId");
@@ -93,7 +93,7 @@ describe("config", () => {
             expect(getInput).toHaveBeenCalledWith("testsSummary", { required: true });
             expect(getInput).toHaveBeenCalledWith("checksSummary", { required: true });
             expect(getInput).toHaveBeenCalledWith("reportFileMaxSize", { required: true });
-            expect(getInput).toHaveBeenCalledWith("reportFileExceedSizeAction", { required: true });
+            expect(getInput).toHaveBeenCalledWith("invalidFileAction", { required: true });
             expect(getMultilineInput).toHaveBeenCalledWith("reports", { required: true });
             expect(getBooleanInput).toHaveBeenCalledWith("filterPassedTests");
             expect(getBooleanInput).toHaveBeenCalledWith("filterChecks");
@@ -115,7 +115,7 @@ describe("config", () => {
                     return "anAppId";
                 case "appSecret":
                     return "anAppSecret";
-                case "reportFileExceedSizeAction":
+                case "invalidFileAction":
                     return "warning";
             }
             return `off`;
@@ -150,7 +150,7 @@ describe("config", () => {
                         return "off";
                     case "checksSummary":
                         return "off";
-                    case "reportFileExceedSizeAction":
+                    case "invalidFileAction":
                         return "warning";
                 }
                 return `value:${name}`;

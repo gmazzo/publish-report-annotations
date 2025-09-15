@@ -2,34 +2,21 @@ import { lstatSync, readFileSync } from "fs";
 import { xml2js } from "xml-js";
 import { extname } from "path";
 import { extractXcResultFile } from "./extractXcResultFile";
-import * as core from "@actions/core";
 import bytes from "bytes";
 import { Config } from "./types";
 
 export function readFile<Type>(filepath: string, config: Config): (() => Type) | null {
     const extension = extname(filepath);
-    const data = () => readFileSync(filepath, { encoding: "utf-8" });
     const stat = lstatSync(filepath);
 
-    if (stat.isFile() && stat.size > config.reportFileMaxSize) {
-        const message = `File '${filepath}' (${bytes(stat.size)}) exceeds the allowed maximum of ${bytes(config.reportFileMaxSize)}`;
-        switch (config.reportFileExceedSizeAction) {
-            case "fail":
-                throw new Error(message);
-            case "error":
-                core.error(message);
-                return null;
-            case "warning":
-                core.warning(message);
-                return null;
-            case "notice":
-                core.notice(message);
-                return null;
-            case "ignore":
-                core.debug(message);
-                return null;
+    const data = () => {
+        if (stat.isFile() && stat.size > config.reportFileMaxSize) {
+            throw new Error(
+                `File '${filepath}' (${bytes(stat.size)}) exceeds the allowed maximum of ${bytes(config.reportFileMaxSize)}`,
+            );
         }
-    }
+        return readFileSync(filepath, { encoding: "utf-8" });
+    };
 
     switch (extension) {
         case ".json":

@@ -16,7 +16,7 @@ export interface Config {
     failOnError: boolean;
     failIfNoReportsFound: boolean;
     reportFileMaxSize: number;
-    reportFileExceedSizeAction: "fail" | "error" | "warning" | "notice" | "ignore";
+    invalidFileAction: "fail" | Severity | "ignore";
 }
 
 type Severity = "error" | "warning" | "other";
@@ -100,20 +100,17 @@ export class ParseResults {
         return this.files.length > 0;
     }
 
-    addAnnotation(annotation: Annotation, ofCheck?: CheckSuite) {
+    addAnnotation(annotation: Annotation) {
         this.annotations.push(annotation);
 
         switch (annotation.severity) {
             case "error":
-                if (ofCheck) ofCheck.errors++;
                 this.totals.errors++;
                 break;
             case "warning":
-                if (ofCheck) ofCheck.warnings++;
                 this.totals.warnings++;
                 break;
             default:
-                if (ofCheck) ofCheck.others++;
                 this.totals.others++;
         }
     }
@@ -145,6 +142,16 @@ export class ParseResults {
             current.count++;
         } else {
             suite.issues[issue] = { severity: severity, count: 1 };
+        }
+        switch (severity) {
+            case "error":
+                suite.errors++;
+                break;
+            case "warning":
+                suite.warnings++;
+                break;
+            default:
+                suite.others++;
         }
     }
 

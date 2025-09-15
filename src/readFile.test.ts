@@ -2,18 +2,6 @@ import { Config } from "./types";
 
 const config = {} as Config;
 
-const error = jest.fn();
-const warning = jest.fn();
-const notice = jest.fn();
-const debug = jest.fn();
-
-jest.mock("@actions/core", () => ({
-    error,
-    warning,
-    notice,
-    debug,
-}));
-
 import { readFile } from "./readFile";
 
 describe("readFile", () => {
@@ -84,38 +72,15 @@ describe("readFile", () => {
         });
     });
 
-    test.each([["fail"], ["error"], ["warning"], ["notice"], ["ignore"]])(
-        "given a large file, should avoid parsing it [action=%p]",
-        (action) => {
-            const data = () =>
-                readFile("samples/TEST-org.test.sample.SampleTestSuite.xml", {
-                    ...config,
-                    reportFileMaxSize: 1024,
-                    reportFileExceedSizeAction: action as Config["reportFileExceedSizeAction"],
-                });
-            const message = `File 'samples/TEST-org.test.sample.SampleTestSuite.xml' (18.98KB) exceeds the allowed maximum of 1KB`;
+    test("given a large file, should avoid parsing it [action=%p]", () => {
+        const data = () =>
+            readFile("samples/TEST-org.test.sample.SampleTestSuite.xml", {
+                ...config,
+                reportFileMaxSize: 1024,
+            })!();
 
-            switch (action) {
-                case "fail":
-                    expect(data).toThrow(message);
-                    break;
-                case "error":
-                    expect(data()).toBeNull();
-                    expect(error).toHaveBeenCalledWith(message);
-                    break;
-                case "warning":
-                    expect(data()).toBeNull();
-                    expect(warning).toHaveBeenCalledWith(message);
-                    break;
-                case "notice":
-                    expect(data()).toBeNull();
-                    expect(notice).toHaveBeenCalledWith(message);
-                    break;
-                case "ignore":
-                    expect(data()).toBeNull();
-                    expect(debug).toHaveBeenCalledWith(message);
-                    break;
-            }
-        },
-    );
+        expect(data).toThrow(
+            `File 'samples/TEST-org.test.sample.SampleTestSuite.xml' (18.98KB) exceeds the allowed maximum of 1KB`,
+        );
+    });
 });
