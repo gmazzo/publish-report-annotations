@@ -8,7 +8,7 @@ import { checkstyleParser, CheckStyleData } from "./checkstyleParser";
 
 describe("checkstyleParser", () => {
     test("given detekt xml should obtain annotations", async () => {
-        const data = readFile<CheckStyleData>("samples/detekt-debug.xml")!;
+        const data = readFile<CheckStyleData>("samples/detekt-debug.xml", config)!;
         const results = await checkstyleParser.process(data(), config);
 
         expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/src/main/kotlin/org/test/sample/App.kt");
@@ -55,7 +55,7 @@ describe("checkstyleParser", () => {
     test("given detekt xml, but filtering, expect no annotations", async () => {
         prFilesFilter.mockReturnValue(false);
 
-        const data = readFile<CheckStyleData>("samples/detekt-debug.xml")!;
+        const data = readFile<CheckStyleData>("samples/detekt-debug.xml", config)!;
         const results = await checkstyleParser.process(data(), config);
 
         expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/src/main/kotlin/org/test/sample/App.kt");

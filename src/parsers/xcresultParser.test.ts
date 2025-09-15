@@ -13,7 +13,7 @@ import { xcresultParser, XCResultData } from "./xcresultParser";
 
 describe("xcresultParser", () => {
     test("given xcresult json should obtain annotations", async () => {
-        const data = readFile<XCResultData>("samples/test-results.xcresult.json")!;
+        const data = readFile<XCResultData>("samples/test-results.xcresult.json", config)!;
         const results = await xcresultParser.process(data(), config);
 
         expect(results).toStrictEqual(
@@ -100,7 +100,7 @@ describe("xcresultParser", () => {
     });
 
     test("given another xcresult json should obtain annotations", async () => {
-        const data = readFile<XCResultData>("samples/test-results-other.xcresult.json")!;
+        const data = readFile<XCResultData>("samples/test-results-other.xcresult.json", config)!;
         const results = await xcresultParser.process(data(), config);
 
         expect(results).toStrictEqual(
@@ -165,7 +165,7 @@ describe("xcresultParser", () => {
     });
 
     test("given a retry xcresult json should obtain annotations", async () => {
-        const data = readFile<XCResultData>("samples/test-results-retry.xcresult.json")!;
+        const data = readFile<XCResultData>("samples/test-results-retry.xcresult.json", config)!;
         const results = await xcresultParser.process(data(), config);
 
         expect(results).toStrictEqual(

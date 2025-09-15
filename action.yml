@@ -57,6 +57,14 @@ inputs:
     description: "Fail the action if no reports are found for the given `reports` input"
     required: false
     default: "false"
+  reportFileMaxSize:
+    description: "Maximum size of a single report file to be processed (examples: 1KB, 3MB). Defaults to 1MB"
+    required: false
+    default: "10MB"
+  reportFileExceedSizeAction:
+    description: "The action when a report file exceeds the `reportFileMaxSize`. Can be `fail`, `error` (default), `warn`, `notice` or `ignore`"
+    required: false
+    default: "error"
 runs:
   using: node20
   main: dist/index.js

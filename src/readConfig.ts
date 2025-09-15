@@ -1,4 +1,5 @@
 import * as core from "@actions/core";
+import bytes from "bytes";
 import { getAppToken } from "./getAppToken";
 import { Config } from "./types";
 import { createFileFilter } from "./createFileFilter";
@@ -28,6 +29,14 @@ export async function readConfig(): Promise<Config> {
         warningsAsErrors: core.getBooleanInput("warningsAsErrors"),
         failOnError: core.getBooleanInput("failOnError"),
         failIfNoReportsFound: core.getBooleanInput("failIfNoReportsFound"),
+        reportFileMaxSize: getBytes("reportFileMaxSize"),
+        reportFileExceedSizeAction: getEnum("reportFileExceedSizeAction", {
+            fail: null,
+            error: null,
+            warning: null,
+            notice: null,
+            ignore: null,
+        }),
     };
 }
 
@@ -41,4 +50,13 @@ function getEnum<Enum extends object>(name: string, allowedValues: Enum) {
         );
     }
     return input as keyof Enum;
+}
+
+function getBytes(name: string): number {
+    const input = core.getInput(name, { required: true });
+    const value = bytes(input);
+    if (value === null || isNaN(value) || value < 0) {
+        throw new Error(`Invalid value for '${name}': '${input}', please provide a valid byte size, e.g. '100MB'`);
+    }
+    return value;
 }

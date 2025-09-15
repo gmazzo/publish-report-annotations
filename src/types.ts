@@ -15,6 +15,8 @@ export interface Config {
     warningsAsErrors: boolean;
     failOnError: boolean;
     failIfNoReportsFound: boolean;
+    reportFileMaxSize: number;
+    reportFileExceedSizeAction: "fail" | "error" | "warning" | "notice" | "ignore";
 }
 
 type Severity = "error" | "warning" | "other";
