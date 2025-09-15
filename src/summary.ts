@@ -1,4 +1,4 @@
-import { Config, ParseResults } from "./types";
+import { Config, AggregatedResults } from "./types";
 
 function entry(params: {
     amount: number;
@@ -18,7 +18,7 @@ function entry(params: {
     return entry;
 }
 
-function summaryOfTests(totals: ParseResults["tests"]["totals"], simplified: boolean) {
+function summaryOfTests(totals: AggregatedResults["tests"]["totals"], simplified: boolean) {
     const heading = entry({ amount: totals.count, type: "test" });
     if (totals.count == totals.passed) {
         let content = heading + ` ✅ passed`;
@@ -44,7 +44,7 @@ function summaryOfTests(totals: ParseResults["tests"]["totals"], simplified: boo
     );
 }
 
-function summaryOfChecks(checks: ParseResults["checks"]["totals"], simplified: boolean) {
+function summaryOfChecks(checks: AggregatedResults["checks"]["totals"], simplified: boolean) {
     return [
         entry({ amount: checks.errors, icon: "🛑 ", simplified, type: "error" }),
         entry({ amount: checks.warnings, icon: "⚠️ ", simplified, type: "warning" }),
@@ -54,18 +54,18 @@ function summaryOfChecks(checks: ParseResults["checks"]["totals"], simplified: b
         .join(", ");
 }
 
-export function summaryOf(results: ParseResults, simplified = false) {
+export function summaryOf(results: AggregatedResults, simplified = false) {
     let summary = "";
     if (results.tests.totals.count > 0) summary = summaryOfTests(results.tests.totals, simplified);
     if (results.checks.totals.count > 0) {
         summary += summary ? ", checks: " : "Checks: ";
         summary += summaryOfChecks(results.checks.totals, simplified);
     }
-    return summary ? summary : results.files.length ? "No issues found" : "❗No report files found";
+    return summary ? summary : results.hasFiles ? "No issues found" : "❗No report files found";
 }
 
 function summaryTableOfTests(
-    tests: ParseResults["tests"],
+    tests: AggregatedResults["tests"],
     includeTests: boolean,
     filterPassedTests: boolean,
     settingsChangedDisclaimer: boolean,
@@ -134,7 +134,7 @@ function summaryTableOfTests(
     return table;
 }
 
-function summaryTableOfChecks(checks: ParseResults["checks"], settingsChangedDisclaimer: boolean) {
+function summaryTableOfChecks(checks: AggregatedResults["checks"], settingsChangedDisclaimer: boolean) {
     let table = ``;
     for (const check of checks.checks) {
         const headers = [
@@ -152,7 +152,7 @@ function summaryTableOfChecks(checks: ParseResults["checks"], settingsChangedDis
     return table;
 }
 
-export function summaryTableOf(results: ParseResults, config: Config) {
+export function summaryTableOf(results: AggregatedResults, config: Config) {
     let testsSummary = config.testsSummary;
     let checksSummary = config.checksSummary;
     let filterPassedTests = config.filterPassedTests;

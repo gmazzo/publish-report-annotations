@@ -133,26 +133,44 @@ const expectedParams = {
 import { publishCheck } from "./publishCheck";
 
 describe("publishCheck", () => {
-    test.each([[false], [true]])("publishes check [checkExists=%p]", async (checkExists) => {
+    test.each([
+        [undefined, false, false], // new check, single call
+        [undefined, true, false], // existing check, single call
+        [789, false, true], // new check, partial call
+        [789, false, false], // new check, final call
+    ])("publishes check [checkId=%p, checkExists=%p, partial=%p]", async (checkId, checkExists, partial) => {
         listForRef.mockResolvedValue({ data: { check_runs: checkExists ? [{ id: 123 }] : [] } });
 
-        await publishCheck(sampleResults, config);
+        await publishCheck(sampleResults, config, partial, checkId);
 
         expect(getOctokit).toHaveBeenCalledWith("aToken");
-        expect(listForRef).toHaveBeenCalledWith({
-            owner: "anOwner",
-            repo: "aRepo",
-            ref: "aCommit",
-            check_name: "aCheckName",
-            status: "in_progress",
-            filter: "latest",
-        });
 
-        if (checkExists) {
-            expect(create).not.toHaveBeenCalled();
-            expect(update).toHaveBeenCalledWith({ ...expectedParams, check_run_id: 123 });
+        if (checkId) {
+            expect(listForRef).not.toHaveBeenCalled();
         } else {
-            expect(create).toHaveBeenCalledWith(expectedParams);
+            expect(listForRef).toHaveBeenCalledWith({
+                owner: "anOwner",
+                repo: "aRepo",
+                ref: "aCommit",
+                check_name: "aCheckName",
+                status: "in_progress",
+                filter: "latest",
+            });
+        }
+
+        if (checkId || checkExists) {
+            expect(create).not.toHaveBeenCalled();
+            expect(update).toHaveBeenCalledWith({
+                ...expectedParams,
+                check_run_id: checkId || 123,
+                status: partial ? "in_progress" : "completed",
+                conclusion: partial ? undefined : expectedParams.conclusion,
+            });
+        } else {
+            expect(create).toHaveBeenCalledWith({
+                ...expectedParams,
+                status: partial ? "in_progress" : "completed",
+            });
             expect(update).not.toHaveBeenCalled();
         }
     });
@@ -184,6 +202,7 @@ describe("publishCheck", () => {
                 })),
             }),
             config,
+            false,
         );
 
         expect(create).toHaveBeenCalledWith({
@@ -231,16 +250,16 @@ describe("publishCheck", () => {
                 create.mockRejectedValue(error);
             } else {
                 create.mockRejectedValueOnce(error);
-                create.mockResolvedValue({ data: { html_url: "aUrl" } });
+                create.mockResolvedValue({ data: { id: 345, html_url: "aUrl" } });
             }
 
-            const promise = publishCheck(new ParseResults({}), config);
+            const promise = publishCheck(new ParseResults({}), config, false);
             // noinspection ES6MissingAwait
             jest.runAllTimersAsync();
             if (alwaysFail) {
                 await expect(promise).rejects.toEqual(error);
             } else {
-                await expect(promise).resolves.toBe("aUrl");
+                await expect(promise).resolves.toEqual({ id: 345, html_url: "aUrl" });
             }
 
             if (retryableError) {

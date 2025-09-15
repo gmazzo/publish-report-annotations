@@ -6,8 +6,20 @@ declare global {
     }
 }
 
+const ellipsis = new TextEncoder().encode("…");
+
 String.prototype.truncate = function (limit: number): string {
-    return this.length > limit ? `${this.substring(0, limit - 1)}…` : this.toString();
+    const bytes = new TextEncoder().encode(this.toString());
+
+    if (bytes.length <= limit) {
+        return this.toString();
+    }
+
+    const newBytes = bytes.slice(0, limit);
+    for (let i = 0; i < ellipsis.length; i++) {
+        newBytes[limit - ellipsis.length + i] = ellipsis[i];
+    }
+    return new TextDecoder("utf-8").decode(newBytes).replace("�", "");
 };
 
 export function asArray<Value>(value: Value | Value[] | undefined): Value[] {

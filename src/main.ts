@@ -18,8 +18,9 @@ export default async function main() {
 
     const currentDir = process.cwd();
     const all = new ParseResults({ files });
+    let check: { id: number; url: string } | undefined;
 
-    for (const file of files) {
+    for (const [i, file] of files.entries()) {
         const reader = readFile<object>(file);
         if (!reader) continue;
 
@@ -34,10 +35,16 @@ export default async function main() {
             core.info("No issues found");
         }
         core.endGroup();
-    }
-    all.sort();
 
-    const checkHtmlUrl = config.checkName ? await publishCheck(all, config) : null;
+        if (config.checkName && i < files.length - 1) {
+            check = await publishCheck(all, config, true, check?.id);
+            all.annotations = []; // Clear annotations after publishing to avoid consuming the heap
+        }
+    }
+    if (config.checkName) {
+        check = await publishCheck(all, config, false, check?.id);
+    }
+    all.annotations = []; // Clear annotations after publishing to avoid consuming the heap
 
     if (config.workflowSummary) {
         core.summary.addRaw(summaryTableOf(all, config));
@@ -47,7 +54,7 @@ export default async function main() {
     if (files.length > 0) {
         core.notice(
             `Processed ${files.length} files: ${summaryOf(all)}` +
-                (checkHtmlUrl ? `.\nSee \`${config.checkName}\` (${checkHtmlUrl})` : ""),
+                (check?.url ? `.\nSee \`${config.checkName}\` (${check?.url})` : ""),
         );
     } else {
         (config.failIfNoReportsFound ? core.setFailed : core.warning)(
