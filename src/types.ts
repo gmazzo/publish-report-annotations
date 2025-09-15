@@ -72,6 +72,13 @@ export type ChecksResult = {
     };
 };
 
+export type AggregatedResults = {
+    hasFiles: boolean;
+    tests: TestResult;
+    checks: ChecksResult;
+    totals: { errors: number; warnings: number; others: number };
+};
+
 export class ParseResults {
     files: string[] = [];
 
@@ -85,6 +92,10 @@ export class ParseResults {
 
     constructor(init?: Partial<ParseResults>) {
         Object.assign(this, init);
+    }
+
+    get hasFiles() {
+        return this.files.length > 0;
     }
 
     addAnnotation(annotation: Annotation, ofCheck?: CheckSuite) {

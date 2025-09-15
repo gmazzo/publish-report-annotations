@@ -7,7 +7,7 @@ import { RequestError } from "@octokit/request-error";
 
 const MAX_ANNOTATIONS_PER_API_CALL = 50;
 
-export async function publishCheck(results: ParseResults, config: Config) {
+export async function publishCheck(results: ParseResults, config: Config, partial: boolean, checkRunId?: number) {
     const octokit = github.getOctokit(config.githubToken);
 
     const commit = (github.context.payload?.pull_request?.head?.sha || github.context.sha) as string;
@@ -33,8 +33,12 @@ export async function publishCheck(results: ParseResults, config: Config) {
         ...github.context.repo,
         name: config.checkName,
         head_sha: commit,
-        status: "completed" as const,
-        conclusion: shouldFail(results, config) ? "failure" : ("success" as "failure" | "success"),
+        status: partial ? ("in_progress" as const) : ("completed" as const),
+        conclusion: partial
+            ? undefined
+            : shouldFail(results, config)
+              ? "failure"
+              : ("success" as "failure" | "success"),
         output: {
             title: summaryOf(results, true),
             summary: summaryTableOf(results, config).truncate(65535),
@@ -42,25 +46,24 @@ export async function publishCheck(results: ParseResults, config: Config) {
         },
     };
 
-    const { data: checks } = await onErrorRetry(() =>
-        octokit.rest.checks.listForRef({
-            ...github.context.repo,
-            ref: commit,
-            check_name: config.checkName,
-            status: "in_progress",
-            filter: "latest",
-        }),
-    );
+    if (!checkRunId) {
+        const { data: checks } = await onErrorRetry(() =>
+            octokit.rest.checks.listForRef({
+                ...github.context.repo,
+                ref: commit,
+                check_name: config.checkName,
+                status: "in_progress",
+                filter: "latest",
+            }),
+        );
 
-    let check_run_id = checks.check_runs[0]?.id;
+        checkRunId = checks.check_runs[0]?.id;
+    }
 
-    const { html_url } = await onErrorRetry(() =>
-        (check_run_id
-            ? octokit.rest.checks.update({ ...params, check_run_id })
-            : octokit.rest.checks.create(params).then((it) => {
-                  check_run_id = it.data.id;
-                  return it;
-              })
+    const result = await onErrorRetry(() =>
+        (checkRunId
+            ? octokit.rest.checks.update({ ...params, check_run_id: checkRunId })
+            : octokit.rest.checks.create(params)
         ).then((it) => it.data),
     );
 
@@ -68,7 +71,7 @@ export async function publishCheck(results: ParseResults, config: Config) {
         await onErrorRetry(() =>
             octokit.rest.checks.update({
                 ...github.context.repo,
-                check_run_id,
+                check_run_id: result.id,
                 output: {
                     ...params.output,
                     annotations: sanitizedAnnotations.slice(i, i + MAX_ANNOTATIONS_PER_API_CALL),
@@ -77,7 +80,7 @@ export async function publishCheck(results: ParseResults, config: Config) {
         );
     }
 
-    return html_url;
+    return result;
 }
 
 function getAnnotationType(value: ParseResults["annotations"][0]["severity"]): "failure" | "warning" | "notice" {

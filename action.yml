@@ -34,7 +34,7 @@ inputs:
     required: true
     default: "full"
   filterPassedTests:
-    description: "tests (suites and cases) that has passed from reporting into the summary"
+    description: "Whether to filter tests (suites and cases) that has passed from reporting into the summary"
     required: true
     default: "false"
   filterChecks:
