@@ -87,11 +87,6 @@ describe("junitParser", () => {
                         skipped: 1,
                     },
                 },
-                totals: {
-                    errors: 2,
-                    warnings: 0,
-                    others: 0,
-                },
             }),
         );
     });
@@ -212,11 +207,6 @@ describe("junitParser", () => {
                                   flaky: 1,
                               },
                           },
-                          totals: {
-                              errors: 0,
-                              others: 0,
-                              warnings: 1,
-                          },
                       })
                     : new ParseResults({
                           annotations: [
@@ -289,11 +279,6 @@ describe("junitParser", () => {
                                   skipped: 0,
                               },
                           },
-                          totals: {
-                              errors: 2,
-                              others: 0,
-                              warnings: 0,
-                          },
                       }),
             );
         },
@@ -354,11 +339,6 @@ describe("junitParser", () => {
                         passed: 0,
                         skipped: 0,
                     },
-                },
-                totals: {
-                    errors: 1,
-                    others: 0,
-                    warnings: 0,
                 },
             }),
         );
@@ -585,11 +565,6 @@ describe("junitParser", () => {
                         skipped: 0,
                     },
                 },
-                totals: {
-                    errors: 1,
-                    others: 0,
-                    warnings: 0,
-                },
             }),
         );
     });
@@ -686,11 +661,6 @@ describe("junitParser", () => {
                         skipped: 0,
                     },
                 },
-                totals: {
-                    errors: 2,
-                    others: 0,
-                    warnings: 1,
-                },
             }),
         );
     });
@@ -758,11 +728,6 @@ describe("junitParser", () => {
                         passed: 2,
                         skipped: 0,
                     },
-                },
-                totals: {
-                    errors: 1,
-                    others: 0,
-                    warnings: 0,
                 },
             }),
         );

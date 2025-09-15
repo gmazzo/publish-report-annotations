@@ -43,30 +43,52 @@ describe("shouldFail", () => {
         expect(result).toBe(true);
     });
 
-    test("if error, then true", () => {
+    test("if failed tests, then true", () => {
         const config = { warningsAsErrors: false } as Config;
-        const result = shouldFail(new ParseResults({ totals: { errors: 3, warnings: 2, others: 1 } }), config);
+        const result = shouldFail(
+            new ParseResults({ tests: { totals: { count: 5, passed: 3, failed: 3, skipped: 0 }, suites: [] } }),
+            config,
+        );
+
+        expect(result).toBe(true);
+    });
+
+    test("if failed checks, then true", () => {
+        const config = { warningsAsErrors: false } as Config;
+        const result = shouldFail(
+            new ParseResults({ checks: { totals: { count: 5, errors: 3, warnings: 2, others: 1 }, checks: [] } }),
+            config,
+        );
 
         expect(result).toBe(true);
     });
 
     test("if only warnings, then false", () => {
         const config = { warningsAsErrors: false } as Config;
-        const result = shouldFail(new ParseResults({ totals: { errors: 0, warnings: 2, others: 1 } }), config);
+        const result = shouldFail(
+            new ParseResults({ checks: { totals: { count: 3, errors: 0, warnings: 2, others: 1 }, checks: [] } }),
+            config,
+        );
 
         expect(result).toBe(false);
     });
 
     test("if only warnings and counting as errors, then true", () => {
         const config = { warningsAsErrors: true } as Config;
-        const result = shouldFail(new ParseResults({ totals: { errors: 0, warnings: 2, others: 1 } }), config);
+        const result = shouldFail(
+            new ParseResults({ checks: { totals: { count: 3, errors: 0, warnings: 2, others: 1 }, checks: [] } }),
+            config,
+        );
 
         expect(result).toBe(true);
     });
 
     test("if only others, then false", () => {
         const config = { warningsAsErrors: false } as Config;
-        const result = shouldFail(new ParseResults({ totals: { errors: 0, warnings: 2, others: 1 } }), config);
+        const result = shouldFail(
+            new ParseResults({ checks: { totals: { count: 1, errors: 0, warnings: 0, others: 1 }, checks: [] } }),
+            config,
+        );
 
         expect(result).toBe(false);
     });
@@ -75,28 +97,40 @@ describe("shouldFail", () => {
 describe("hasErrors", () => {
     test("if error, then true", () => {
         const config = { warningsAsErrors: false } as Config;
-        const result = hasErrors(new ParseResults({ totals: { errors: 3, warnings: 2, others: 1 } }), config);
+        const result = hasErrors(
+            new ParseResults({ tests: { totals: { count: 5, passed: 3, failed: 3, skipped: 0 }, suites: [] } }),
+            config,
+        );
 
         expect(result).toBe(true);
     });
 
     test("if only warnings, then false", () => {
         const config = { warningsAsErrors: false } as Config;
-        const result = hasErrors(new ParseResults({ totals: { errors: 0, warnings: 2, others: 1 } }), config);
+        const result = hasErrors(
+            new ParseResults({ checks: { totals: { count: 3, errors: 0, warnings: 2, others: 1 }, checks: [] } }),
+            config,
+        );
 
         expect(result).toBe(false);
     });
 
     test("if only warnings and counting as errors, then true", () => {
         const config = { warningsAsErrors: true } as Config;
-        const result = hasErrors(new ParseResults({ totals: { errors: 0, warnings: 2, others: 1 } }), config);
+        const result = hasErrors(
+            new ParseResults({ checks: { totals: { count: 3, errors: 0, warnings: 2, others: 1 }, checks: [] } }),
+            config,
+        );
 
         expect(result).toBe(true);
     });
 
     test("if only others, then false", () => {
         const config = { warningsAsErrors: false } as Config;
-        const result = hasErrors(new ParseResults({ totals: { errors: 0, warnings: 2, others: 1 } }), config);
+        const result = hasErrors(
+            new ParseResults({ checks: { totals: { count: 1, errors: 0, warnings: 0, others: 1 }, checks: [] } }),
+            config,
+        );
 
         expect(result).toBe(false);
     });

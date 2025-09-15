@@ -12,11 +12,6 @@ const junitParser: Parser<object> = {
                         message: "junit test failed",
                     },
                 ],
-                totals: {
-                    errors: 1,
-                    warnings: 0,
-                    others: 0,
-                },
             });
         }
     }),
@@ -41,11 +36,6 @@ const checkstyleParser: Parser<object> = {
                         message: "checkstyle notice",
                     },
                 ],
-                totals: {
-                    errors: 1,
-                    warnings: 1,
-                    others: 1,
-                },
             });
         }
     }),
@@ -66,11 +56,6 @@ const androidLintParser: Parser<object> = {
                         message: "android failure 2",
                     },
                 ],
-                totals: {
-                    errors: 2,
-                    warnings: 0,
-                    others: 0,
-                },
             });
         }
     }),
@@ -109,11 +94,6 @@ describe("processFile", () => {
                         message: "junit test failed",
                     },
                 ],
-                totals: {
-                    errors: 1,
-                    warnings: 0,
-                    others: 0,
-                },
             }),
         );
 
@@ -149,11 +129,6 @@ describe("processFile", () => {
                         message: "checkstyle notice",
                     },
                 ],
-                totals: {
-                    errors: 1,
-                    warnings: 1,
-                    others: 1,
-                },
             }),
         );
 
@@ -191,11 +166,6 @@ describe("processFile", () => {
                         message: "android failure 2",
                     },
                 ],
-                totals: {
-                    errors: 2,
-                    warnings: 0,
-                    others: 0,
-                },
             }),
         );
 

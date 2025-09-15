@@ -102,11 +102,6 @@ describe("androidLintParser", () => {
                         warnings: 4,
                     },
                 },
-                totals: {
-                    errors: 0,
-                    warnings: 4,
-                    others: 0,
-                },
             }),
         );
     });
