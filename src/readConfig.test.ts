@@ -3,12 +3,15 @@ const getMultilineInput = jest.fn();
 const getBooleanInput = jest.fn();
 const createFileFilter = jest.fn().mockReturnValue("aFileFilter");
 const getAppToken = jest.fn().mockReturnValue("anAppToken");
+const bytes = jest.fn().mockReturnValue(1234);
 
 jest.mock("@actions/core", () => ({
     getInput,
     getMultilineInput,
     getBooleanInput,
 }));
+
+jest.mock("bytes", () => bytes);
 
 jest.mock("./createFileFilter", () => ({
     createFileFilter,
@@ -46,6 +49,8 @@ describe("config", () => {
                         return testsSummaryInput;
                     case "checksSummary":
                         return checksSummaryInput;
+                    case "reportFileExceedSizeAction":
+                        return "warning";
                 }
                 return `value:${name}`;
             });
@@ -76,6 +81,8 @@ describe("config", () => {
             expect(config.filterChecks).toBe("bool:filterChecks");
             expect(config.warningsAsErrors).toBe("bool:warningsAsErrors");
             expect(config.failOnError).toBe("bool:failOnError");
+            expect(config.reportFileMaxSize).toBe(1234);
+            expect(config.reportFileExceedSizeAction).toBe("warning");
             expect(config.prFilesFilter).toBe("aFileFilter");
 
             expect(getInput).toHaveBeenCalledWith("appId");
@@ -85,6 +92,8 @@ describe("config", () => {
             expect(getInput).toHaveBeenCalledWith("workflowSummary");
             expect(getInput).toHaveBeenCalledWith("testsSummary", { required: true });
             expect(getInput).toHaveBeenCalledWith("checksSummary", { required: true });
+            expect(getInput).toHaveBeenCalledWith("reportFileMaxSize", { required: true });
+            expect(getInput).toHaveBeenCalledWith("reportFileExceedSizeAction", { required: true });
             expect(getMultilineInput).toHaveBeenCalledWith("reports", { required: true });
             expect(getBooleanInput).toHaveBeenCalledWith("filterPassedTests");
             expect(getBooleanInput).toHaveBeenCalledWith("filterChecks");
@@ -92,9 +101,10 @@ describe("config", () => {
             expect(getBooleanInput).toHaveBeenCalledWith("warningsAsErrors");
             expect(getBooleanInput).toHaveBeenCalledWith("failOnError");
             expect(getBooleanInput).toHaveBeenCalledWith("failIfNoReportsFound");
-            expect(getInput).toHaveBeenCalledTimes(6);
+            expect(getInput).toHaveBeenCalledTimes(8);
             expect(getMultilineInput).toHaveBeenCalledTimes(1);
             expect(getBooleanInput).toHaveBeenCalledTimes(6);
+            expect(bytes).toHaveBeenCalledWith("value:reportFileMaxSize");
         },
     );
 
@@ -105,6 +115,8 @@ describe("config", () => {
                     return "anAppId";
                 case "appSecret":
                     return "anAppSecret";
+                case "reportFileExceedSizeAction":
+                    return "warning";
             }
             return `off`;
         });
@@ -138,6 +150,8 @@ describe("config", () => {
                         return "off";
                     case "checksSummary":
                         return "off";
+                    case "reportFileExceedSizeAction":
+                        return "warning";
                 }
                 return `value:${name}`;
             });

@@ -21,7 +21,7 @@ export default async function main() {
     let check: { id: number; url: string } | undefined;
 
     for (const [i, file] of files.entries()) {
-        const reader = readFile<object>(file);
+        const reader = readFile<object>(file, config);
         if (!reader) continue;
 
         const relativePath = relative(currentDir, file);

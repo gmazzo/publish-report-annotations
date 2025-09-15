@@ -8,7 +8,7 @@ import { androidLintParser, LintData } from "./androidLintParser";
 
 describe("androidLintParser", () => {
     test("given lint xml should obtain annotations", async () => {
-        const data = readFile<LintData>("samples/lint-results-debug.xml")!;
+        const data = readFile<LintData>("samples/lint-results-debug.xml", config)!;
         const results = await androidLintParser.process(data(), config);
 
         expect(results).toStrictEqual(
@@ -114,7 +114,7 @@ describe("androidLintParser", () => {
     test("given lint xml, but filtering, expect no annotations", async () => {
         prFilesFilter.mockReturnValue(false);
 
-        const data = readFile<LintData>("samples/lint-results-debug.xml")!;
+        const data = readFile<LintData>("samples/lint-results-debug.xml", config)!;
         const results = await androidLintParser.process(data(), config);
 
         expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/build.gradle.kts");

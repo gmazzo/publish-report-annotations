@@ -16,7 +16,7 @@ import { JUnitData, junitParser } from "./junitParser";
 
 describe("junitParser", () => {
     test("given junit xml should obtain annotations", async () => {
-        const data = readFile<JUnitData>("samples/TEST-org.test.sample.SampleTestSuite.xml")!;
+        const data = readFile<JUnitData>("samples/TEST-org.test.sample.SampleTestSuite.xml", config)!;
         const results = await junitParser.process(data(), config);
 
         expect(prFilesFilter).not.toHaveBeenCalled();
@@ -97,7 +97,7 @@ describe("junitParser", () => {
     });
 
     test("given another junit xml should obtain annotations", async () => {
-        const data = readFile<JUnitData>("samples/TEST-org.test.sample.AnotherTestSuite.xml")!;
+        const data = readFile<JUnitData>("samples/TEST-org.test.sample.AnotherTestSuite.xml", config)!;
         const results = await junitParser.process(data(), config);
 
         expect(prFilesFilter).not.toHaveBeenCalled();
@@ -153,7 +153,7 @@ describe("junitParser", () => {
     test.each([[false], [true]])(
         "given a junit xml with retries should process it correctly [detectFlakyTests=%p]",
         async (detectFlakyTests) => {
-            const data = readFile<JUnitData>("samples/TEST-org.test.sample.FlakyTestSuite.xml")!;
+            const data = readFile<JUnitData>("samples/TEST-org.test.sample.FlakyTestSuite.xml", config)!;
             const results = await junitParser.process(data(), {
                 ...config,
                 detectFlakyTests,
@@ -300,7 +300,7 @@ describe("junitParser", () => {
     );
 
     test("given a junit xml with retries that always fails, should process it correctly", async () => {
-        const data = readFile<JUnitData>("samples/TEST-org.test.sample.FlakyFailingTestSuite.xml")!;
+        const data = readFile<JUnitData>("samples/TEST-org.test.sample.FlakyFailingTestSuite.xml", config)!;
         const results = await junitParser.process(data(), {
             ...config,
             detectFlakyTests: true,
@@ -365,7 +365,7 @@ describe("junitParser", () => {
     });
 
     test("given a jest junit xml should obtain annotations", async () => {
-        const data = readFile<JUnitData>("samples/TEST-jest.xml")!;
+        const data = readFile<JUnitData>("samples/TEST-jest.xml", config)!;
         const results = await junitParser.process(data(), config);
 
         expect(prFilesFilter).not.toHaveBeenCalled();
@@ -595,7 +595,7 @@ describe("junitParser", () => {
     });
 
     test("given a Firebase TestLab junit xml should parse it and report flakiness", async () => {
-        const data = readFile<JUnitData>("samples/TEST-firebase-testlab-test_results_merged.xml")!;
+        const data = readFile<JUnitData>("samples/TEST-firebase-testlab-test_results_merged.xml", config)!;
         const results = await junitParser.process(data(), config);
 
         expect(prFilesFilter).not.toHaveBeenCalled();
@@ -696,7 +696,7 @@ describe("junitParser", () => {
     });
 
     test("given an AndroidTest junit xml should parse it", async () => {
-        const data = readFile<JUnitData>("samples/TEST-emulator-_app-.xml")!;
+        const data = readFile<JUnitData>("samples/TEST-emulator-_app-.xml", config)!;
         const results = await junitParser.process(data(), config);
 
         expect(prFilesFilter).not.toHaveBeenCalled();
