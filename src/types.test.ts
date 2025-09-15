@@ -340,11 +340,6 @@ describe("ParseResults", () => {
                         skipped: 5,
                     },
                 },
-                totals: {
-                    errors: 5,
-                    others: 4,
-                    warnings: 6,
-                },
             }),
         );
     });

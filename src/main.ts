@@ -63,10 +63,11 @@ export default async function main() {
     }
 
     if (config.failOnError && hasErrors(all, config)) {
-        core.setFailed(`Found ${all.totals.errors} errors and ${all.totals.warnings} warnings.`);
+        core.setFailed(
+            `Found ${all.tests.totals.failed + all.checks.totals.errors} errors and ${all.checks.totals.warnings} warnings.`,
+        );
     }
 
     core.setOutput("tests", all.tests.totals);
     core.setOutput("checks", all.checks.totals);
-    core.setOutput("total", all.totals);
 }

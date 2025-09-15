@@ -90,11 +90,6 @@ describe("xcresultParser", () => {
                         skipped: 1,
                     },
                 },
-                totals: {
-                    errors: 2,
-                    others: 0,
-                    warnings: 0,
-                },
             }),
         );
     });
@@ -154,11 +149,6 @@ describe("xcresultParser", () => {
                         passed: 2,
                         skipped: 0,
                     },
-                },
-                totals: {
-                    errors: 0,
-                    others: 0,
-                    warnings: 0,
                 },
             }),
         );
@@ -241,11 +231,6 @@ describe("xcresultParser", () => {
                         passed: 2,
                         skipped: 1,
                     },
-                },
-                totals: {
-                    errors: 1,
-                    others: 0,
-                    warnings: 1,
                 },
             }),
         );

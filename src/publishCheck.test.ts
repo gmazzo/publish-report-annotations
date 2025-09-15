@@ -92,7 +92,6 @@ const sampleResults = new ParseResults({
         ],
         totals: { count: 6, errors: 3, warnings: 2, others: 1 },
     },
-    totals: { errors: 10, warnings: 4, others: 6 },
     annotations: [
         {
             file: "file1",

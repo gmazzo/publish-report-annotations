@@ -28,7 +28,6 @@ const processFile = jest.fn().mockReturnValue(
     new ParseResults({
         tests: { suites: [], totals: { count: 4, passed: 2, skipped: 1, failed: 1 } },
         checks: { checks: [], totals: { count: 6, errors: 3, warnings: 2, others: 1 } },
-        totals: { errors: 10, warnings: 4, others: 6 },
     }),
 );
 
@@ -86,7 +85,6 @@ describe("main", () => {
         expect(coreSetFailed).not.toHaveBeenCalled();
         expect(coreSetOutput).toHaveBeenCalledWith("tests", { count: 8, passed: 4, skipped: 2, failed: 2 });
         expect(coreSetOutput).toHaveBeenCalledWith("checks", { count: 12, errors: 6, warnings: 4, others: 2 });
-        expect(coreSetOutput).toHaveBeenCalledWith("total", { errors: 20, warnings: 8, others: 12 });
         expect(coreSummaryAddRaw).toHaveBeenCalled();
         expect(coreSummaryWrite).toHaveBeenCalled();
     });
@@ -95,7 +93,7 @@ describe("main", () => {
         config.failOnError = true;
         processFile.mockResolvedValue(
             new ParseResults({
-                totals: { errors: 3, warnings: 0, others: 1 },
+                checks: { totals: { count: 4, errors: 3, warnings: 0, others: 1 }, checks: [] },
             }),
         );
 
@@ -109,7 +107,7 @@ describe("main", () => {
         config.failOnError = true;
         processFile.mockResolvedValue(
             new ParseResults({
-                totals: { errors: 0, warnings: 2, others: 1 },
+                checks: { totals: { count: 3, errors: 0, warnings: 2, others: 1 }, checks: [] },
             }),
         );
 

@@ -78,7 +78,6 @@ export type AggregatedResults = {
     hasFiles: boolean;
     tests: TestResult;
     checks: ChecksResult;
-    totals: { errors: number; warnings: number; others: number };
 };
 
 export class ParseResults {
@@ -90,8 +89,6 @@ export class ParseResults {
 
     checks: ChecksResult = { checks: [], totals: { count: 0, errors: 0, warnings: 0, others: 0 } };
 
-    totals = { errors: 0, warnings: 0, others: 0 };
-
     constructor(init?: Partial<ParseResults>) {
         Object.assign(this, init);
     }
@@ -102,17 +99,6 @@ export class ParseResults {
 
     addAnnotation(annotation: Annotation) {
         this.annotations.push(annotation);
-
-        switch (annotation.severity) {
-            case "error":
-                this.totals.errors++;
-                break;
-            case "warning":
-                this.totals.warnings++;
-                break;
-            default:
-                this.totals.others++;
-        }
     }
 
     addTestSuite(suite: TestSuite) {
@@ -189,10 +175,6 @@ export class ParseResults {
         this.checks.totals.errors += results.checks.totals.errors;
         this.checks.totals.warnings += results.checks.totals.warnings;
         this.checks.totals.others += results.checks.totals.others;
-
-        this.totals.errors += results.totals.errors;
-        this.totals.warnings += results.totals.warnings;
-        this.totals.others += results.totals.others;
     }
 
     sort() {

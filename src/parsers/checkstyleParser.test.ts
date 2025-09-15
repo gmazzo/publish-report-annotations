@@ -43,11 +43,6 @@ describe("checkstyleParser", () => {
                         others: 0,
                     },
                 },
-                totals: {
-                    errors: 0,
-                    warnings: 1,
-                    others: 0,
-                },
             }),
         );
     });

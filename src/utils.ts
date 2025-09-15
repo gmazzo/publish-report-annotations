@@ -39,5 +39,9 @@ export function shouldFail(results: ParseResults, config: Config) {
 }
 
 export function hasErrors(results: ParseResults, config: Config) {
-    return results.totals.errors > 0 || (config.warningsAsErrors && results.totals.warnings > 0);
+    return (
+        results.tests.totals.failed > 0 ||
+        results.checks.totals.errors > 0 ||
+        (config.warningsAsErrors && results.checks.totals.warnings > 0)
+    );
 }
