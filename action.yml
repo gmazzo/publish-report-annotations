@@ -58,7 +58,7 @@ inputs:
     required: false
     default: "false"
   reportFileMaxSize:
-    description: "Maximum size of a single report file to be processed (examples: 1KB, 3MB). Defaults to 1MB"
+    description: "Maximum size of a single report file to be processed (examples: 1KB, 3MB). Defaults to 10MB"
     required: false
     default: "10MB"
   reportFileExceedSizeAction:
