@@ -52,19 +52,16 @@ export const checkstyleParser: Parser<CheckStyleData> = {
                                 result.addIssueToCheckSuite(suite, issue, type);
                             }
 
-                            result.addAnnotation(
-                                {
-                                    severity: type,
-                                    file: filePath,
-                                    title: error._attributes.source,
-                                    message: error._attributes.message,
-                                    startLine: Number(error._attributes.line),
-                                    endLine: Number(error._attributes.line),
-                                    startColumn: Number(error._attributes.column),
-                                    endColumn: Number(error._attributes.column),
-                                },
-                                suite,
-                            );
+                            result.addAnnotation({
+                                severity: type,
+                                file: filePath,
+                                title: error._attributes.source,
+                                message: error._attributes.message,
+                                startLine: Number(error._attributes.line),
+                                endLine: Number(error._attributes.line),
+                                startColumn: Number(error._attributes.column),
+                                endColumn: Number(error._attributes.column),
+                            });
                         }
                     }
                 }

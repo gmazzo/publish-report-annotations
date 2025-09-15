@@ -59,24 +59,21 @@ export const androidLintParser: Parser<LintData> = {
                             const issueSummary = `${issue._attributes.category} / ${issue._attributes.id}`;
 
                             result.addIssueToCheckSuite(suite, issueSummary, type);
-                            result.addAnnotation(
-                                {
-                                    file,
-                                    severity: type,
-                                    title: `${issue._attributes.category}: ${issue._attributes.summary}`,
-                                    message: issue._attributes.message,
-                                    rawDetails: join(
-                                        issue._attributes.explanation,
-                                        issue._attributes.errorLine1,
-                                        issue._attributes.errorLine2,
-                                    ),
-                                    startLine: Number(location._attributes.line),
-                                    endLine: Number(location._attributes.line),
-                                    startColumn: Number(location._attributes.column),
-                                    endColumn: Number(location._attributes.column),
-                                },
-                                suite,
-                            );
+                            result.addAnnotation({
+                                file,
+                                severity: type,
+                                title: `${issue._attributes.category}: ${issue._attributes.summary}`,
+                                message: issue._attributes.message,
+                                rawDetails: join(
+                                    issue._attributes.explanation,
+                                    issue._attributes.errorLine1,
+                                    issue._attributes.errorLine2,
+                                ),
+                                startLine: Number(location._attributes.line),
+                                endLine: Number(location._attributes.line),
+                                startColumn: Number(location._attributes.column),
+                                endColumn: Number(location._attributes.column),
+                            });
                         }
                     }
                 }

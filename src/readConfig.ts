@@ -30,11 +30,11 @@ export async function readConfig(): Promise<Config> {
         failOnError: core.getBooleanInput("failOnError"),
         failIfNoReportsFound: core.getBooleanInput("failIfNoReportsFound"),
         reportFileMaxSize: getBytes("reportFileMaxSize"),
-        reportFileExceedSizeAction: getEnum("reportFileExceedSizeAction", {
+        invalidFileAction: getEnum("invalidFileAction", {
             fail: null,
             error: null,
             warning: null,
-            notice: null,
+            other: null,
             ignore: null,
         }),
     };
