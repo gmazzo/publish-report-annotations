@@ -3,7 +3,7 @@ import * as glob from "@actions/glob";
 import { processFile } from "./processFile";
 import { relative } from "path";
 import { ParseResults } from "./types";
-import { publishCheck } from "./publishCheck";
+import { MAX_ANNOTATIONS_PER_API_CALL, publishCheck } from "./publishCheck";
 import { hasErrors } from "./utils";
 import { summaryOf, summaryTableOf } from "./summary";
 import { readConfig } from "./readConfig";
@@ -36,7 +36,7 @@ export default async function main() {
         }
         core.endGroup();
 
-        if (config.checkName && i < files.length - 1) {
+        if (config.checkName && i < files.length - 1 && all.annotations.length >= MAX_ANNOTATIONS_PER_API_CALL) {
             check = await publishCheck(all, config, true, check?.id);
             all.annotations = []; // Clear annotations after publishing to avoid consuming the heap
         }
