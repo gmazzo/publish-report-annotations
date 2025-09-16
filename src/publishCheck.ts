@@ -5,7 +5,7 @@ import { shouldFail } from "./utils";
 import { summaryOf, summaryTableOf } from "./summary";
 import { RequestError } from "@octokit/request-error";
 
-const MAX_ANNOTATIONS_PER_API_CALL = 50;
+export const MAX_ANNOTATIONS_PER_API_CALL = 50;
 
 export async function publishCheck(results: ParseResults, config: Config, partial: boolean, checkRunId?: number) {
     const octokit = github.getOctokit(config.githubToken);
