@@ -68,7 +68,6 @@ jest.mock("./parsers/parsers", () => ({
 const coreError = jest.fn();
 const coreWarning = jest.fn();
 const coreNotice = jest.fn();
-const coreDebug = jest.fn();
 const prFilesFilter = jest.fn();
 const baseConfig = { prFilesFilter } as unknown as Config;
 
@@ -76,7 +75,6 @@ jest.mock("@actions/core", () => ({
     error: coreError,
     warning: coreWarning,
     notice: coreNotice,
-    debug: coreDebug,
 }));
 
 import { processFile } from "./processFile";
@@ -185,46 +183,25 @@ describe("processFile", () => {
         expect(coreNotice).not.toHaveBeenCalled();
     });
 
-    test.each([["fail"], ["error"], ["warning"], ["other"], ["ignore"]])(
+    test.each([["fail"], ["report"], ["log"]])(
         "when a file is invalid [invalidFileAction=%p]",
         async (invalidFileAction) => {
             const config = { ...baseConfig, invalidFileAction: invalidFileAction as Config["invalidFileAction"] };
+            const ex = new Error("Invalid file");
             const result = processFile(() => {
-                throw new Error("Invalid file");
+                throw ex;
             }, config);
 
             switch (invalidFileAction) {
                 case "fail":
                     await expect(result).rejects.toThrow("Invalid file");
                     break;
-                case "error":
-                case "warning":
-                case "other":
-                    expect(await result).toStrictEqual(
-                        new ParseResults({
-                            checks: {
-                                checks: [
-                                    {
-                                        name: "InvalidFile",
-                                        errors: invalidFileAction === "error" ? 1 : 0,
-                                        warnings: invalidFileAction === "warning" ? 1 : 0,
-                                        others: invalidFileAction === "other" ? 1 : 0,
-                                        issues: { "Error: Invalid file": { severity: invalidFileAction, count: 1 } },
-                                    },
-                                ],
-                                totals: {
-                                    count: 1,
-                                    errors: invalidFileAction === "error" ? 1 : 0,
-                                    warnings: invalidFileAction === "warning" ? 1 : 0,
-                                    others: invalidFileAction === "other" ? 1 : 0,
-                                },
-                            },
-                        }),
-                    );
+                case "report":
+                    expect(await result).toStrictEqual(new ParseResults({ failures: ["Invalid file"] }));
                     break;
                 default:
                     expect(await result).toBeNull();
-                    expect(coreDebug).toHaveBeenCalledWith("Error: Invalid file");
+                    expect(coreError).toHaveBeenCalledWith(ex);
                     break;
             }
         },

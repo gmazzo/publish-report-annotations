@@ -50,7 +50,7 @@ describe("config", () => {
                     case "checksSummary":
                         return checksSummaryInput;
                     case "invalidFileAction":
-                        return "warning";
+                        return "fail";
                 }
                 return `value:${name}`;
             });
@@ -82,7 +82,7 @@ describe("config", () => {
             expect(config.warningsAsErrors).toBe("bool:warningsAsErrors");
             expect(config.failOnError).toBe("bool:failOnError");
             expect(config.reportFileMaxSize).toBe(1234);
-            expect(config.invalidFileAction).toBe("warning");
+            expect(config.invalidFileAction).toBe("fail");
             expect(config.prFilesFilter).toBe("aFileFilter");
 
             expect(getInput).toHaveBeenCalledWith("appId");
@@ -116,7 +116,7 @@ describe("config", () => {
                 case "appSecret":
                     return "anAppSecret";
                 case "invalidFileAction":
-                    return "warning";
+                    return "log";
             }
             return `off`;
         });
@@ -151,7 +151,7 @@ describe("config", () => {
                     case "checksSummary":
                         return "off";
                     case "invalidFileAction":
-                        return "warning";
+                        return "report";
                 }
                 return `value:${name}`;
             });

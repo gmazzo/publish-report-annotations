@@ -142,6 +142,25 @@ describe("summaryOf", () => {
 
         expect(result).toBe("❗No report files found");
     });
+
+    test("with failures", () => {
+        const result = summaryOf(
+            new ParseResults({
+                tests: {
+                    suites: [],
+                    totals: {
+                        count: 5,
+                        passed: 3,
+                        skipped: 1,
+                        failed: 1,
+                    },
+                },
+                failures: ["failure1", "failure2"],
+            }),
+        );
+
+        expect(result).toBe("5 tests: ✅ 3 passed, 🟡 1 skipped, ❌ 1 failed, ‼️ 2 failures");
+    });
 });
 
 describe("summaryTableOf", () => {
@@ -341,6 +360,32 @@ describe("summaryTableOf", () => {
         );
     });
 
+    test("when summary is totals but with failures, returns the expected result", () => {
+        const summary = summaryTableOf(
+            {
+                ...results,
+                failures: ["failure1", "failure2", "failure3"],
+            },
+            {
+                testsSummary: "totals",
+                checksSummary: "totals",
+                filterPassedTests: false,
+            } as Config,
+        );
+
+        expect(summary).toBe(
+            `
+Tests: 4 tests: ✅ 2 passed, 🟡 1 skipped, ❌ 1 failed
+Checks: 🛑 3 errors, ⚠️ 2 warnings, 💡 1 other
+
+> [!CAUTION]
+> There were some failures processing report files:
+> - \`failure1\`
+> - \`failure2\`
+> - \`failure3\``.trimStart(),
+        );
+    });
+
     test("when summary is off, returns an empty string", () => {
         const summary = summaryTableOf(results, {
             testsSummary: "off",
@@ -377,7 +422,7 @@ describe("summaryTableOf", () => {
         expect(summary.length).toBeLessThan(65500);
         expect(summary).toContain("Test Suites[^settingsChanged]|");
         expect(note).toBe(
-            `[^settingsChanged]: Summary table was too long (175659 characters), reduced the following to make it fit into the limits:${expectedChanges.map((it) => `<br/>- ${it}`).join("")}`,
+            `[^settingsChanged]: Summary table was too long (191.28KB), reduced the following to make it fit into the limits:${expectedChanges.map((it) => `<br/>- ${it}`).join("")}`,
         );
     });
 });

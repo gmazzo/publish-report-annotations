@@ -32,10 +32,8 @@ export async function readConfig(): Promise<Config> {
         reportFileMaxSize: getBytes("reportFileMaxSize"),
         invalidFileAction: getEnum("invalidFileAction", {
             fail: null,
-            error: null,
-            warning: null,
-            other: null,
-            ignore: null,
+            report: null,
+            log: null,
         }),
     };
 }

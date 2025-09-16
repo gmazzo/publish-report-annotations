@@ -62,9 +62,9 @@ inputs:
     required: false
     default: "10MB"
   invalidFileAction:
-    description: "The action when a report file fails to be read. Can be `fail`, `error` (default), `warning`, `other` or `ignore`"
+    description: "The action when a report file fails to be read. Can be `fail`, `report` (default) or `log`"
     required: false
-    default: "error"
+    default: "report"
 runs:
   using: node20
   main: dist/index.js

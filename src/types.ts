@@ -16,7 +16,7 @@ export interface Config {
     failOnError: boolean;
     failIfNoReportsFound: boolean;
     reportFileMaxSize: number;
-    invalidFileAction: "fail" | Severity | "ignore";
+    invalidFileAction: "fail" | "report" | "log";
 }
 
 type Severity = "error" | "warning" | "other";
@@ -75,9 +75,10 @@ export type ChecksResult = {
 };
 
 export type AggregatedResults = {
-    hasFiles: boolean;
+    files: string[];
     tests: TestResult;
     checks: ChecksResult;
+    failures: string[];
 };
 
 export class ParseResults {
@@ -88,6 +89,8 @@ export class ParseResults {
     tests: TestResult = { suites: [], totals: { count: 0, passed: 0, failed: 0, skipped: 0 } };
 
     checks: ChecksResult = { checks: [], totals: { count: 0, errors: 0, warnings: 0, others: 0 } };
+
+    failures: string[] = [];
 
     constructor(init?: Partial<ParseResults>) {
         Object.assign(this, init);
@@ -175,6 +178,8 @@ export class ParseResults {
         this.checks.totals.errors += results.checks.totals.errors;
         this.checks.totals.warnings += results.checks.totals.warnings;
         this.checks.totals.others += results.checks.totals.others;
+
+        this.failures.push(...results.failures);
     }
 
     sort() {
