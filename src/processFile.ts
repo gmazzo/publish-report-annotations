@@ -1,6 +1,6 @@
 import { join } from "./utils";
 import * as core from "@actions/core";
-import { CheckSuite, Config, ParseResults } from "./types";
+import { Config, ParseResults } from "./types";
 import { parsers } from "./parsers/parsers";
 
 export async function processFile(reader: () => object, config: Config) {
@@ -37,16 +37,10 @@ export async function processFile(reader: () => object, config: Config) {
         switch (config.invalidFileAction) {
             case "fail":
                 throw ex;
-            case "error":
-            case "warning":
-            case "other":
-                const results = new ParseResults();
-                const suite: CheckSuite = { name: "InvalidFile", errors: 0, warnings: 0, others: 0, issues: {} };
-                results.addIssueToCheckSuite(suite, `${ex}`, config.invalidFileAction);
-                results.addCheckSuite(suite);
-                return results;
-            case "ignore":
-                core.debug(`${ex}`);
+            case "report":
+                return new ParseResults({ failures: [ex instanceof Error ? ex.message : `${ex}`] });
+            case "log":
+                core.error(ex instanceof Error ? ex : `${ex}`);
         }
     }
     return null;

@@ -103,6 +103,13 @@ jobs:
             non-existing-folder/*.xml
           failIfNoReportsFound: true
         continue-on-error: true
+      - name: Report to Check (Failures)
+        uses: ./.
+        with:
+          checkName: "Test Reports (Failures)"
+          reports: |
+            samples/
+          reportFileMaxSize: 20KB
       - name: Report to Check (GitHub App)
         uses: ./.
         with:

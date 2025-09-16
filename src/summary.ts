@@ -1,4 +1,5 @@
 import { Config, AggregatedResults } from "./types";
+import bytes from "bytes";
 
 function entry(params: {
     amount: number;
@@ -61,7 +62,11 @@ export function summaryOf(results: AggregatedResults, simplified = false) {
         summary += summary ? ", checks: " : "Checks: ";
         summary += summaryOfChecks(results.checks.totals, simplified);
     }
-    return summary ? summary : results.hasFiles ? "No issues found" : "❗No report files found";
+    if (results.failures.length > 0) {
+        if (summary) summary += ", ";
+        summary += entry({ amount: results.failures.length, icon: "‼️ ", simplified, type: "failure" });
+    }
+    return summary ? summary : results.files.length > 0 ? "No issues found" : "❗No report files found";
 }
 
 function summaryTableOfTests(
@@ -158,7 +163,7 @@ export function summaryTableOf(results: AggregatedResults, config: Config) {
     let filterPassedTests = config.filterPassedTests;
 
     let content;
-    let originalLength;
+    let originalByteSize;
     let tryReduce;
     do {
         content = "";
@@ -182,9 +187,16 @@ export function summaryTableOf(results: AggregatedResults, config: Config) {
                     ? `Checks: ${summaryOfChecks(results.checks.totals, false)}`
                     : summaryTableOfChecks(results.checks, checksSummary != config.checksSummary);
         }
+        if (results.failures.length > 0) {
+            content +=
+                "\n\n> [!CAUTION]\n" +
+                "> There were some failures processing report files:\n" +
+                results.failures.map((it) => `> - \`${it}\``).join("\n");
+        }
 
-        if (content.length > 65500) {
-            if (!originalLength) originalLength = content.length;
+        const byteSize = Buffer.byteLength(content, "utf8");
+        if (byteSize > 65535) {
+            if (!originalByteSize) originalByteSize = byteSize;
 
             if (!filterPassedTests) {
                 filterPassedTests = true;
@@ -215,8 +227,8 @@ export function summaryTableOf(results: AggregatedResults, config: Config) {
         }
     } while (tryReduce);
 
-    if (originalLength) {
-        content += `[^settingsChanged]: Summary table was too long (${originalLength} characters), reduced the following to make it fit into the limits:`;
+    if (originalByteSize) {
+        content += `[^settingsChanged]: Summary table was too long (${bytes(originalByteSize)}), reduced the following to make it fit into the limits:`;
         if (config.testsSummary != testsSummary) {
             content += `<br/>- \`testsSummary\` from \`${config.testsSummary}\` to \`${testsSummary}\``;
         }
