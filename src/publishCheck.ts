@@ -79,7 +79,6 @@ export async function publishCheck(results: ParseResults, config: Config, partia
             }),
         );
     }
-
     return result;
 }
 

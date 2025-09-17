@@ -18,7 +18,7 @@ export default async function main() {
 
     const currentDir = process.cwd();
     const all = new ParseResults({ files });
-    let check: { id: number; url: string } | undefined;
+    let check: { id: number; html_url: string | null } | undefined;
 
     for (const [i, file] of files.entries()) {
         const reader = readFile<object>(file, config);
@@ -61,7 +61,7 @@ export default async function main() {
     if (files.length > 0) {
         core.notice(
             `Processed ${files.length} files: ${summaryOf(all)}` +
-                (check?.url ? `.\nSee \`${config.checkName}\` (${check?.url})` : ""),
+                (check?.html_url ? `.\nSee \`${config.checkName}\` (${check?.html_url})` : ""),
         );
     } else {
         (config.failIfNoReportsFound ? core.setFailed : core.warning)(
