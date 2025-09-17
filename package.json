@@ -20,7 +20,7 @@
     "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
     "bytes": "^3.1.2",
-    "xml-js": "^1.6.11"
+    "fast-xml-parser": "^5.2.5"
   },
   "devDependencies": {
     "@types/bytes": "^3.1.5",
@@ -37,7 +37,6 @@
     "semantic-release-major-tag": "^0.3.2",
     "ts-jest": "^29.4.1",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.43.0",
-    "xml2js": "^0.6.2"
+    "typescript-eslint": "^8.43.0"
   }
 }

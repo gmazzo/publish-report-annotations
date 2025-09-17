@@ -1,9 +1,21 @@
 import { lstatSync, readFileSync } from "fs";
-import { xml2js } from "xml-js";
 import { extname } from "path";
 import { extractXcResultFile } from "./extractXcResultFile";
+import { XMLParser } from "fast-xml-parser";
 import bytes from "bytes";
 import { Config } from "./types";
+
+const XML = new XMLParser({
+    ignoreDeclaration: true,
+    ignoreAttributes: false,
+    allowBooleanAttributes: true,
+    attributeNamePrefix: "",
+    attributesGroupName: "_attributes",
+    textNodeName: "_text",
+    trimValues: false,
+    alwaysCreateTextNode: true,
+    attributeValueProcessor: (_, value) => value.replace(/&#xA;/g, "\n"),
+});
 
 export function readFile<Type>(filepath: string, config: Config): (() => Type) | null {
     const extension = extname(filepath);
@@ -24,7 +36,7 @@ export function readFile<Type>(filepath: string, config: Config): (() => Type) |
             return () => JSON.parse(data());
 
         case ".xml":
-            return () => xml2js(data(), { compact: true, ignoreDeclaration: true }) as Type;
+            return () => XML.parse(data(), false) as Type;
 
         case ".xcresult":
             if (stat.isDirectory()) {
