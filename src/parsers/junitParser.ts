@@ -13,7 +13,7 @@ type JUnitTest = {
         line?: string;
         flaky?: string;
     };
-    skipped?: boolean;
+    skipped?: object;
     failure?: [
         {
             _attributes: {

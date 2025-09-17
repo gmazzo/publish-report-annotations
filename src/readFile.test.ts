@@ -20,9 +20,16 @@ describe("readFile", () => {
                     time: "0.004",
                     timestamp: "2024-06-12T13:36:24",
                 },
-                properties: {},
-                "system-err": {},
-                "system-out": {},
+                _text: "\n  \n  \n  \n  \n  \n  \n  \n",
+                properties: {
+                    _text: "",
+                },
+                "system-err": {
+                    _text: "",
+                },
+                "system-out": {
+                    _text: "",
+                },
                 testcase: [
                     {
                         _attributes: {
@@ -30,7 +37,10 @@ describe("readFile", () => {
                             name: "a test skipped()",
                             time: "0.0",
                         },
-                        skipped: {},
+                        _text: "\n    \n  ",
+                        skipped: {
+                            _text: "",
+                        },
                     },
                     {
                         _attributes: {
@@ -45,6 +55,7 @@ describe("readFile", () => {
                             name: "a test that fails()",
                             time: "0.002",
                         },
+                        _text: "\n    \n  ",
                         failure: {
                             _attributes: {
                                 message: "org.opentest4j.AssertionFailedError: this test has failed",
@@ -59,6 +70,7 @@ describe("readFile", () => {
                             name: "a test that throws an exception()",
                             time: "0.001",
                         },
+                        _text: "\n    \n  ",
                         failure: {
                             _attributes: {
                                 message: "java.io.IOException: has been an I/O error",

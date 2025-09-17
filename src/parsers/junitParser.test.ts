@@ -676,7 +676,7 @@ describe("junitParser", () => {
                     {
                         file: "<projectTestSrc>/org/test/Test2.kt",
                         message: "testScene[CLEAR at 2024-08-01T00:00+02:00[Europe/Madrid]] failed",
-                        rawDetails: undefined,
+                        rawDetails: "",
                         severity: "error",
                         title: "testScene[CLEAR at 2024-08-01T00:00+02:00[Europe/Madrid]]",
                         startLine: undefined,
