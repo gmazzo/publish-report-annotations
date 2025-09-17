@@ -19,6 +19,7 @@
     "@octokit/app": "^16.1.0",
     "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
+    "@semantic-release/release-notes-generator": "^14.1.0",
     "bytes": "^3.1.2",
     "fast-xml-parser": "^5.2.5"
   },
