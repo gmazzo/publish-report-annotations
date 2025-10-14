@@ -732,4 +732,125 @@ describe("junitParser", () => {
             }),
         );
     });
+
+    test("given a junit xml with inner suites, it parses it correcly", async () => {
+        const data = readFile<JUnitData>("samples/junit-basic.xml", config)!;
+        const results = await junitParser.process(data(), config);
+
+        expect(results).toStrictEqual(
+            new ParseResults({
+                annotations: [
+                    {
+                        file: "<projectTestSrc>/Tests/Authentication.kt",
+                        message: "Assertion error message",
+                        rawDetails: "\n                \n            ",
+                        severity: "error",
+                        title: "testCase9",
+                    },
+                ],
+                checks: {
+                    checks: [],
+                    totals: {
+                        count: 0,
+                        errors: 0,
+                        others: 0,
+                        warnings: 0,
+                    },
+                },
+                failures: [],
+                files: [],
+                tests: {
+                    suites: [
+                        {
+                            cases: [
+                                {
+                                    className: "Tests.Registration",
+                                    name: "testCase1",
+                                    outcome: "passed",
+                                    took: "2.113871",
+                                },
+                                {
+                                    className: "Tests.Registration",
+                                    name: "testCase2",
+                                    outcome: "passed",
+                                    took: "1.051",
+                                },
+                                {
+                                    className: "Tests.Registration",
+                                    name: "testCase3",
+                                    outcome: "passed",
+                                    took: "3.441",
+                                },
+                            ],
+                            failed: 0,
+                            name: "Tests.Registration",
+                            passed: 3,
+                            skipped: 0,
+                            took: "6.605871",
+                        },
+                        {
+                            cases: [
+                                {
+                                    className: "Tests.Authentication",
+                                    name: "testCase7",
+                                    outcome: "passed",
+                                    took: "2.508",
+                                },
+                                {
+                                    className: "Tests.Authentication",
+                                    name: "testCase8",
+                                    outcome: "passed",
+                                    took: "1.230816",
+                                },
+                                {
+                                    className: "Tests.Authentication",
+                                    name: "testCase9",
+                                    outcome: "failed",
+                                    took: "0.982",
+                                },
+                            ],
+                            failed: 1,
+                            name: "Tests.Authentication",
+                            passed: 2,
+                            skipped: 0,
+                            took: "9.076816",
+                        },
+                        {
+                            cases: [
+                                {
+                                    className: "Tests.Authentication.Login",
+                                    name: "testCase4",
+                                    outcome: "passed",
+                                    took: "2.244",
+                                },
+                                {
+                                    className: "Tests.Authentication.Login",
+                                    name: "testCase5",
+                                    outcome: "passed",
+                                    took: "0.781",
+                                },
+                                {
+                                    className: "Tests.Authentication.Login",
+                                    name: "testCase6",
+                                    outcome: "passed",
+                                    took: "1.331",
+                                },
+                            ],
+                            failed: 0,
+                            name: "Tests.Authentication.Login",
+                            passed: 3,
+                            skipped: 0,
+                            took: "4.356",
+                        },
+                    ],
+                    totals: {
+                        count: 9,
+                        failed: 1,
+                        passed: 8,
+                        skipped: 0,
+                    },
+                },
+            }),
+        );
+    });
 });

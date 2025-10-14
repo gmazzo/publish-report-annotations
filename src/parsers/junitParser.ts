@@ -33,6 +33,7 @@ type JUnitSuite = {
         time?: string;
         retries?: number;
     };
+    testsuite: JUnitSuite | JUnitSuite[];
     testcase: JUnitTest | JUnitTest[];
 };
 
@@ -50,7 +51,7 @@ export const junitParser: Parser<JUnitData> = {
         if (data?.testsuite || data?.testsuites) {
             const result = new ParseResults();
 
-            for (const testSuite of asArray(data.testsuites?.testsuite || data.testsuite)) {
+            for (const testSuite of asArray(data.testsuites?.testsuite || data.testsuite).flatMap(flatten)) {
                 const testCases = asArray(testSuite.testcase);
 
                 // removes cases with same `className` and `name`, as they are considered retries of the same test
@@ -175,6 +176,10 @@ export const junitParser: Parser<JUnitData> = {
         return null;
     },
 };
+
+function flatten(suite: JUnitSuite): JUnitSuite[] {
+    return [suite, ...asArray(suite.testsuite).flatMap(flatten)];
+}
 
 async function resolveFileAndLine(testCase: JUnitTest, stackTrace: string) {
     let fileName = testCase._attributes.file;
