@@ -353,8 +353,6 @@ describe("junitParser", () => {
             new ParseResults({
                 annotations: [
                     {
-                        startLine: undefined,
-                        endLine: undefined,
                         file: "<projectTestSrc>/junitParser given a jest junit xml should obtain annotations.kt",
                         message:
                             "Error: expect(received).toStrictEqual(expected) // deep equality\n\nExpected: null\nReceived: []\n    at /Users/gmazzola/Documents/publish-report-annotations/src/parsers/junitParser.test.ts:45:22\n    at Generator.next (<anonymous>)\n    at fulfilled (/Users/gmazzola/Documents/publish-report-annotations/src/parsers/junitParser.test.ts:5:58)",
@@ -585,8 +583,6 @@ describe("junitParser", () => {
                             "androidx.test.espresso.PerformException: Error performing 'single click' on view 'view.getId() is <2131429294/org.test.dev:id/profile>'",
                         severity: "warning",
                         title: "(❗Flaky) i_can_see_map_screen_for_delivering_orders",
-                        startLine: undefined,
-                        endLine: undefined,
                     },
                     {
                         file: "<projectTestSrc>/org/test/FlakyTest.kt",
@@ -594,8 +590,6 @@ describe("junitParser", () => {
                         rawDetails: "java.lang.AssertionError: Expected count >= 2, but was 1",
                         severity: "error",
                         title: "flakyTest",
-                        startLine: undefined,
-                        endLine: undefined,
                     },
                     {
                         file: "<projectTestSrc>/org/test/FlakyTest.kt",
@@ -603,8 +597,6 @@ describe("junitParser", () => {
                         rawDetails: "java.lang.AssertionError: Expected count >= 2, but was 1",
                         severity: "error",
                         title: "flakyTest",
-                        startLine: undefined,
-                        endLine: undefined,
                     },
                 ],
                 checks: {
@@ -679,8 +671,6 @@ describe("junitParser", () => {
                         rawDetails: "",
                         severity: "error",
                         title: "testScene[CLEAR at 2024-08-01T00:00+02:00[Europe/Madrid]]",
-                        startLine: undefined,
-                        endLine: undefined,
                     },
                 ],
                 checks: {

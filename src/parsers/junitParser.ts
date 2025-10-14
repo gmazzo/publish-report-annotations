@@ -137,8 +137,7 @@ export const junitParser: Parser<JUnitData> = {
                                     failure._text ||
                                     `${testCase._attributes.name} failed`,
                                 rawDetails: failure._text,
-                                startLine: line,
-                                endLine: line,
+                                ...(line !== undefined ? { startLine: line, endLine: line } : {}),
                             });
                         }
                     } else if (testCase.skipped) {
