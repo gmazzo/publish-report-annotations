@@ -33,6 +33,10 @@ inputs:
     description: "The kind summary to report for the checks found: `full` (default), `totals`, `off`"
     required: true
     default: "full"
+  linksInSummaries:
+    description: "Whether to include links or not into individual test and check entries in the summaries"
+    required: true
+    default: "true"
   filterPassedTests:
     description: "Whether to filter tests (suites and cases) that has passed from reporting into the summary"
     required: true

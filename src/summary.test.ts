@@ -233,23 +233,24 @@ describe("summaryTableOf", () => {
             testsSummary: "suitesOnly",
             checksSummary: "full",
             filterPassedTests: false,
+            linksInSummaries: true,
         } as Config);
 
         expect(summary).toBe(`|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took
 |:-|-|-|-|-
-|❌ suite1|3|1|1|4
-|✅ suite2|2|0|0|2
-|❎❗suite3 [^flakyDisclaimer]|2|0|0|2
+|❌ suite1<sup id="t1"><a href="#t1">#</a></sup>|3|1|1|4
+|✅ suite2<sup id="t2"><a href="#t2">#</a></sup>|2|0|0|2
+|❎❗suite3<sup id="t3"><a href="#t3">#</a></sup> [^flakyDisclaimer]|2|0|0|2
 [^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 
-|suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|
+|suite1<sup id="c1"><a href="#c1">#</a></sup>|🛑 3 errors|⚠️ 1 warning|💡 2 others|
 |:-|-|-|-|
-|check1|0|1|0|
-|check2|2|0|0|
+|check1<sup id="c2"><a href="#c2">#</a></sup>|0|1|0|
+|check2<sup id="c3"><a href="#c3">#</a></sup>|2|0|0|
 
-|suite2|🛑 7 errors|⚠️ 3 warnings|💡 4 others|
+|suite2<sup id="c4"><a href="#c4">#</a></sup>|🛑 7 errors|⚠️ 3 warnings|💡 4 others|
 |:-|-|-|-|
-|check2|0|3|0|
+|check2<sup id="c5"><a href="#c5">#</a></sup>|0|3|0|
 
 `);
     });
@@ -259,23 +260,24 @@ describe("summaryTableOf", () => {
             testsSummary: "full",
             checksSummary: "full",
             filterPassedTests: false,
+            linksInSummaries: true,
         } as Config);
 
         expect(summary).toBe(`|Test Suites|✅ 2 passed|🟡 1 skipped|❌ 1 failed|⌛ took
 |:-|-|-|-|-
-|<details><summary>❌ suite1</summary><ul><li>✅ test1</li><li>✅ test2</li><li>✅ test3</li><li>❌ test4</li><li>🟡 test5</li></ul></details>|3|1|1|4
-|<details><summary>✅ suite2</summary><ul><li>✅ test1</li><li>✅ test2</li></ul></details>|2|0|0|2
-|<details><summary>❎❗suite3 [^flakyDisclaimer]</summary><ul><li>✅ test1</li><li>✅ test2</li></ul></details>|2|0|0|2
+|<details><summary>❌ suite1<sup id="t1"><a href="#t1">#</a></sup></summary><ul><li>✅ test1<sup id="t2"><a href="#t2">#</a></sup></li><li>✅ test2<sup id="t3"><a href="#t3">#</a></sup></li><li>✅ test3<sup id="t4"><a href="#t4">#</a></sup></li><li>❌ test4<sup id="t5"><a href="#t5">#</a></sup></li><li>🟡 test5<sup id="t6"><a href="#t6">#</a></sup></li></ul></details>|3|1|1|4
+|<details><summary>✅ suite2<sup id="t7"><a href="#t7">#</a></sup></summary><ul><li>✅ test1<sup id="t8"><a href="#t8">#</a></sup></li><li>✅ test2<sup id="t9"><a href="#t9">#</a></sup></li></ul></details>|2|0|0|2
+|<details><summary>❎❗suite3<sup id="t10"><a href="#t10">#</a></sup> [^flakyDisclaimer]</summary><ul><li>✅ test1<sup id="t11"><a href="#t11">#</a></sup></li><li>✅ test2<sup id="t12"><a href="#t12">#</a></sup></li></ul></details>|2|0|0|2
 [^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 
-|suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|
+|suite1<sup id="c1"><a href="#c1">#</a></sup>|🛑 3 errors|⚠️ 1 warning|💡 2 others|
 |:-|-|-|-|
-|check1|0|1|0|
-|check2|2|0|0|
+|check1<sup id="c2"><a href="#c2">#</a></sup>|0|1|0|
+|check2<sup id="c3"><a href="#c3">#</a></sup>|2|0|0|
 
-|suite2|🛑 7 errors|⚠️ 3 warnings|💡 4 others|
+|suite2<sup id="c4"><a href="#c4">#</a></sup>|🛑 7 errors|⚠️ 3 warnings|💡 4 others|
 |:-|-|-|-|
-|check2|0|3|0|
+|check2<sup id="c5"><a href="#c5">#</a></sup>|0|3|0|
 
 `);
     });
@@ -285,23 +287,24 @@ describe("summaryTableOf", () => {
             testsSummary: "suitesOnly",
             checksSummary: "full",
             filterPassedTests: true,
+            linksInSummaries: true,
         } as Config);
 
         expect(summary).toBe(`|Test Suites|✅ 2 passed[^passedSkipDisclaimer]|🟡 1 skipped|❌ 1 failed|⌛ took
 |:-|-|-|-|-
-|❌ suite1|3|1|1|4
-|❎❗suite3 [^flakyDisclaimer]|2|0|0|2
+|❌ suite1<sup id="t1"><a href="#t1">#</a></sup>|3|1|1|4
+|❎❗suite3<sup id="t2"><a href="#t2">#</a></sup> [^flakyDisclaimer]|2|0|0|2
 [^passedSkipDisclaimer]: ✅ passed suites were not reported
 [^flakyDisclaimer]: ❎❗flaky test (some executions have passed, others have failed)
 
-|suite1|🛑 3 errors|⚠️ 1 warning|💡 2 others|
+|suite1<sup id="c1"><a href="#c1">#</a></sup>|🛑 3 errors|⚠️ 1 warning|💡 2 others|
 |:-|-|-|-|
-|check1|0|1|0|
-|check2|2|0|0|
+|check1<sup id="c2"><a href="#c2">#</a></sup>|0|1|0|
+|check2<sup id="c3"><a href="#c3">#</a></sup>|2|0|0|
 
-|suite2|🛑 7 errors|⚠️ 3 warnings|💡 4 others|
+|suite2<sup id="c4"><a href="#c4">#</a></sup>|🛑 7 errors|⚠️ 3 warnings|💡 4 others|
 |:-|-|-|-|
-|check2|0|3|0|
+|check2<sup id="c5"><a href="#c5">#</a></sup>|0|3|0|
 
 `);
     });
@@ -332,17 +335,17 @@ describe("summaryTableOf", () => {
                     totals: { count: 6, errors: 0, warnings: 6, others: 0 },
                 },
             }),
-            { testsSummary: "off", checksSummary: "full", filterPassedTests: false } as Config,
+            { testsSummary: "off", checksSummary: "full", filterPassedTests: false, linksInSummaries: true } as Config,
         );
 
-        expect(summary).toBe(`|suite1|🛑 0 errors|⚠️ 1 warning|💡 0 others|
+        expect(summary).toBe(`|suite1<sup id="c1"><a href="#c1">#</a></sup>|🛑 0 errors|⚠️ 1 warning|💡 0 others|
 |:-|-|-|-|
-|check1|0|1|0|
+|check1<sup id="c2"><a href="#c2">#</a></sup>|0|1|0|
 
-|suite2|🛑 0 errors|⚠️ 5 warnings|💡 0 others|
+|suite2<sup id="c3"><a href="#c3">#</a></sup>|🛑 0 errors|⚠️ 5 warnings|💡 0 others|
 |:-|-|-|-|
-|check2|0|2|0|
-|check3|0|3|0|
+|check2<sup id="c4"><a href="#c4">#</a></sup>|0|2|0|
+|check3<sup id="c5"><a href="#c5">#</a></sup>|0|3|0|
 
 `);
     });
@@ -416,13 +419,14 @@ Checks: 🛑 3 errors, ⚠️ 2 warnings, 💡 1 other
             testsSummary: "full",
             checksSummary: "full",
             filterPassedTests: false,
+            linksInSummaries: true,
         } as Config);
         const note = summary.substring(summary.indexOf("[^settingsChanged]: "));
 
         expect(summary.length).toBeLessThan(65500);
         expect(summary).toContain("Test Suites[^settingsChanged]|");
         expect(note).toBe(
-            `[^settingsChanged]: Summary table was too long (191.28KB), reduced the following to make it fit into the limits:${expectedChanges.map((it) => `<br/>- ${it}`).join("")}`,
+            `[^settingsChanged]: Summary table was too long (623.3KB), reduced the following to make it fit into the limits:${expectedChanges.map((it) => `<br/>- ${it}`).join("")}`,
         );
     });
 });

@@ -8,6 +8,7 @@ export interface Config {
     workflowSummary: boolean;
     testsSummary: "full" | "suitesOnly" | "totals" | "off";
     checksSummary: "full" | "totals" | "off";
+    linksInSummaries: boolean;
     filterPassedTests: boolean;
     filterChecks: boolean;
     prFilesFilter: FileFilter;

@@ -103,7 +103,7 @@ describe("config", () => {
             expect(getBooleanInput).toHaveBeenCalledWith("failIfNoReportsFound");
             expect(getInput).toHaveBeenCalledTimes(8);
             expect(getMultilineInput).toHaveBeenCalledTimes(1);
-            expect(getBooleanInput).toHaveBeenCalledTimes(6);
+            expect(getBooleanInput).toHaveBeenCalledTimes(7);
             expect(bytes).toHaveBeenCalledWith("value:reportFileMaxSize");
         },
     );
