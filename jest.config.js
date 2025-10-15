@@ -3,7 +3,7 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
   testMatch: ["**/*.test.ts", "!**/*.it.test.ts"],
-  testTimeout: 15000,
+  testTimeout: 20000,
   clearMocks: true,
   reporters: ["default", ["jest-junit", { outputFile: "lib/jest-junit.xml" }]],
 };

@@ -73,9 +73,11 @@ function summaryTableOfTests(
     tests: AggregatedResults["tests"],
     includeTests: boolean,
     filterPassedTests: boolean,
+    linksInSummaries: boolean,
     settingsChangedDisclaimer: boolean,
 ) {
     let flakyDisclaimer = false;
+    const anchors = linksInSummaries ? new AnchorGenerator("t") : { next: () => "" };
 
     // if skipping passed suites and all passed, we won't produce a table because it's going to be empty
     if (filterPassedTests && tests.totals.passed == tests.totals.count) return "";
@@ -92,6 +94,7 @@ function summaryTableOfTests(
         table += suite.failed > 0 ? "❌" : suite.skipped > 0 ? "🟡" : suite.flaky ? "❎" : "✅";
         table += suite.flaky ? "❗" : " ";
         table += suite.name;
+        table += anchors.next();
         if (suite.flaky) table += " [^flakyDisclaimer]";
         if (includeTests) {
             table += "</summary><ul>";
@@ -114,6 +117,7 @@ function summaryTableOfTests(
                         break;
                 }
                 table += test.name;
+                table += anchors.next();
                 if (test.took !== undefined) {
                     table += ` (⌛ ${test.took})`;
                 }
@@ -139,8 +143,14 @@ function summaryTableOfTests(
     return table;
 }
 
-function summaryTableOfChecks(checks: AggregatedResults["checks"], settingsChangedDisclaimer: boolean) {
+function summaryTableOfChecks(
+    checks: AggregatedResults["checks"],
+    linksInSummaries: boolean,
+    settingsChangedDisclaimer: boolean,
+) {
+    const anchors = linksInSummaries ? new AnchorGenerator("c") : { next: () => "" };
     let table = ``;
+
     for (const check of checks.checks) {
         const headers = [
             entry({ header: true, amount: check.errors, icon: "🛑 ", type: "error" }),
@@ -148,9 +158,9 @@ function summaryTableOfChecks(checks: AggregatedResults["checks"], settingsChang
             entry({ header: true, amount: check.others, icon: "💡 ", type: "other" }),
         ].join("|");
 
-        table += `|${check.name}${settingsChangedDisclaimer ? "[^settingsChanged]" : ""}|${headers}|\n|:-|-|-|-|\n`;
+        table += `|${check.name}${anchors.next()}${settingsChangedDisclaimer ? "[^settingsChanged]" : ""}|${headers}|\n|:-|-|-|-|\n`;
         for (const [issue, { severity, count }] of Object.entries(check.issues)) {
-            table += `|${issue}|${severity == "error" ? count : "0"}|${severity == "warning" ? count : "0"}|${severity == "other" ? count : "0"}|\n`;
+            table += `|${issue}${anchors.next()}|${severity == "error" ? count : "0"}|${severity == "warning" ? count : "0"}|${severity == "other" ? count : "0"}|\n`;
         }
         table += `\n`;
     }
@@ -161,6 +171,7 @@ export function summaryTableOf(results: AggregatedResults, config: Config) {
     let testsSummary = config.testsSummary;
     let checksSummary = config.checksSummary;
     let filterPassedTests = config.filterPassedTests;
+    let linksInSummaries = config.linksInSummaries;
 
     let content;
     let originalByteSize;
@@ -177,7 +188,10 @@ export function summaryTableOf(results: AggregatedResults, config: Config) {
                           results.tests,
                           testsSummary == "full",
                           filterPassedTests,
-                          testsSummary != config.testsSummary || filterPassedTests != config.filterPassedTests,
+                          linksInSummaries,
+                          testsSummary != config.testsSummary ||
+                              filterPassedTests != config.filterPassedTests ||
+                              linksInSummaries != config.linksInSummaries,
                       );
         }
         if (checksSummary != "off" && results.checks.totals.count > 0) {
@@ -185,7 +199,11 @@ export function summaryTableOf(results: AggregatedResults, config: Config) {
             content +=
                 checksSummary == "totals"
                     ? `Checks: ${summaryOfChecks(results.checks.totals, false)}`
-                    : summaryTableOfChecks(results.checks, checksSummary != config.checksSummary);
+                    : summaryTableOfChecks(
+                          results.checks,
+                          linksInSummaries,
+                          checksSummary != config.checksSummary || linksInSummaries != config.linksInSummaries,
+                      );
         }
         if (results.failures.length > 0) {
             content +=
@@ -200,6 +218,8 @@ export function summaryTableOf(results: AggregatedResults, config: Config) {
 
             if (!filterPassedTests) {
                 filterPassedTests = true;
+            } else if (linksInSummaries) {
+                linksInSummaries = false;
             } else {
                 switch (testsSummary) {
                     case "full":
@@ -240,4 +260,16 @@ export function summaryTableOf(results: AggregatedResults, config: Config) {
         }
     }
     return content;
+}
+
+class AnchorGenerator {
+    private readonly prefix: string;
+    private index = 0;
+    constructor(prefix: string) {
+        this.prefix = prefix;
+    }
+    next() {
+        const id = `${this.prefix}${++this.index}`;
+        return `<sup id=\"${id}\"><a href="#${id}">#</a></sup>`;
+    }
 }

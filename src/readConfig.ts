@@ -22,6 +22,7 @@ export async function readConfig(): Promise<Config> {
         workflowSummary: hasWorkflowSummary ? core.getBooleanInput("workflowSummary") : !checkName,
         testsSummary: getEnum("testsSummary", { full: null, suitesOnly: null, totals: null, off: null }),
         checksSummary: getEnum("checksSummary", { full: null, totals: null, off: null }),
+        linksInSummaries: core.getBooleanInput("linksInSummaries"),
         filterPassedTests: core.getBooleanInput("filterPassedTests"),
         filterChecks,
         prFilesFilter,
