@@ -40,6 +40,10 @@ const config = {
 };
 const readConfig = jest.fn().mockReturnValue(config);
 
+jest.mock("fs", () => ({
+    existsSync: jest.fn().mockReturnValue(true),
+}));
+
 jest.mock("@actions/glob", () => ({
     create: globCreate,
 }));

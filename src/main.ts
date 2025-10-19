@@ -20,10 +20,12 @@ export default async function main() {
     const all = new ParseResults({ files });
     let check: { id: number; html_url: string | null } | undefined;
 
+    let filesCount = 0;
     for (const [i, file] of files.entries()) {
         const reader = readFile<object>(file, config);
         if (!reader) continue;
 
+        filesCount++;
         const relativePath = relative(currentDir, file);
 
         core.startGroup(`Processing \`${relativePath}\``);
@@ -58,9 +60,9 @@ export default async function main() {
         await core.summary.write();
     }
 
-    if (files.length > 0) {
+    if (filesCount > 0) {
         core.notice(
-            `Processed ${files.length} files: ${summaryOf(all)}` +
+            `Processed ${filesCount} files: ${summaryOf(all)}` +
                 (check?.html_url ? `.\nSee \`${config.checkName}\` (${check?.html_url})` : ""),
         );
     } else {
