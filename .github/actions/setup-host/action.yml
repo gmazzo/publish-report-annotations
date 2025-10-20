@@ -9,7 +9,7 @@ runs:
       shell: bash
       run: xcodes select $(xcodes installed | tail -n1 | grep -Eo '^\S+')
     - name: Setup Node
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v6
       with:
         node-version-file: '.nvmrc'
         cache: 'npm'
