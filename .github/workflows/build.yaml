@@ -17,7 +17,7 @@ jobs:
     name: Build
     runs-on: macos-latest # for xcresultParser tests to be able to extract a json from .xcresult folder
     needs: sample-checks
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -127,3 +127,53 @@ jobs:
           checkName: "Test Reports (GitHub App, many annotations)"
           reports: |
             samples/*many*.*
+
+  clear-sample-checks:
+    name: Clear Sample Checks
+    if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+    needs: [ sample-checks, build ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Octokit Action
+        run: npm install @octokit/action
+      - name: Generate Sample App token
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_SECRET }}
+      - name: Clean Sample checks
+        uses: actions/github-script@v8
+        env:
+          APP_ID: ${{ vars.GH_APP_ID }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const { Octokit } = require("@octokit/action");
+            
+            const appId = Number(process.env.APP_ID);
+            const appOctokit = new Octokit();
+        
+            const checks = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.payload.pull_request.head.sha,
+            });
+            
+            for (const check of checks.data.check_runs) {
+              if (!check.name.startsWith("Test Reports")) {
+                continue;
+              }
+            
+              core.info(`Clearing check: ${check.name} (id: ${check.id}, app_id: ${check.app.id})`);
+            
+              const client = check.app.id == appId ? appOctokit : github;
+            
+              await client.rest.checks.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                check_run_id: check.id,
+                conclusion: 'neutral'
+              });
+            }
