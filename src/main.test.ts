@@ -3,6 +3,7 @@ import { ParseResults } from "./types";
 const coreDebug = jest.fn();
 const coreInfo = jest.fn();
 const coreNotice = jest.fn();
+const coreError = jest.fn();
 const coreStartGroup = jest.fn();
 const coreEndGroup = jest.fn();
 const coreSetFailed = jest.fn();
@@ -30,6 +31,7 @@ const processFile = jest.fn().mockReturnValue(
         checks: { checks: [], totals: { count: 6, errors: 3, warnings: 2, others: 1 } },
     }),
 );
+const publishCheck = jest.fn().mockResolvedValue({ id: 12345, html_url: "https://example.com/check/12345" });
 
 const config = {
     reports: ["path1", "path2"],
@@ -37,6 +39,7 @@ const config = {
     warningsAsErrors: false,
     failOnError: false,
     filterChecks: false,
+    checkName: "",
 };
 const readConfig = jest.fn().mockReturnValue(config);
 
@@ -48,6 +51,7 @@ jest.mock("@actions/core", () => ({
     debug: coreDebug,
     notice: coreNotice,
     info: coreInfo,
+    error: coreError,
     startGroup: coreStartGroup,
     endGroup: coreEndGroup,
     setFailed: coreSetFailed,
@@ -65,6 +69,10 @@ jest.mock("./processFile", () => ({
 
 jest.mock("./readConfig", () => ({
     readConfig,
+}));
+
+jest.mock("./publishCheck", () => ({
+    publishCheck,
 }));
 
 import main from "./main";
@@ -114,5 +122,21 @@ describe("main", () => {
         await main();
 
         expect(coreSetFailed).toHaveBeenCalledWith("Found 0 errors and 4 warnings.");
+    });
+
+    test("if no permission to create check, should log but not fail", async () => {
+        const err = Error("Resource not accessible by integration");
+
+        config.checkName = "aCheck";
+        processFile.mockResolvedValue(
+            new ParseResults({
+                checks: { totals: { count: 3, errors: 0, warnings: 2, others: 1 }, checks: [] },
+            }),
+        );
+        publishCheck.mockRejectedValue(err);
+
+        await main();
+
+        expect(coreError).toHaveBeenCalledWith(err);
     });
 });
