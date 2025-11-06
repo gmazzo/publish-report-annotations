@@ -137,6 +137,7 @@ describe("main", () => {
 
         await main();
 
+        expect(coreError).toHaveBeenCalledWith("Failed to publish check 'aCheck':");
         expect(coreError).toHaveBeenCalledWith(err);
     });
 });

@@ -50,6 +50,7 @@ export default async function main() {
     }
     if (config.checkName) {
         check = await publishCheck(all, config, false, check?.id).catch((error) => {
+            core.error(`Failed to publish check '${config.checkName}':`);
             core.error(error);
             return undefined;
         });
