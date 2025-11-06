@@ -49,7 +49,10 @@ export default async function main() {
         }
     }
     if (config.checkName) {
-        check = await publishCheck(all, config, false, check?.id);
+        check = await publishCheck(all, config, false, check?.id).catch((error) => {
+            core.error(error);
+            return undefined;
+        });
     }
     all.annotations = []; // Clear annotations after publishing to avoid consuming the heap
 
