@@ -54,7 +54,7 @@ describe("checkstyleParser", () => {
         const results = await checkstyleParser.process(data(), config);
 
         expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/src/main/kotlin/org/test/sample/App.kt");
-        expect(results).toStrictEqual(new ParseResults({}));
+        expect(results).toStrictEqual(new ParseResults({ ignoredAnnotations: 1 }));
     });
 
     test("given detekt xml, but filtering and in debug, expect annotations", async () => {
@@ -81,23 +81,6 @@ describe("checkstyleParser", () => {
                     },
                 ],
                 ignoredAnnotations: 1,
-                checks: {
-                    checks: [
-                        {
-                            name: "Detekt",
-                            errors: 0,
-                            warnings: 1,
-                            others: 0,
-                            issues: { NewLineAtEndOfFile: { severity: "warning", count: 1 } },
-                        },
-                    ],
-                    totals: {
-                        count: 1,
-                        errors: 0,
-                        warnings: 1,
-                        others: 0,
-                    },
-                },
             }),
         );
     });

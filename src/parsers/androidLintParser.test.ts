@@ -113,7 +113,7 @@ describe("androidLintParser", () => {
         const results = await androidLintParser.process(data(), config);
 
         expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/build.gradle.kts");
-        expect(results).toStrictEqual(new ParseResults());
+        expect(results).toStrictEqual(new ParseResults({ ignoredAnnotations: 4 }));
     });
 
     test("given lint xml, but filtering and in debug, expect no annotations", async () => {
@@ -196,26 +196,6 @@ describe("androidLintParser", () => {
                     },
                 ],
                 ignoredAnnotations: 4,
-                checks: {
-                    checks: [
-                        {
-                            name: "lint 8.4.0",
-                            errors: 0,
-                            others: 0,
-                            warnings: 4,
-                            issues: {
-                                "Correctness / GradleDependency": { count: 1, severity: "warning" },
-                                "Performance / VectorPath": { count: 3, severity: "warning" },
-                            },
-                        },
-                    ],
-                    totals: {
-                        count: 4,
-                        errors: 0,
-                        others: 0,
-                        warnings: 4,
-                    },
-                },
             }),
         );
     });

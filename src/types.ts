@@ -104,10 +104,13 @@ export class ParseResults {
         return this.files.length > 0;
     }
 
-    addAnnotation(annotation: Annotation) {
-        this.annotations.push(annotation);
+    addAnnotation(annotation: Annotation, config: Config) {
+        const ignored = annotation.severity === "ignored";
 
-        if (annotation.severity === "ignored") {
+        if (!ignored || config.prFilesFilterShouldNotice) {
+            this.annotations.push(annotation);
+        }
+        if (ignored) {
             this.ignoredAnnotations++;
         }
     }

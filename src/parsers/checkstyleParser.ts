@@ -40,20 +40,20 @@ export const checkstyleParser: Parser<CheckStyleData> = {
                         const filePath = await resolveFile(file._attributes.name);
                         const included = config.prFilesFilter(filePath);
 
-                        if (included || config.prFilesFilterShouldNotice) {
-                            const source = error._attributes.source;
+                        const source = error._attributes.source;
 
-                            if (source) {
-                                let issue = source;
-                                if (source.startsWith("detekt.")) {
-                                    suite.name = "Detekt";
-                                    issue = source.substring("detekt.".length);
-                                }
-
-                                result.addIssueToCheckSuite(suite, issue, type);
+                        if (included && source) {
+                            let issue = source;
+                            if (source.startsWith("detekt.")) {
+                                suite.name = "Detekt";
+                                issue = source.substring("detekt.".length);
                             }
 
-                            result.addAnnotation({
+                            result.addIssueToCheckSuite(suite, issue, type);
+                        }
+
+                        result.addAnnotation(
+                            {
                                 severity: included ? type : "ignored",
                                 file: filePath,
                                 title: error._attributes.source,
@@ -62,8 +62,9 @@ export const checkstyleParser: Parser<CheckStyleData> = {
                                 endLine: Number(error._attributes.line),
                                 startColumn: Number(error._attributes.column),
                                 endColumn: Number(error._attributes.column),
-                            });
-                        }
+                            },
+                            config,
+                        );
                     }
                 }
             }

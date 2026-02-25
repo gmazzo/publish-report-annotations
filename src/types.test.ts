@@ -1,9 +1,11 @@
-import { ParseResults } from "./types";
+import { Config, ParseResults } from "./types";
+
+const config = {} as unknown as Config;
 
 const junitResult1 = (() => {
     const result = new ParseResults();
-    result.addAnnotation({ severity: "error", message: "junit failure 1" });
-    result.addAnnotation({ severity: "warning", message: "junit failure 2" });
+    result.addAnnotation({ severity: "error", message: "junit failure 1" }, config);
+    result.addAnnotation({ severity: "warning", message: "junit failure 2" }, config);
     result.addTestSuite({
         name: "suite1",
         passed: 2,
@@ -32,8 +34,8 @@ const junitResult1 = (() => {
 
 const junitResult2 = (() => {
     const result = new ParseResults();
-    result.addAnnotation({ severity: "other", message: "junit skip 1" });
-    result.addAnnotation({ severity: "other", message: "junit skip 2" });
+    result.addAnnotation({ severity: "other", message: "junit skip 1" }, config);
+    result.addAnnotation({ severity: "other", message: "junit skip 2" }, config);
     result.addTestSuite({
         name: "suite3",
         passed: 0,
@@ -63,10 +65,10 @@ const androidLintResult1 = (() => {
     const result = new ParseResults();
     const suite = { name: "Android Lint", errors: 0, warnings: 0, others: 0, issues: {} };
 
-    result.addAnnotation({ severity: "error", message: "android failure 1" });
-    result.addAnnotation({ severity: "error", message: "android failure 2" });
-    result.addAnnotation({ severity: "error", message: "android failure 3" });
-    result.addAnnotation({ severity: "warning", message: "android warning 1" });
+    result.addAnnotation({ severity: "error", message: "android failure 1" }, config);
+    result.addAnnotation({ severity: "error", message: "android failure 2" }, config);
+    result.addAnnotation({ severity: "error", message: "android failure 3" }, config);
+    result.addAnnotation({ severity: "warning", message: "android warning 1" }, config);
     result.addIssueToCheckSuite(suite, "category1 / id1", "error");
     result.addIssueToCheckSuite(suite, "category2 / id2", "error");
     result.addIssueToCheckSuite(suite, "category2 / id3", "warning");
@@ -78,10 +80,10 @@ const androidLintResult2 = (() => {
     const result = new ParseResults();
     const suite = { name: "Android Lint", errors: 0, warnings: 0, others: 0, issues: {} };
 
-    result.addAnnotation({ severity: "warning", message: "lint warning 1" });
-    result.addAnnotation({ severity: "warning", message: "lint warning 2" });
-    result.addAnnotation({ severity: "warning", message: "lint warning 3" });
-    result.addAnnotation({ severity: "other", message: "lint other 2" });
+    result.addAnnotation({ severity: "warning", message: "lint warning 1" }, config);
+    result.addAnnotation({ severity: "warning", message: "lint warning 2" }, config);
+    result.addAnnotation({ severity: "warning", message: "lint warning 3" }, config);
+    result.addAnnotation({ severity: "other", message: "lint other 2" }, config);
     result.addIssueToCheckSuite(suite, "category1 / id1", "warning");
     result.addIssueToCheckSuite(suite, "category2 / id3", "warning");
     result.addIssueToCheckSuite(suite, "category2 / id3", "warning");
@@ -95,9 +97,9 @@ const checkStyleResult = (() => {
     const result = new ParseResults();
     const suite = { name: "Checkstyle", errors: 0, warnings: 0, others: 0, issues: {} };
 
-    result.addAnnotation({ severity: "error", message: "checkstyle error" });
-    result.addAnnotation({ severity: "warning", message: "checkstyle warning" });
-    result.addAnnotation({ severity: "other", message: "checkstyle notice" });
+    result.addAnnotation({ severity: "error", message: "checkstyle error" }, config);
+    result.addAnnotation({ severity: "warning", message: "checkstyle warning" }, config);
+    result.addAnnotation({ severity: "other", message: "checkstyle notice" }, config);
     result.addIssueToCheckSuite(suite, "issue1", "error");
     result.addIssueToCheckSuite(suite, "issue2", "warning");
     result.addIssueToCheckSuite(suite, "issue3", "other");
