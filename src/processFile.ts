@@ -35,6 +35,13 @@ export async function processFile(reader: () => object, config: Config) {
                             core.notice(message, doNotAnnotate ? undefined : annotation);
                     }
                 }
+
+                if (result.ignoredAnnotations > 0) {
+                    core.info(
+                        `${result.ignoredAnnotations} annotations were suppressed by filters. Run with debug logging enabled to see details on which annotations were suppressed.`,
+                    );
+                }
+
                 return result;
             }
         }
