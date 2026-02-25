@@ -56,4 +56,49 @@ describe("checkstyleParser", () => {
         expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/src/main/kotlin/org/test/sample/App.kt");
         expect(results).toStrictEqual(new ParseResults({}));
     });
+
+    test("given detekt xml, but filtering and in debug, expect annotations", async () => {
+        const debugConfig: Config = { ...config, prFilesFilterShouldNotice: true };
+
+        prFilesFilter.mockReturnValue(false);
+
+        const data = readFile<CheckStyleData>("samples/detekt-debug.xml", debugConfig)!;
+        const results = await checkstyleParser.process(data(), debugConfig);
+
+        expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/src/main/kotlin/org/test/sample/App.kt");
+        expect(results).toStrictEqual(
+            new ParseResults({
+                annotations: [
+                    {
+                        endColumn: 11,
+                        endLine: 3,
+                        file: "sample-gradle/src/main/kotlin/org/test/sample/App.kt",
+                        message: "The file src/main/kotlin/org/test/sample/App.kt is not ending with a new line.",
+                        startColumn: 11,
+                        startLine: 3,
+                        title: "detekt.NewLineAtEndOfFile",
+                        severity: "ignored",
+                    },
+                ],
+                ignoredAnnotations: 1,
+                checks: {
+                    checks: [
+                        {
+                            name: "Detekt",
+                            errors: 0,
+                            warnings: 1,
+                            others: 0,
+                            issues: { NewLineAtEndOfFile: { severity: "warning", count: 1 } },
+                        },
+                    ],
+                    totals: {
+                        count: 1,
+                        errors: 0,
+                        warnings: 1,
+                        others: 0,
+                    },
+                },
+            }),
+        );
+    });
 });

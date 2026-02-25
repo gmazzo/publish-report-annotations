@@ -12,6 +12,7 @@ export interface Config {
     filterPassedTests: boolean;
     filterChecks: boolean;
     prFilesFilter: FileFilter;
+    prFilesFilterShouldNotice: boolean;
     detectFlakyTests: boolean;
     warningsAsErrors: boolean;
     failOnError: boolean;
@@ -24,7 +25,7 @@ type Severity = "error" | "warning" | "other";
 
 export type Annotation = {
     message: string;
-    severity: "error" | "warning" | "other";
+    severity: "error" | "warning" | "other" | "ignored";
     rawDetails?: string;
 } & AnnotationProperties;
 
@@ -87,6 +88,8 @@ export class ParseResults {
 
     annotations: Annotation[] = [];
 
+    ignoredAnnotations: number = 0;
+
     tests: TestResult = { suites: [], totals: { count: 0, passed: 0, failed: 0, skipped: 0 } };
 
     checks: ChecksResult = { checks: [], totals: { count: 0, errors: 0, warnings: 0, others: 0 } };
@@ -103,6 +106,10 @@ export class ParseResults {
 
     addAnnotation(annotation: Annotation) {
         this.annotations.push(annotation);
+
+        if (annotation.severity === "ignored") {
+            this.ignoredAnnotations++;
+        }
     }
 
     addTestSuite(suite: TestSuite) {
@@ -147,6 +154,7 @@ export class ParseResults {
 
     mergeWith(results: ParseResults) {
         this.annotations.push(...results.annotations);
+        this.ignoredAnnotations += results.ignoredAnnotations;
 
         this.tests.suites.push(...results.tests.suites);
         this.tests.totals.count += results.tests.totals.count;

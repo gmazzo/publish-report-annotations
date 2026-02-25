@@ -13,13 +13,15 @@ export async function publishCheck(results: ParseResults, config: Config, partia
     const commit = (github.context.payload?.pull_request?.head?.sha || github.context.sha) as string;
 
     const sanitizedAnnotations = results.annotations.flatMap((annotation) => {
-        if (annotation.file) {
+        const type = getAnnotationType(annotation.severity, config);
+
+        if (type && annotation.file) {
             return [
                 {
                     path: annotation.file,
                     start_line: annotation.startLine || 1,
                     end_line: annotation.endLine || 1,
-                    annotation_level: getAnnotationType(annotation.severity),
+                    annotation_level: type,
                     message: annotation.message.truncate(65536) || "No message provided",
                     title: annotation.title?.truncate(255),
                     raw_details: annotation.rawDetails?.truncate(65536),
@@ -82,7 +84,10 @@ export async function publishCheck(results: ParseResults, config: Config, partia
     return result;
 }
 
-function getAnnotationType(value: ParseResults["annotations"][0]["severity"]): "failure" | "warning" | "notice" {
+function getAnnotationType(
+    value: ParseResults["annotations"][0]["severity"],
+    config: Config,
+): "failure" | "warning" | "notice" | null {
     switch (value) {
         case "error":
             return "failure";
@@ -90,6 +95,8 @@ function getAnnotationType(value: ParseResults["annotations"][0]["severity"]): "
             return "warning";
         case "other":
             return "notice";
+        case "ignored":
+            return config.prFilesFilterShouldNotice ? "notice" : null;
     }
 }
 
