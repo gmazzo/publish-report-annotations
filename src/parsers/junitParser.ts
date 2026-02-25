@@ -126,19 +126,22 @@ export const junitParser: Parser<JUnitData> = {
                         for (const failure of asArray(testCase.failure)) {
                             const { file, line } = await resolveFileAndLine(testCase, failure._text);
 
-                            result.addAnnotation({
-                                file,
-                                severity: testCase.flaky ? "warning" : "error",
-                                title: testCase.flaky
-                                    ? `(❗Flaky) ${testCase._attributes.name}`
-                                    : testCase._attributes.name,
-                                message:
-                                    failure._attributes?.message ||
-                                    failure._text ||
-                                    `${testCase._attributes.name} failed`,
-                                rawDetails: failure._text,
-                                ...(line !== undefined ? { startLine: line, endLine: line } : {}),
-                            });
+                            result.addAnnotation(
+                                {
+                                    file,
+                                    severity: testCase.flaky ? "warning" : "error",
+                                    title: testCase.flaky
+                                        ? `(❗Flaky) ${testCase._attributes.name}`
+                                        : testCase._attributes.name,
+                                    message:
+                                        failure._attributes?.message ||
+                                        failure._text ||
+                                        `${testCase._attributes.name} failed`,
+                                    rawDetails: failure._text,
+                                    ...(line !== undefined ? { startLine: line, endLine: line } : {}),
+                                },
+                                config,
+                            );
                         }
                     } else if (testCase.skipped) {
                         skipped++;

@@ -1,6 +1,6 @@
 import { Parser } from "./parser";
 import { asArray, joinSeparator } from "../utils";
-import { ParseResults, TestCase } from "../types";
+import { Config, ParseResults, TestCase } from "../types";
 import { resolveFile } from "./resolveFile";
 
 type TestNode = {
@@ -17,7 +17,7 @@ export type XCResultData = {
 };
 
 export const xcresultParser: Parser<XCResultData> = {
-    process: async function (data: XCResultData) {
+    process: async function (data: XCResultData, config: Config) {
         if (data?.testNodes) {
             const result = new ParseResults();
             const suites = computeSuites(asArray(data.testNodes));
@@ -60,13 +60,16 @@ export const xcresultParser: Parser<XCResultData> = {
                     if (outcome === "failed" || isFlaky) {
                         const file = className && (await resolveFile(className));
 
-                        result.addAnnotation({
-                            ...(file ? { file } : {}),
-                            severity: isFlaky ? "warning" : "error",
-                            title: isFlaky ? `(❗Flaky) ${testCase.name}` : testCase.name,
-                            message: joinSeparator(": ", testCase.details, failureMessage) || "Test failed",
-                            ...(lineNumber ? { startLine: lineNumber, endLine: lineNumber } : {}),
-                        });
+                        result.addAnnotation(
+                            {
+                                ...(file ? { file } : {}),
+                                severity: isFlaky ? "warning" : "error",
+                                title: isFlaky ? `(❗Flaky) ${testCase.name}` : testCase.name,
+                                message: joinSeparator(": ", testCase.details, failureMessage) || "Test failed",
+                                ...(lineNumber ? { startLine: lineNumber, endLine: lineNumber } : {}),
+                            },
+                            config,
+                        );
                     }
 
                     cases.push({

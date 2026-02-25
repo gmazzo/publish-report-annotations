@@ -56,11 +56,14 @@ export const androidLintParser: Parser<LintData> = {
                         const file = await resolveFile(location._attributes.file);
                         const included = config.prFilesFilter(file);
 
-                        if (included || config.prFilesFilterShouldNotice) {
+                        if (included) {
                             const issueSummary = `${issue._attributes.category} / ${issue._attributes.id}`;
 
                             result.addIssueToCheckSuite(suite, issueSummary, type);
-                            result.addAnnotation({
+                        }
+
+                        result.addAnnotation(
+                            {
                                 file,
                                 severity: included ? type : "ignored",
                                 title: `${issue._attributes.category}: ${issue._attributes.summary}`,
@@ -74,8 +77,9 @@ export const androidLintParser: Parser<LintData> = {
                                 endLine: Number(location._attributes.line),
                                 startColumn: Number(location._attributes.column),
                                 endColumn: Number(location._attributes.column),
-                            });
-                        }
+                            },
+                            config,
+                        );
                     }
                 }
             }
