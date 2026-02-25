@@ -64,8 +64,7 @@ export default async function main() {
 
     if (all.ignoredAnnotations > 0) {
         core.notice(
-            `${all.ignoredAnnotations} annotations were suppressed by filters. 
-            Run with debug logging enabled to see details on which annotations were suppressed.`,
+            `${all.ignoredAnnotations} annotations were suppressed by filters. Run with debug logging enabled to see details on which annotations were suppressed.`,
         );
     }
 
