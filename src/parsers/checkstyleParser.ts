@@ -38,8 +38,9 @@ export const checkstyleParser: Parser<CheckStyleData> = {
 
                     if (type) {
                         const filePath = await resolveFile(file._attributes.name);
+                        const included = config.prFilesFilter(filePath);
 
-                        if (config.prFilesFilter(filePath)) {
+                        if (included || config.prFilesFilterShouldNotice) {
                             const source = error._attributes.source;
 
                             if (source) {
@@ -53,7 +54,7 @@ export const checkstyleParser: Parser<CheckStyleData> = {
                             }
 
                             result.addAnnotation({
-                                severity: type,
+                                severity: included ? type : "ignored",
                                 file: filePath,
                                 title: error._attributes.source,
                                 message: error._attributes.message,

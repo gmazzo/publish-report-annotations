@@ -6,6 +6,7 @@ const getAppToken = jest.fn().mockReturnValue("anAppToken");
 const bytes = jest.fn().mockReturnValue(1234);
 
 jest.mock("@actions/core", () => ({
+    isDebug: jest.fn().mockReturnValue(false),
     getInput,
     getMultilineInput,
     getBooleanInput,

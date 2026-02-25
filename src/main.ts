@@ -62,6 +62,13 @@ export default async function main() {
         await core.summary.write();
     }
 
+    if (all.ignoredAnnotations > 0) {
+        core.notice(
+            `${all.ignoredAnnotations} annotations were suppressed by filters. 
+            Run with debug logging enabled to see details on which annotations were suppressed.`,
+        );
+    }
+
     if (files.length > 0) {
         core.notice(
             `Processed ${files.length} files: ${summaryOf(all)}` +

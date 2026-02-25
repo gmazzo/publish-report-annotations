@@ -54,14 +54,15 @@ export const androidLintParser: Parser<LintData> = {
                 if (type) {
                     for (const location of asArray(issue.location)) {
                         const file = await resolveFile(location._attributes.file);
+                        const included = config.prFilesFilter(file);
 
-                        if (config.prFilesFilter(file)) {
+                        if (included || config.prFilesFilterShouldNotice) {
                             const issueSummary = `${issue._attributes.category} / ${issue._attributes.id}`;
 
                             result.addIssueToCheckSuite(suite, issueSummary, type);
                             result.addAnnotation({
                                 file,
-                                severity: type,
+                                severity: included ? type : "ignored",
                                 title: `${issue._attributes.category}: ${issue._attributes.summary}`,
                                 message: issue._attributes.message,
                                 rawDetails: join(

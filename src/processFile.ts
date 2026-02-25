@@ -26,6 +26,11 @@ export async function processFile(reader: () => object, config: Config) {
                         case "warning":
                             core.warning(message, doNotAnnotate ? undefined : annotation);
                             break;
+                        case "ignored":
+                            if (config.prFilesFilterShouldNotice) {
+                                core.notice(`Ignored: ${message}`, doNotAnnotate ? undefined : annotation);
+                            }
+                            break;
                         default:
                             core.notice(message, doNotAnnotate ? undefined : annotation);
                     }

@@ -26,6 +26,7 @@ export async function readConfig(): Promise<Config> {
         filterPassedTests: core.getBooleanInput("filterPassedTests"),
         filterChecks,
         prFilesFilter,
+        prFilesFilterShouldNotice: core.isDebug(),
         detectFlakyTests: core.getBooleanInput("detectFlakyTests"),
         warningsAsErrors: core.getBooleanInput("warningsAsErrors"),
         failOnError: core.getBooleanInput("failOnError"),
