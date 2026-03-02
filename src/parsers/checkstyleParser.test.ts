@@ -1,10 +1,12 @@
+import { jest, describe, test, expect } from "@jest/globals";
 import { Config, ParseResults } from "../types";
 import { readFile } from "../readFile";
+import { CheckStyleData } from "./checkstyleParser";
 
 const prFilesFilter = jest.fn().mockReturnValue(true);
 const config = { prFilesFilter } as unknown as Config;
 
-import { checkstyleParser, CheckStyleData } from "./checkstyleParser";
+const { checkstyleParser } = await import("./checkstyleParser");
 
 describe("checkstyleParser", () => {
     test("given detekt xml should obtain annotations", async () => {

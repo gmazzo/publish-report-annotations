@@ -1,18 +1,20 @@
+import { jest, describe, test, expect } from "@jest/globals";
 import { Config, ParseResults } from "../types";
 import { extname } from "path";
 import { readFile } from "../readFile";
+import { JUnitData } from "./junitParser";
 
-const resolveFile = jest
-    .fn()
-    .mockImplementation((file: string) => (extname(file) ? `<projectTestSrc>/${file}` : `<projectTestSrc>/${file}.kt`));
+const resolveFile = jest.fn((file: string) =>
+    extname(file) ? `<projectTestSrc>/${file}` : `<projectTestSrc>/${file}.kt`,
+);
 const prFilesFilter = jest.fn().mockReturnValue(true);
 const config = { prFilesFilter } as unknown as Config;
 
-jest.mock("./resolveFile", () => ({
+jest.unstable_mockModule("./resolveFile", () => ({
     resolveFile,
 }));
 
-import { JUnitData, junitParser } from "./junitParser";
+const { junitParser } = await import("./junitParser");
 
 describe("junitParser", () => {
     test("given junit xml should obtain annotations", async () => {

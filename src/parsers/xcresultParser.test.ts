@@ -1,15 +1,17 @@
+import { jest, describe, test, expect } from "@jest/globals";
 import { Config, ParseResults } from "../types";
 import { readFile } from "../readFile";
+import { XCResultData } from "./xcresultParser";
 
-const resolveFile = jest.fn().mockImplementation((file: string) => `<projectTestSrc>/${file}`);
+const resolveFile = jest.fn((file: string) => `<projectTestSrc>/${file}`);
 
-jest.mock("./resolveFile", () => ({
+jest.unstable_mockModule("./resolveFile", () => ({
     resolveFile,
 }));
 
 const config = {} as unknown as Config;
 
-import { xcresultParser, XCResultData } from "./xcresultParser";
+const { xcresultParser } = await import("./xcresultParser");
 
 describe("xcresultParser", () => {
     test("given xcresult json should obtain annotations", async () => {

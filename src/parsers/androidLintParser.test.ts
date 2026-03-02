@@ -1,10 +1,12 @@
+import { jest, describe, test, expect } from "@jest/globals";
 import { Config, ParseResults } from "../types";
 import { readFile } from "../readFile";
+import { LintData } from "./androidLintParser";
 
 const prFilesFilter = jest.fn().mockReturnValue(true);
 const config = { prFilesFilter } as unknown as Config;
 
-import { androidLintParser, LintData } from "./androidLintParser";
+const { androidLintParser } = await import("./androidLintParser");
 
 describe("androidLintParser", () => {
     test("given lint xml should obtain annotations", async () => {

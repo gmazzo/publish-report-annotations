@@ -1,30 +1,34 @@
-const getInput = jest.fn();
-const getMultilineInput = jest.fn();
-const getBooleanInput = jest.fn();
+import { jest, describe, test, expect } from "@jest/globals";
+
+const getInput = jest.fn<(name: string, options?: object) => string>();
+const getMultilineInput = jest.fn<(name: string, options?: object) => string>();
+const getBooleanInput = jest.fn<(name: string, options?: object) => string | boolean>();
 const createFileFilter = jest.fn().mockReturnValue("aFileFilter");
 const getAppToken = jest.fn().mockReturnValue("anAppToken");
 const bytes = jest.fn().mockReturnValue(1234);
 
-jest.mock("@actions/core", () => ({
+jest.unstable_mockModule("@actions/core", () => ({
     isDebug: jest.fn().mockReturnValue(false),
     getInput,
     getMultilineInput,
     getBooleanInput,
 }));
 
-jest.mock("bytes", () => bytes);
+jest.unstable_mockModule("bytes", () => ({
+    default: bytes,
+}));
 
-jest.mock("./createFileFilter", () => ({
+jest.unstable_mockModule("./createFileFilter", () => ({
     createFileFilter,
 }));
 
-jest.mock("./getAppToken", () => ({
+jest.unstable_mockModule("./getAppToken", () => ({
     getAppToken,
 }));
 
 type StrBool = "" | "true" | "false";
 
-import { readConfig } from "./readConfig";
+const { readConfig } = await import("./readConfig");
 
 describe("config", () => {
     test.each([

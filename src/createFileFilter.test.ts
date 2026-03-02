@@ -1,10 +1,12 @@
+import { jest, describe, test, expect } from "@jest/globals";
+
 const getPRFiles = jest.fn().mockReturnValue(["file1", "file2"]);
 
-jest.mock("./getPRFiles", () => ({
+jest.unstable_mockModule("./getPRFiles", () => ({
     getPRFiles,
 }));
 
-import { createFileFilter } from "./createFileFilter";
+const { createFileFilter } = await import("./createFileFilter");
 
 describe("fileFilter", () => {
     test("should return true, for files in the PR", async () => {

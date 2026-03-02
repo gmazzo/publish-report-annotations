@@ -1,17 +1,19 @@
-const request = jest.fn().mockResolvedValue({ data: { id: "anInstallationId" } });
-const auth = jest.fn().mockResolvedValue({ token: "anInstallationToken" });
-const getInstallationOctokit = jest.fn().mockResolvedValue({ auth });
+import { jest, describe, test, expect } from "@jest/globals";
+
+const request = jest.fn().mockReturnValue({ data: { id: "anInstallationId" } });
+const auth = jest.fn().mockReturnValue({ token: "anInstallationToken" });
+const getInstallationOctokit = jest.fn().mockReturnValue({ auth });
 const App = jest.fn().mockImplementation(() => ({
     octokit: { request },
     getInstallationOctokit,
 }));
 const setSecret = jest.fn();
 
-jest.mock("../node_modules/@octokit/app", () => ({
+jest.unstable_mockModule("@octokit/app", () => ({
     App,
 }));
 
-jest.mock("@actions/github", () => ({
+jest.unstable_mockModule("@actions/github", () => ({
     context: {
         repo: {
             owner: "anOwner",
@@ -20,11 +22,11 @@ jest.mock("@actions/github", () => ({
     },
 }));
 
-jest.mock("@actions/core", () => ({
+jest.unstable_mockModule("@actions/core", () => ({
     setSecret,
 }));
 
-import { getAppToken } from "./getAppToken";
+const { getAppToken } = await import("./getAppToken");
 
 describe("getAppToken", () => {
     test("given an github app, should retrieve an installation token", async () => {

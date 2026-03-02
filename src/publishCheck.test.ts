@@ -1,8 +1,11 @@
+import { jest, describe, test, expect } from "@jest/globals";
 import { Config, ParseResults } from "./types";
 
-const listForRef = jest.fn();
-const create = jest.fn().mockResolvedValue({ data: { id: 456, html_url: "aUrl" } });
-const update = jest.fn().mockResolvedValue({ data: { html_url: "aUrl" } });
+const listForRef = jest.fn<(params: object) => Promise<object>>();
+const create = jest
+    .fn<(params: object) => Promise<object>>()
+    .mockResolvedValue({ data: { id: 456, html_url: "aUrl" } });
+const update = jest.fn<(params: object) => Promise<object>>().mockResolvedValue({ data: { html_url: "aUrl" } });
 const getOctokit = jest.fn().mockReturnValue({
     rest: {
         checks: {
@@ -22,12 +25,12 @@ const config = {
     checkName: "aCheckName",
 } as Config;
 
-jest.mock("./summary", () => ({
+jest.unstable_mockModule("./summary", () => ({
     summaryOf,
     summaryTableOf,
 }));
 
-jest.mock("@actions/github", () => ({
+jest.unstable_mockModule("@actions/github", () => ({
     context: {
         repo: { owner: "anOwner", repo: "aRepo" },
         sha: "aCommit",
@@ -35,12 +38,12 @@ jest.mock("@actions/github", () => ({
     getOctokit,
 }));
 
-jest.mock("@actions/core", () => ({
+jest.unstable_mockModule("@actions/core", () => ({
     info: coreInfo,
     warning: coreWarning,
 }));
 
-jest.mock("@octokit/request-error", () => ({
+jest.unstable_mockModule("@octokit/request-error", () => ({
     RequestError: RequestErrorMock,
 }));
 
@@ -129,7 +132,7 @@ const expectedParams = {
     },
 };
 
-import { publishCheck } from "./publishCheck";
+const { publishCheck } = await import("./publishCheck");
 
 describe("publishCheck", () => {
     test.each([
@@ -246,9 +249,13 @@ describe("publishCheck", () => {
         try {
             listForRef.mockResolvedValue({ data: { check_runs: [] } });
             if (alwaysFail) {
-                create.mockRejectedValue(error);
+                create.mockImplementation(async () => {
+                    throw error;
+                });
             } else {
-                create.mockRejectedValueOnce(error);
+                create.mockImplementationOnce(async () => {
+                    throw error;
+                });
                 create.mockResolvedValue({ data: { id: 345, html_url: "aUrl" } });
             }
 

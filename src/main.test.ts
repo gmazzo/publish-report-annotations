@@ -1,4 +1,6 @@
+import { jest, describe, test, expect } from "@jest/globals";
 import { ParseResults } from "./types";
+import { MAX_ANNOTATIONS_PER_API_CALL } from "./publishCheck";
 
 const coreDebug = jest.fn();
 const coreInfo = jest.fn();
@@ -31,7 +33,7 @@ const processFile = jest.fn().mockReturnValue(
         checks: { checks: [], totals: { count: 6, errors: 3, warnings: 2, others: 1 } },
     }),
 );
-const publishCheck = jest.fn().mockResolvedValue({ id: 12345, html_url: "https://example.com/check/12345" });
+const publishCheck = jest.fn().mockReturnValue({ id: 12345, html_url: "https://example.com/check/12345" });
 
 const config = {
     reports: ["path1", "path2"],
@@ -43,11 +45,11 @@ const config = {
 };
 const readConfig = jest.fn().mockReturnValue(config);
 
-jest.mock("@actions/glob", () => ({
+jest.unstable_mockModule("@actions/glob", () => ({
     create: globCreate,
 }));
 
-jest.mock("@actions/core", () => ({
+jest.unstable_mockModule("@actions/core", () => ({
     debug: coreDebug,
     notice: coreNotice,
     info: coreInfo,
@@ -59,23 +61,24 @@ jest.mock("@actions/core", () => ({
     summary: { addRaw: coreSummaryAddRaw, write: coreSummaryWrite },
 }));
 
-jest.mock("./readFile", () => ({
+jest.unstable_mockModule("./readFile", () => ({
     readFile,
 }));
 
-jest.mock("./processFile", () => ({
+jest.unstable_mockModule("./processFile", () => ({
     processFile,
 }));
 
-jest.mock("./readConfig", () => ({
+jest.unstable_mockModule("./readConfig", () => ({
     readConfig,
 }));
 
-jest.mock("./publishCheck", () => ({
+jest.unstable_mockModule("./publishCheck", () => ({
+    MAX_ANNOTATIONS_PER_API_CALL: MAX_ANNOTATIONS_PER_API_CALL,
     publishCheck,
 }));
 
-import main from "./main";
+const main = (await import("./main")).default;
 
 describe("main", () => {
     test("delegates to parsers and reports results", async () => {
@@ -99,7 +102,7 @@ describe("main", () => {
 
     test("if error and should fail, expect to fail", async () => {
         config.failOnError = true;
-        processFile.mockResolvedValue(
+        processFile.mockReturnValue(
             new ParseResults({
                 checks: { totals: { count: 4, errors: 3, warnings: 0, others: 1 }, checks: [] },
             }),
@@ -113,7 +116,7 @@ describe("main", () => {
     test("if warnings and should fail, expect to fail", async () => {
         config.warningsAsErrors = true;
         config.failOnError = true;
-        processFile.mockResolvedValue(
+        processFile.mockReturnValue(
             new ParseResults({
                 checks: { totals: { count: 3, errors: 0, warnings: 2, others: 1 }, checks: [] },
             }),
@@ -128,12 +131,14 @@ describe("main", () => {
         const err = Error("Resource not accessible by integration");
 
         config.checkName = "aCheck";
-        processFile.mockResolvedValue(
+        processFile.mockReturnValue(
             new ParseResults({
                 checks: { totals: { count: 3, errors: 0, warnings: 2, others: 1 }, checks: [] },
             }),
         );
-        publishCheck.mockRejectedValue(err);
+        publishCheck.mockImplementation(async () => {
+            throw err;
+        });
 
         await main();
 

@@ -1,9 +1,10 @@
+import { jest, describe, test, expect } from "@jest/globals";
 import { Config, ParseResults } from "./types";
 import { Parser } from "./parsers/parser";
 
 const junitData = { junit: true };
 const junitParser: Parser<object> = {
-    process: jest.fn().mockImplementation((data) => {
+    process: jest.fn(async (data) => {
         if (data === junitData) {
             return new ParseResults({
                 annotations: [
@@ -14,12 +15,13 @@ const junitParser: Parser<object> = {
                 ],
             });
         }
+        return null;
     }),
 };
 
 const checkstyleData = { checkstyle: true };
 const checkstyleParser: Parser<object> = {
-    process: jest.fn().mockImplementation((data) => {
+    process: jest.fn(async (data) => {
         if (data === checkstyleData) {
             return new ParseResults({
                 annotations: [
@@ -38,12 +40,13 @@ const checkstyleParser: Parser<object> = {
                 ],
             });
         }
+        return null;
     }),
 };
 
 const androidLintData = { lint: true };
 const androidLintParser: Parser<object> = {
-    process: jest.fn().mockImplementation((data) => {
+    process: jest.fn(async (data) => {
         if (data === androidLintData) {
             return new ParseResults({
                 annotations: [
@@ -58,10 +61,11 @@ const androidLintParser: Parser<object> = {
                 ],
             });
         }
+        return null;
     }),
 };
 
-jest.mock("./parsers/parsers", () => ({
+jest.unstable_mockModule("./parsers/parsers", () => ({
     parsers: [junitParser, checkstyleParser, androidLintParser],
 }));
 
@@ -71,13 +75,13 @@ const coreNotice = jest.fn();
 const prFilesFilter = jest.fn();
 const baseConfig = { prFilesFilter } as unknown as Config;
 
-jest.mock("@actions/core", () => ({
+jest.unstable_mockModule("@actions/core", () => ({
     error: coreError,
     warning: coreWarning,
     notice: coreNotice,
 }));
 
-import { processFile } from "./processFile";
+const { processFile } = await import("./processFile");
 
 describe("processFile", () => {
     test.each([[""], ["aCheck"]])("for a junit file [checkName=%p]", async (checkName) => {
