@@ -1,3 +1,4 @@
+import { describe, test, expect } from "@jest/globals";
 import { Config, ParseResults, TestCase } from "./types";
 import { summaryOf, summaryTableOf } from "./summary";
 

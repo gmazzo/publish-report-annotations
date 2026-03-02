@@ -1,14 +1,15 @@
 {
   "name": "publish-report-annotations",
   "version": "1.19.3",
+  "type": "module",
   "private": true,
   "scripts": {
     "compile": "tsc",
     "package": "ncc build src/index.ts -o dist -m",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
-    "test": "jest --coverage",
-    "intTest": "jest --config=jest.it.config.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "intTest": "INTEGRATION_TESTS=true NODE_OPTIONS=--experimental-vm-modules jest",
     "check": "npm run test && npm run lint",
     "build": "npm run compile && npm run package && npm run check"
   },

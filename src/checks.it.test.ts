@@ -1,3 +1,4 @@
+import { describe, expect } from "@jest/globals";
 import * as github from "@actions/github";
 import child_process from "child_process";
 

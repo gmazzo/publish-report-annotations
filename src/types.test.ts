@@ -1,3 +1,4 @@
+import { describe, expect } from "@jest/globals";
 import { Config, ParseResults } from "./types";
 
 const config = {} as unknown as Config;

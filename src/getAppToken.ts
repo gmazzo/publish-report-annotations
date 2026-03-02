@@ -1,7 +1,8 @@
-import * as core from "@actions/core";
+// noinspection ES6PreferShortImport TODO required because it fails to import on the tests
+import * as core from "../node_modules/@actions/core";
 import * as github from "@actions/github";
 // noinspection ES6PreferShortImport TODO required because it fails to import on the tests
-import { App } from "../node_modules/@octokit/app";
+import { App } from "@octokit/app";
 
 export async function getAppToken(appId: string, appSecret: string) {
     const app = new App({ appId, privateKey: appSecret });

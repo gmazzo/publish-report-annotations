@@ -1,3 +1,4 @@
+import { describe, test, expect } from "@jest/globals";
 import * as fs from "fs";
 
 import { extractXcResultFile } from "./extractXcResultFile";

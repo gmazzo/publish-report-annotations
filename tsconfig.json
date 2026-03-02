@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2022",
+    "module": "ES2022",
+    "target": "ESNext",
+    "esModuleInterop": true,
     "rootDir": "src",
     "outDir": "lib",
     "moduleResolution": "node",
-    "module": "ES6",
-    "strict": true,
-    "esModuleInterop": true,
-  }
+    "strict": true
+  },
+  "exclude": ["node_modules", "jest.config.ts"]
 }

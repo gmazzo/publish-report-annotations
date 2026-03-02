@@ -1,6 +1,8 @@
+import { jest, describe, test, expect } from "@jest/globals";
+
 import { type components } from "@octokit/openapi-types";
 
-const listFiles = jest.fn().mockResolvedValue([
+const listFiles = jest.fn().mockReturnValue([
     { filename: "file1", status: "added" },
     { filename: "file2", status: "removed" },
     { filename: "file3", status: "changed" },
@@ -9,7 +11,7 @@ const listFiles = jest.fn().mockResolvedValue([
 ] as components["schemas"]["diff-entry"][]);
 
 const getOctokit = jest.fn().mockReturnValue({
-    paginate: <P>(fn: (it: P) => P, params: P) => fn(params),
+    paginate: jest.fn(async <P>(fn: (it: P) => P, params: P) => fn(params)),
     rest: {
         pulls: {
             listFiles,
@@ -17,7 +19,7 @@ const getOctokit = jest.fn().mockReturnValue({
     },
 });
 
-jest.mock("@actions/github", () => {
+jest.unstable_mockModule("@actions/github", () => {
     return {
         getOctokit,
         context: {
@@ -30,7 +32,7 @@ jest.mock("@actions/github", () => {
     };
 });
 
-import { getPRFiles } from "./getPRFiles";
+const { getPRFiles } = await import("./getPRFiles");
 
 describe("getPRFiles", () => {
     test("get without any statuses, returns all files", async () => {
