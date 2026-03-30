@@ -42,7 +42,7 @@ jobs:
           reports: |
             lib/*-junit.xml
       - name: Coverage report
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         if: ${{ !cancelled() }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
