@@ -1,4 +1,4 @@
-import { jest, describe, test, expect } from "@jest/globals";
+import { jest, describe, test, expect, beforeEach } from "@jest/globals";
 import * as fs from "node:fs";
 import * as globImpl from "@actions/glob";
 import { execSync as execSyncImpl } from "node:child_process";
