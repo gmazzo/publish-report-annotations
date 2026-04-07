@@ -1,9 +1,9 @@
-import { describe, expect } from "@jest/globals";
+import { describe, expect, test } from "@jest/globals";
 import * as github from "@actions/github";
 import child_process from "child_process";
 
 describe("checks", () => {
-    it("PR checks outcome should be the expected ones", async () => {
+    test("PR checks outcome should be the expected ones", async () => {
         const octokit = github.getOctokit(process.env.GITHUB_TOKEN!);
         const commit = process.env.COMMIT_SHA || child_process.execSync("git rev-parse HEAD").toString().trim();
 

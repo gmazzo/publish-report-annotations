@@ -1,4 +1,4 @@
-import { describe, expect } from "@jest/globals";
+import { describe, expect, test } from "@jest/globals";
 import { Config, ParseResults } from "./types";
 
 const config = {} as unknown as Config;
@@ -111,7 +111,7 @@ const checkStyleResult = (() => {
 })();
 
 describe("ParseResults", () => {
-    it("mergeWith combine results correctly", () => {
+    test("mergeWith combine results correctly", () => {
         const all = new ParseResults();
 
         all.mergeWith(junitResult1);
