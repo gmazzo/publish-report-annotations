@@ -21,11 +21,11 @@ export interface Config {
     invalidFileAction: "fail" | "report" | "log";
 }
 
-type Severity = "error" | "warning" | "other";
+export type Severity = "error" | "warning" | "other";
 
 export type Annotation = {
     message: string;
-    severity: "error" | "warning" | "other" | "ignored";
+    severity: Severity | "ignored";
     rawDetails?: string;
 } & AnnotationProperties;
 
