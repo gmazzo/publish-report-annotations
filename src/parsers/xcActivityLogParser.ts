@@ -41,7 +41,7 @@ export const xcActivityLogParser: Parser<ActivityLogData> = {
             if (!entries) return;
 
             for (const entry of entries) {
-                const filePath = entry.documentURL?.replace(/^file:\/\/\/?/, "");
+                const filePath = entry.documentURL?.replace(/^file:\/\//, "");
                 const file = filePath ? await resolveFile(filePath) : undefined;
                 const included = file && config.prFilesFilter(file);
 
