@@ -1,0 +1,57 @@
+{
+  "errors" : [
+    {
+      "documentURL" : "file:///App\/ContentView.swift",
+      "endingLineNumber" : 37,
+      "characterRangeEnd" : 18446744073709551615,
+      "type" : "swiftError",
+      "startingColumnNumber" : 9,
+      "characterRangeStart" : 0,
+      "startingLineNumber" : 37,
+      "endingColumnNumber" : 9,
+      "severity" : 2,
+      "title" : "Generic parameter 'Content' could not be inferred"
+    }
+  ],
+  "warnings" : [
+    {
+      "documentURL" : "",
+      "endingLineNumber" : 0,
+      "characterRangeEnd" : 0,
+      "detail" : "note: Disabling hardened runtime with ad-hoc codesigning. (in target 'About Me' from project 'About Me')\rwarning: Skipping duplicate build file in Compile Sources build phase: App\/Assets.xcassets (in target 'About Me' from project 'About Me')\rwarning: Skipping duplicate build file in Compile Sources build phase: App\/Preview Content\/Preview Assets.xcassets (in target 'About Me' from project 'About Me')",
+      "type" : "projectWarning",
+      "startingColumnNumber" : 0,
+      "characterRangeStart" : 0,
+      "startingLineNumber" : 0,
+      "endingColumnNumber" : 0,
+      "severity" : 1,
+      "title" : "Skipping duplicate build file in Compile Sources build phase: App\/Assets.xcassets"
+    },
+    {
+      "documentURL" : "",
+      "endingLineNumber" : 0,
+      "characterRangeEnd" : 0,
+      "detail" : "note: Disabling hardened runtime with ad-hoc codesigning. (in target 'About Me' from project 'About Me')\rwarning: Skipping duplicate build file in Compile Sources build phase: App\/Assets.xcassets (in target 'About Me' from project 'About Me')\rwarning: Skipping duplicate build file in Compile Sources build phase: App\/Preview Content\/Preview Assets.xcassets (in target 'About Me' from project 'About Me')",
+      "type" : "projectWarning",
+      "startingColumnNumber" : 0,
+      "characterRangeStart" : 0,
+      "startingLineNumber" : 0,
+      "endingColumnNumber" : 0,
+      "severity" : 1,
+      "title" : "Skipping duplicate build file in Compile Sources build phase: App\/Preview Content\/Preview Assets.xcassets"
+    },
+    {
+      "startingColumnNumber": 1,
+      "characterRangeStart": 0,
+      "type": "swiftWarning",
+      "startingLineNumber": 7,
+      "characterRangeEnd": 18446744073709551615,
+      "severity": 1,
+      "detail": "App/ContentView.swift:7:1: warning: sendability of function types in class method 'requestTrackingAuthorization(completionHandler:)' does not match requirement in protocol 'ATTrackingManagerProtocol'; this is an error in the Swift 6 language mode\nextension ATTrackingManager: ATTrackingManagerProtocol {}\n^\nApp/ContentView.swift:7:15: note: expected sendability to match requirement here\n  static func requestTrackingAuthorization(\n              ^",
+      "endingLineNumber": 7,
+      "title": "Sendability of function types in class method 'requestTrackingAuthorization(completionHandler:)' does not match requirement in protocol 'ATTrackingManagerProtocol'; this is an error in the Swift 6 language mode",
+      "documentURL" : "file:///App\/ContentView.swift",
+      "endingColumnNumber": 1
+    }
+  ]
+}
