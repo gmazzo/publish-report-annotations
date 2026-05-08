@@ -30,7 +30,7 @@ export default async function main() {
         const result = await processFile(reader, config);
         if (result) {
             all.mergeWith(result);
-            core.info(summaryOf(result, true));
+            core.info(summaryOf(result));
         } else {
             core.info("Could not process file");
         }
