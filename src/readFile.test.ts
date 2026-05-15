@@ -49,6 +49,7 @@ describe("readFile", () => {
                             name: "a test that passes()",
                             time: "0.001",
                         },
+                        _text: "",
                     },
                     {
                         _attributes: {
