@@ -18,8 +18,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
           token: ${{ secrets.RELEASE_TOKEN || github.token }}
+          fetch-depth: 0
+          submodules: true
       - name: Setup host
         uses: ./.github/actions/setup-host
       - name: Release ${{ github.event_name == 'pull_request' && '(dry-run)' || '' }}
