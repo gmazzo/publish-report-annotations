@@ -22,7 +22,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          submodules: true
       - name: Setup host
         uses: ./.github/actions/setup-host
       - name: Build
@@ -55,7 +55,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          submodules: true
       - name: Setup host
         uses: ./.github/actions/setup-host
       - name: Build

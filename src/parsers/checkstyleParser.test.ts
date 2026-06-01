@@ -13,14 +13,14 @@ describe("checkstyleParser", () => {
         const data = readFile<CheckStyleData>("samples/detekt-debug.xml", config)!;
         const results = await checkstyleParser.process(data(), config);
 
-        expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/src/main/kotlin/org/test/sample/App.kt");
+        expect(prFilesFilter).toHaveBeenCalledWith("samples/gradle-project/src/main/kotlin/org/test/sample/App.kt");
         expect(results).toStrictEqual(
             new ParseResults({
                 annotations: [
                     {
                         endColumn: 11,
                         endLine: 3,
-                        file: "sample-gradle/src/main/kotlin/org/test/sample/App.kt",
+                        file: "samples/gradle-project/src/main/kotlin/org/test/sample/App.kt",
                         message: "The file src/main/kotlin/org/test/sample/App.kt is not ending with a new line.",
                         startColumn: 11,
                         startLine: 3,
@@ -55,7 +55,7 @@ describe("checkstyleParser", () => {
         const data = readFile<CheckStyleData>("samples/detekt-debug.xml", config)!;
         const results = await checkstyleParser.process(data(), config);
 
-        expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/src/main/kotlin/org/test/sample/App.kt");
+        expect(prFilesFilter).toHaveBeenCalledWith("samples/gradle-project/src/main/kotlin/org/test/sample/App.kt");
         expect(results).toStrictEqual(new ParseResults({ ignoredAnnotations: 1 }));
     });
 
@@ -67,14 +67,14 @@ describe("checkstyleParser", () => {
         const data = readFile<CheckStyleData>("samples/detekt-debug.xml", debugConfig)!;
         const results = await checkstyleParser.process(data(), debugConfig);
 
-        expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/src/main/kotlin/org/test/sample/App.kt");
+        expect(prFilesFilter).toHaveBeenCalledWith("samples/gradle-project/src/main/kotlin/org/test/sample/App.kt");
         expect(results).toStrictEqual(
             new ParseResults({
                 annotations: [
                     {
                         endColumn: 11,
                         endLine: 3,
-                        file: "sample-gradle/src/main/kotlin/org/test/sample/App.kt",
+                        file: "samples/gradle-project/src/main/kotlin/org/test/sample/App.kt",
                         message: "The file src/main/kotlin/org/test/sample/App.kt is not ending with a new line.",
                         startColumn: 11,
                         startLine: 3,
