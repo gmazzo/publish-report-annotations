@@ -83,8 +83,8 @@ async function getFirstGitFile(paths: string[]) {
 
 function isGitFile(path: string) {
     try {
-        execSync(`git ls-files --error-unmatch -- ${path}`, { stdio: "ignore" });
-        return true;
+        const { byteLength } = execSync(`git ls-files --recurse-submodules -- ${path}`);
+        return byteLength > 0;
 
         // eslint-disable-next-line  @typescript-eslint/no-unused-vars
     } catch (e) {

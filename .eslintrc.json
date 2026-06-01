@@ -10,5 +10,5 @@
   },
   "plugins": ["@typescript-eslint"],
   "root": true,
-  "ignorePatterns": ["dist/**", "lib/**", "coverage/**", "node_modules/**", "jest*.config.js", "sample-gradle/**"]
+  "ignorePatterns": ["dist/**", "lib/**", "coverage/**", "node_modules/**", "jest*.config.js", "samples/gradle-project/**"]
 }

@@ -19,7 +19,7 @@ describe("androidLintParser", () => {
                     {
                         endColumn: 5,
                         endLine: 14,
-                        file: "sample-gradle/build.gradle.kts",
+                        file: "samples/gradle-project/build.gradle.kts",
                         message: "A newer version of `compileSdkVersion` than 33 is available: 34",
                         rawDetails: `This detector looks for usages of libraries where the version you are using is not the current stable release. Using older versions is fine, and there are cases where you deliberately want to stick with an older version. However, you may simply not be aware that a more recent version is available, and that is what this lint check helps find.
     compileSdk = 33
@@ -32,7 +32,7 @@ describe("androidLintParser", () => {
                     {
                         endColumn: 27,
                         endLine: 9,
-                        file: "sample-gradle/src/main/AndroidManifest.xml",
+                        file: "samples/gradle-project/src/main/AndroidManifest.xml",
                         message:
                             "Very long vector path (1444 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.",
                         rawDetails: `Using long vector paths is bad for performance. There are several ways to make the \`pathData\` shorter:
@@ -50,7 +50,7 @@ describe("androidLintParser", () => {
                     {
                         endColumn: 27,
                         endLine: 3,
-                        file: "sample-gradle/src/debug/AndroidManifest.xml",
+                        file: "samples/gradle-project/src/debug/AndroidManifest.xml",
                         message:
                             "Very long vector path (1444 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.",
                         rawDetails: `Using long vector paths is bad for performance. There are several ways to make the \`pathData\` shorter:
@@ -68,7 +68,7 @@ describe("androidLintParser", () => {
                     {
                         endColumn: 86,
                         endLine: 2,
-                        file: "sample-gradle/src/main/AndroidManifest.xml",
+                        file: "samples/gradle-project/src/main/AndroidManifest.xml",
                         message:
                             "Very long vector path (1415 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.",
                         rawDetails: `Using long vector paths is bad for performance. There are several ways to make the \`pathData\` shorter:
@@ -114,7 +114,7 @@ describe("androidLintParser", () => {
         const data = readFile<LintData>("samples/lint-results-debug.xml", config)!;
         const results = await androidLintParser.process(data(), config);
 
-        expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/build.gradle.kts");
+        expect(prFilesFilter).toHaveBeenCalledWith("samples/gradle-project/build.gradle.kts");
         expect(results).toStrictEqual(new ParseResults({ ignoredAnnotations: 4 }));
     });
 
@@ -125,14 +125,14 @@ describe("androidLintParser", () => {
         const data = readFile<LintData>("samples/lint-results-debug.xml", debugConfig)!;
         const results = await androidLintParser.process(data(), debugConfig);
 
-        expect(prFilesFilter).toHaveBeenCalledWith("sample-gradle/build.gradle.kts");
+        expect(prFilesFilter).toHaveBeenCalledWith("samples/gradle-project/build.gradle.kts");
         expect(results).toStrictEqual(
             new ParseResults({
                 annotations: [
                     {
                         endColumn: 5,
                         endLine: 14,
-                        file: "sample-gradle/build.gradle.kts",
+                        file: "samples/gradle-project/build.gradle.kts",
                         message: "A newer version of `compileSdkVersion` than 33 is available: 34",
                         rawDetails: `This detector looks for usages of libraries where the version you are using is not the current stable release. Using older versions is fine, and there are cases where you deliberately want to stick with an older version. However, you may simply not be aware that a more recent version is available, and that is what this lint check helps find.
     compileSdk = 33
@@ -145,7 +145,7 @@ describe("androidLintParser", () => {
                     {
                         endColumn: 27,
                         endLine: 9,
-                        file: "sample-gradle/src/main/AndroidManifest.xml",
+                        file: "samples/gradle-project/src/main/AndroidManifest.xml",
                         message:
                             "Very long vector path (1444 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.",
                         rawDetails: `Using long vector paths is bad for performance. There are several ways to make the \`pathData\` shorter:
@@ -163,7 +163,7 @@ describe("androidLintParser", () => {
                     {
                         endColumn: 27,
                         endLine: 3,
-                        file: "sample-gradle/src/debug/AndroidManifest.xml",
+                        file: "samples/gradle-project/src/debug/AndroidManifest.xml",
                         message:
                             "Very long vector path (1444 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.",
                         rawDetails: `Using long vector paths is bad for performance. There are several ways to make the \`pathData\` shorter:
@@ -181,7 +181,7 @@ describe("androidLintParser", () => {
                     {
                         endColumn: 86,
                         endLine: 2,
-                        file: "sample-gradle/src/main/AndroidManifest.xml",
+                        file: "samples/gradle-project/src/main/AndroidManifest.xml",
                         message:
                             "Very long vector path (1415 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.",
                         rawDetails: `Using long vector paths is bad for performance. There are several ways to make the \`pathData\` shorter:

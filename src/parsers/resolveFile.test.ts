@@ -31,23 +31,23 @@ describe("resolveFile", () => {
     });
 
     test("when file exists, just returns itself", async () => {
-        const resolvedPath = await resolveFile("sample-gradle/build.gradle.kts");
+        const resolvedPath = await resolveFile("samples/gradle-project/build.gradle.kts");
 
-        expect(resolvedPath).toBe("sample-gradle/build.gradle.kts");
+        expect(resolvedPath).toBe("samples/gradle-project/build.gradle.kts");
         expect(globCreate).not.toHaveBeenCalled();
     });
 
     test("when looking for a file, it returns a match", async () => {
         const resolvedPath = await resolveFile("org/test/sample/SampleTestSuite.kt");
 
-        expect(resolvedPath).toBe("sample-gradle/src/test/kotlin/org/test/sample/SampleTestSuite.kt");
+        expect(resolvedPath).toBe("samples/gradle-project/src/test/kotlin/org/test/sample/SampleTestSuite.kt");
         expect(globCreate).toHaveBeenCalled();
     });
 
     test("when looking for a file with possible extensions, it returns a match", async () => {
         const resolvedPath = await resolveFile("org/test/sample/SampleTestSuite", "java", "kt", "groovy");
 
-        expect(resolvedPath).toBe("sample-gradle/src/test/kotlin/org/test/sample/SampleTestSuite.kt");
+        expect(resolvedPath).toBe("samples/gradle-project/src/test/kotlin/org/test/sample/SampleTestSuite.kt");
         expect(globCreate).toHaveBeenCalled();
     });
 
@@ -62,27 +62,24 @@ describe("resolveFile", () => {
         const path1 = await resolveFile("org/test/sample/SampleTestSuite", "java", "kt", "groovy");
         const path2 = await resolveFile("org/test/sample/AnotherTestSuite.kt");
 
-        expect(path1).toBe("sample-gradle/src/test/kotlin/org/test/sample/SampleTestSuite.kt");
-        expect(path2).toBe("sample-gradle/src/test/kotlin/org/test/sample/AnotherTestSuite.kt");
+        expect(path1).toBe("samples/gradle-project/src/test/kotlin/org/test/sample/SampleTestSuite.kt");
+        expect(path2).toBe("samples/gradle-project/src/test/kotlin/org/test/sample/AnotherTestSuite.kt");
         expect(globCreate).toHaveBeenCalledTimes(1);
     });
 
     test(`if location is not in git, then it should keep looking`, async () => {
-        const generatedFile = `${cwd()}/sample-gradle/build/generated/org/test/sample/SampleTestSuite.tmp`;
+        const generatedFile = `${cwd()}/samples/gradle-project/build/generated/org/test/sample/SampleTestSuite.tmp`;
         fs.mkdirSync(dirname(generatedFile), { recursive: true });
         fs.writeFileSync(generatedFile, "content");
 
         const resolvedPath = await resolveFile("org/test/sample/SampleTestSuite", "tmp", "kt", "groovy");
-        expect(resolvedPath).toBe("sample-gradle/src/test/kotlin/org/test/sample/SampleTestSuite.kt");
+        expect(resolvedPath).toBe("samples/gradle-project/src/test/kotlin/org/test/sample/SampleTestSuite.kt");
 
         expect(execSync).toHaveBeenCalledTimes(2);
-        expect(execSync).toHaveBeenNthCalledWith(1, `git ls-files --error-unmatch -- ${generatedFile}`, {
-            stdio: "ignore",
-        });
+        expect(execSync).toHaveBeenNthCalledWith(1, `git ls-files --recurse-submodules -- ${generatedFile}`);
         expect(execSync).toHaveBeenNthCalledWith(
             2,
-            `git ls-files --error-unmatch -- ${cwd()}/sample-gradle/src/test/kotlin/org/test/sample/SampleTestSuite.kt`,
-            { stdio: "ignore" },
+            `git ls-files --recurse-submodules -- ${cwd()}/samples/gradle-project/src/test/kotlin/org/test/sample/SampleTestSuite.kt`,
         );
     });
 });
