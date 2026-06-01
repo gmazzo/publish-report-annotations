@@ -8,8 +8,8 @@
     "package": "ncc build src/index.ts -o dist -m",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
-    "intTest": "INTEGRATION_TESTS=true NODE_OPTIONS=--experimental-vm-modules jest",
+    "test": "./test.sh --coverage",
+    "intTest": "INTEGRATION_TESTS=true ./test.sh",
     "check": "npm run test && npm run lint",
     "build": "npm run compile && npm run package && npm run check"
   },
