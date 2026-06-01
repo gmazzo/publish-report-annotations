@@ -28,14 +28,20 @@ const checkstyleParser: Parser<object> = {
                     {
                         severity: "error",
                         message: "checkstyle error",
+                        file: "aFile",
                     },
                     {
                         severity: "warning",
                         message: "checkstyle warning",
+                        file: "aFile",
+                        startLine: 10,
                     },
                     {
                         severity: "other",
                         message: "checkstyle notice",
+                        file: "aFile",
+                        startLine: 20,
+                        startColumn: 11,
                     },
                 ],
             });
@@ -121,14 +127,20 @@ describe("processFile", () => {
                     {
                         severity: "error",
                         message: "checkstyle error",
+                        file: "aFile",
                     },
                     {
                         severity: "warning",
                         message: "checkstyle warning",
+                        file: "aFile",
+                        startLine: 10,
                     },
                     {
                         severity: "other",
                         message: "checkstyle notice",
+                        file: "aFile",
+                        startLine: 20,
+                        startColumn: 11,
                     },
                 ],
             }),
@@ -139,16 +151,20 @@ describe("processFile", () => {
         expect(androidLintParser.process).not.toHaveBeenCalled();
 
         expect(coreError).toHaveBeenCalledWith(
-            "checkstyle error",
-            checkName ? undefined : { severity: "error", message: "checkstyle error" },
+            "aFile: checkstyle error",
+            checkName ? undefined : { severity: "error", message: "checkstyle error", file: "aFile" },
         );
         expect(coreWarning).toHaveBeenCalledWith(
-            "checkstyle warning",
-            checkName ? undefined : { severity: "warning", message: "checkstyle warning" },
+            "aFile:10: checkstyle warning",
+            checkName
+                ? undefined
+                : { severity: "warning", message: "checkstyle warning", file: "aFile", startLine: 10 },
         );
         expect(coreNotice).toHaveBeenCalledWith(
-            "checkstyle notice",
-            checkName ? undefined : { severity: "other", message: "checkstyle notice" },
+            "aFile:20:11: checkstyle notice",
+            checkName
+                ? undefined
+                : { severity: "other", message: "checkstyle notice", file: "aFile", startLine: 20, startColumn: 11 },
         );
     });
 

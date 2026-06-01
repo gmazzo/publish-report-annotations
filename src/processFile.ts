@@ -1,4 +1,4 @@
-import { join } from "./utils";
+import { join, joinSeparator } from "./utils";
 import * as core from "@actions/core";
 import { Config, ParseResults } from "./types";
 import { parsers } from "./parsers/parsers";
@@ -13,11 +13,15 @@ export async function processFile(reader: () => object, config: Config) {
 
             if (result) {
                 for (const annotation of result.annotations) {
-                    const message = doNotAnnotate
+                    const baseMessage = doNotAnnotate
                         ? annotation.message
                         : annotation.rawDetails?.startsWith(annotation.message)
                           ? annotation.rawDetails
                           : join(annotation.message, annotation.rawDetails);
+
+                    const location = joinSeparator(":", annotation.file, annotation.startLine, annotation.startColumn);
+
+                    const message = joinSeparator(": ", location, baseMessage);
 
                     switch (annotation.severity) {
                         case "error":
