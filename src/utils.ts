@@ -30,7 +30,7 @@ export function join(...values: (string | null | undefined)[]): string {
     return joinSeparator("\n", ...values);
 }
 
-export function joinSeparator(separator: string, ...values: (string | null | undefined)[]): string {
+export function joinSeparator(separator: string, ...values: (string | number | null | undefined)[]): string {
     return values.filter((it) => it).join(separator);
 }
 
