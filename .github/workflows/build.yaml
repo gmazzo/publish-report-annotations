@@ -140,7 +140,7 @@ jobs:
         uses: actions/create-github-app-token@v3
         id: app-token
         with:
-          client-id: ${{ vars.GH_APP_ID }}
+          app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_SECRET }}
       - name: Clean Sample checks
         uses: actions/github-script@v9
