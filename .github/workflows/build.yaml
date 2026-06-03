@@ -39,6 +39,9 @@ jobs:
         uses: ./.
         if: ${{ !cancelled() }}
         with:
+          appId: ${{ vars.GH_APP_ID }}
+          appSecret: ${{ secrets.GH_APP_SECRET }}
+          checkName: "Test Results"
           reports: |
             lib/*-junit.xml
       - name: Coverage report
