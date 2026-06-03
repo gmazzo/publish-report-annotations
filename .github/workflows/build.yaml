@@ -39,6 +39,7 @@ jobs:
         uses: ./.
         if: ${{ !cancelled() }}
         with:
+          checkName: "Test Reports"
           reports: |
             lib/*-junit.xml
       - name: Coverage report
