@@ -25,7 +25,7 @@
     "fast-xml-parser": "^5.11.0"
   },
   "devDependencies": {
-    "@types/bytes": "^3.1.5",
+    "@types/bytes": "^3.1.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^26.2.0",
     "@vercel/ncc": "^0.45.0",
