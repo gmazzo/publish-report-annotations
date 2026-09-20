@@ -2,9 +2,7 @@ import { vi, describe, test, expect } from "vitest";
 import { Config, ParseResults } from "./types";
 
 const listForRef = vi.fn<(params: object) => Promise<object>>();
-const create = vi
-    .fn<(params: object) => Promise<object>>()
-    .mockResolvedValue({ data: { id: 456, html_url: "aUrl" } });
+const create = vi.fn<(params: object) => Promise<object>>().mockResolvedValue({ data: { id: 456, html_url: "aUrl" } });
 const update = vi.fn<(params: object) => Promise<object>>().mockResolvedValue({ data: { html_url: "aUrl" } });
 const getOctokit = vi.fn().mockReturnValue({
     rest: {
@@ -242,7 +240,7 @@ describe("publishCheck", () => {
         [504, false, null],
         [504, true, null],
     ])("when HTTP failure publishing a check, it should retry [http=%p]", async (httpCode, alwaysFail, retryAfter) => {
-        vi.useFakeTimers({ advanceTimers: 2 });
+        vi.useFakeTimers();
 
         const retryableError = httpCode != 500;
         const error = new RequestErrorMock(httpCode, retryAfter ? { "retry-after": retryAfter } : undefined);
