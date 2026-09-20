@@ -1,0 +1,7 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": ["dist/**", "lib/**", "coverage/**", "node_modules/**", "vitest.config.ts", "samples/gradle-project/**"],
+  "env": {
+    "builtin": true
+  }
+}
