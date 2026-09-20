@@ -8,7 +8,7 @@
   },
   "scripts": {
     "compile": "tsc",
-    "package": "tsdown src/index.ts -d dist --format esm --minify",
+    "package": "tsdown",
     "lint": "oxlint --deny-warnings src",
     "lint:fix": "oxlint --fix --deny-warnings src",
     "test": "./test.sh --coverage",
