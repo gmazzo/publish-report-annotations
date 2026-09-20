@@ -3,4 +3,4 @@ if [ ! -d "samples" ]; then
   exit 1
 fi
 
-vitest run "$@"
+npx vitest run "$@"
