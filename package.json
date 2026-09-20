@@ -1,6 +1,6 @@
 {
   "name": "publish-report-annotations",
-  "version": "1.21.3",
+  "version": "1.22.0",
   "type": "module",
   "private": true,
   "engines": {
