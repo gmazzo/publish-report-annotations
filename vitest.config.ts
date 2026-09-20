@@ -1,12 +1,14 @@
 import { defineConfig } from "vitest/config";
 
 const forIT = !!process.env.INTEGRATION_TESTS;
+const include = forIT ? ["src/**/*.it.test.ts"] : ["src/**/*.test.ts"];
+const exclude = forIT ? [] : ["src/**/*.it.test.ts"];
 
 export default defineConfig({
     test: {
         environment: "node",
-        include: forIT ? ["**/*.it.test.ts"] : ["**/*.test.ts"],
-        exclude: forIT ? [] : ["**/*.it.test.ts"],
+        include,
+        exclude,
         testTimeout: 20000,
         clearMocks: true,
         coverage: {

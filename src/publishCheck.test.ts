@@ -258,13 +258,11 @@ describe("publishCheck", () => {
             }
 
             const promise = publishCheck(new ParseResults({}), config, false);
-            // noinspection ES6MissingAwait
-            vi.runAllTimersAsync();
-            if (alwaysFail) {
-                await expect(promise).rejects.toEqual(error);
-            } else {
-                await expect(promise).resolves.toEqual({ id: 345, html_url: "aUrl" });
-            }
+            const expectation = alwaysFail
+                ? expect(promise).rejects.toEqual(error)
+                : expect(promise).resolves.toEqual({ id: 345, html_url: "aUrl" });
+            await vi.runAllTimersAsync();
+            await expectation;
 
             if (retryableError) {
                 expect(coreWarning).toHaveBeenCalledWith(`Request failed with status ${httpCode}: anHttpError`);
