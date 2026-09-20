@@ -3,9 +3,12 @@
   "version": "1.21.3",
   "type": "module",
   "private": true,
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "compile": "tsc",
-    "package": "ncc build src/index.ts -o dist -m",
+    "package": "tsdown src/index.ts -d dist --format esm --minify",
     "lint": "oxlint --deny-warnings src",
     "lint:fix": "oxlint --fix --deny-warnings src",
     "test": "./test.sh --coverage",
@@ -27,11 +30,11 @@
   "devDependencies": {
     "@types/bytes": "^3.1.6",
     "@types/node": "^26.6.1",
-    "@vercel/ncc": "^0.45.0",
     "@vitest/coverage-v8": "^5.0.1",
     "oxlint": "^1.83.0",
     "semantic-release": "^25.0.9",
     "semantic-release-major-tag": "^0.3.2",
+    "tsdown": "^0.21.10",
     "typescript": "^6.0.3",
     "vitest": "^5.0.1"
   }

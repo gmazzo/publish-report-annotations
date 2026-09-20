@@ -71,7 +71,7 @@ inputs:
     default: "report"
 runs:
   using: node24
-  main: dist/index.js
+  main: dist/index.mjs
 branding:
   color: green
   icon: list
