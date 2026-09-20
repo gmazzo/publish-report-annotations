@@ -1,8 +1,8 @@
-import { jest, describe, test, expect } from "@jest/globals";
+import { vi, describe, test, expect } from "vitest";
 
-const getPRFiles = jest.fn().mockReturnValue(["file1", "file2"]);
+const getPRFiles = vi.fn().mockReturnValue(["file1", "file2"]);
 
-jest.unstable_mockModule("./getPRFiles", () => ({
+vi.doMock("./getPRFiles", () => ({
     getPRFiles,
 }));
 

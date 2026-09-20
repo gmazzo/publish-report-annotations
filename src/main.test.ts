@@ -1,23 +1,23 @@
-import { jest, describe, test, expect } from "@jest/globals";
+import { vi, describe, test, expect } from "vitest";
 import { ParseResults } from "./types";
 import { MAX_ANNOTATIONS_PER_API_CALL } from "./publishCheck";
 
-const coreDebug = jest.fn();
-const coreInfo = jest.fn();
-const coreNotice = jest.fn();
-const coreError = jest.fn();
-const coreStartGroup = jest.fn();
-const coreEndGroup = jest.fn();
-const coreSetFailed = jest.fn();
-const coreSetOutput = jest.fn();
-const coreSummaryAddRaw = jest.fn();
-const coreSummaryWrite = jest.fn();
-const globCreate = jest.fn().mockImplementation(() => ({
-    glob: jest.fn().mockReturnValue(["file1", "file2"]),
+const coreDebug = vi.fn();
+const coreInfo = vi.fn();
+const coreNotice = vi.fn();
+const coreError = vi.fn();
+const coreStartGroup = vi.fn();
+const coreEndGroup = vi.fn();
+const coreSetFailed = vi.fn();
+const coreSetOutput = vi.fn();
+const coreSummaryAddRaw = vi.fn();
+const coreSummaryWrite = vi.fn();
+const globCreate = vi.fn().mockImplementation(() => ({
+    glob: vi.fn().mockReturnValue(["file1", "file2"]),
 }));
 const reader1 = () => ({ file: "file1" });
 const reader2 = () => ({ file: "file2" });
-const readFile = jest.fn().mockImplementation((file) => {
+const readFile = vi.fn().mockImplementation((file) => {
     switch (file) {
         case "file1":
             return reader1;
@@ -27,13 +27,13 @@ const readFile = jest.fn().mockImplementation((file) => {
             throw new Error(`Unexpected file: ${file}`);
     }
 });
-const processFile = jest.fn().mockReturnValue(
+const processFile = vi.fn().mockReturnValue(
     new ParseResults({
         tests: { suites: [], totals: { count: 4, passed: 2, skipped: 1, failed: 1 } },
         checks: { checks: [], totals: { count: 6, errors: 3, warnings: 2, others: 1 } },
     }),
 );
-const publishCheck = jest.fn().mockReturnValue({ id: 12345, html_url: "https://example.com/check/12345" });
+const publishCheck = vi.fn().mockReturnValue({ id: 12345, html_url: "https://example.com/check/12345" });
 
 const config = {
     reports: ["path1", "path2"],
@@ -43,13 +43,13 @@ const config = {
     filterChecks: false,
     checkName: "",
 };
-const readConfig = jest.fn().mockReturnValue(config);
+const readConfig = vi.fn().mockReturnValue(config);
 
-jest.unstable_mockModule("@actions/glob", () => ({
+vi.doMock("@actions/glob", () => ({
     create: globCreate,
 }));
 
-jest.unstable_mockModule("@actions/core", () => ({
+vi.doMock("@actions/core", () => ({
     debug: coreDebug,
     notice: coreNotice,
     info: coreInfo,
@@ -61,19 +61,19 @@ jest.unstable_mockModule("@actions/core", () => ({
     summary: { addRaw: coreSummaryAddRaw, write: coreSummaryWrite },
 }));
 
-jest.unstable_mockModule("./readFile", () => ({
+vi.doMock("./readFile", () => ({
     readFile,
 }));
 
-jest.unstable_mockModule("./processFile", () => ({
+vi.doMock("./processFile", () => ({
     processFile,
 }));
 
-jest.unstable_mockModule("./readConfig", () => ({
+vi.doMock("./readConfig", () => ({
     readConfig,
 }));
 
-jest.unstable_mockModule("./publishCheck", () => ({
+vi.doMock("./publishCheck", () => ({
     MAX_ANNOTATIONS_PER_API_CALL: MAX_ANNOTATIONS_PER_API_CALL,
     publishCheck,
 }));

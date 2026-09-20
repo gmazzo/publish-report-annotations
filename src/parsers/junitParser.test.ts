@@ -1,16 +1,16 @@
-import { jest, describe, test, expect } from "@jest/globals";
+import { vi, describe, test, expect } from "vitest";
 import { Config, ParseResults } from "../types";
 import { extname } from "path";
 import { readFile } from "../readFile";
 import { JUnitData } from "./junitParser";
 
-const resolveFile = jest.fn((file: string) =>
+const resolveFile = vi.fn((file: string) =>
     extname(file) ? `<projectTestSrc>/${file}` : `<projectTestSrc>/${file}.kt`,
 );
-const prFilesFilter = jest.fn().mockReturnValue(true);
+const prFilesFilter = vi.fn().mockReturnValue(true);
 const config = { prFilesFilter } as unknown as Config;
 
-jest.unstable_mockModule("./resolveFile", () => ({
+vi.doMock("./resolveFile", () => ({
     resolveFile,
 }));
 

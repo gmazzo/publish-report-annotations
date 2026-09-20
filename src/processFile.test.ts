@@ -1,10 +1,10 @@
-import { jest, describe, test, expect } from "@jest/globals";
+import { vi, describe, test, expect } from "vitest";
 import { Config, ParseResults } from "./types";
 import { Parser } from "./parsers/parser";
 
 const junitData = { junit: true };
 const junitParser: Parser<object> = {
-    process: jest.fn(async (data) => {
+    process: vi.fn(async (data) => {
         if (data === junitData) {
             return new ParseResults({
                 annotations: [
@@ -21,7 +21,7 @@ const junitParser: Parser<object> = {
 
 const checkstyleData = { checkstyle: true };
 const checkstyleParser: Parser<object> = {
-    process: jest.fn(async (data) => {
+    process: vi.fn(async (data) => {
         if (data === checkstyleData) {
             return new ParseResults({
                 annotations: [
@@ -52,7 +52,7 @@ const checkstyleParser: Parser<object> = {
 
 const androidLintData = { lint: true };
 const androidLintParser: Parser<object> = {
-    process: jest.fn(async (data) => {
+    process: vi.fn(async (data) => {
         if (data === androidLintData) {
             return new ParseResults({
                 annotations: [
@@ -71,17 +71,17 @@ const androidLintParser: Parser<object> = {
     }),
 };
 
-jest.unstable_mockModule("./parsers/parsers", () => ({
+vi.doMock("./parsers/parsers", () => ({
     parsers: [junitParser, checkstyleParser, androidLintParser],
 }));
 
-const coreError = jest.fn();
-const coreWarning = jest.fn();
-const coreNotice = jest.fn();
-const prFilesFilter = jest.fn();
+const coreError = vi.fn();
+const coreWarning = vi.fn();
+const coreNotice = vi.fn();
+const prFilesFilter = vi.fn();
 const baseConfig = { prFilesFilter } as unknown as Config;
 
-jest.unstable_mockModule("@actions/core", () => ({
+vi.doMock("@actions/core", () => ({
     error: coreError,
     warning: coreWarning,
     notice: coreNotice,

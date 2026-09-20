@@ -1,19 +1,21 @@
-import { jest, describe, test, expect } from "@jest/globals";
+import { vi, describe, test, expect } from "vitest";
 
-const request = jest.fn().mockReturnValue({ data: { id: "anInstallationId" } });
-const auth = jest.fn().mockReturnValue({ token: "anInstallationToken" });
-const getInstallationOctokit = jest.fn().mockReturnValue({ auth });
-const App = jest.fn().mockImplementation(() => ({
-    octokit: { request },
-    getInstallationOctokit,
-}));
-const setSecret = jest.fn();
+const request = vi.fn().mockReturnValue({ data: { id: "anInstallationId" } });
+const auth = vi.fn().mockReturnValue({ token: "anInstallationToken" });
+const getInstallationOctokit = vi.fn().mockReturnValue({ auth });
+const App = vi.fn(function AppMock() {
+    return {
+        octokit: { request },
+        getInstallationOctokit,
+    };
+});
+const setSecret = vi.fn();
 
-jest.unstable_mockModule("@octokit/app", () => ({
+vi.doMock("@octokit/app", () => ({
     App,
 }));
 
-jest.unstable_mockModule("@actions/github", () => ({
+vi.doMock("@actions/github", () => ({
     context: {
         repo: {
             owner: "anOwner",
@@ -22,7 +24,7 @@ jest.unstable_mockModule("@actions/github", () => ({
     },
 }));
 
-jest.unstable_mockModule("@actions/core", () => ({
+vi.doMock("@actions/core", () => ({
     setSecret,
 }));
 

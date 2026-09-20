@@ -1,9 +1,9 @@
-import { jest, describe, test, expect } from "@jest/globals";
+import { vi, describe, test, expect } from "vitest";
 import { Config, ParseResults } from "../types";
 import { readFile } from "../readFile";
 import { ActivityLogData } from "./xcActivityLogParser";
 
-const prFilesFilter = jest.fn().mockReturnValue(true);
+const prFilesFilter = vi.fn().mockReturnValue(true);
 const config = { prFilesFilter } as unknown as Config;
 
 const { xcActivityLogParser } = await import("./xcActivityLogParser");
