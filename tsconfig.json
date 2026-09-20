@@ -7,7 +7,11 @@
     "rootDir": "src",
     "outDir": "lib",
     "moduleResolution": "bundler",
-    "strict": true
+    "strict": true,
   },
-  "exclude": ["node_modules", "vitest.config.ts"]
+  "exclude": [
+    "node_modules",
+    "tsdown.config.ts",
+    "vitest.config.ts",
+  ]
 }

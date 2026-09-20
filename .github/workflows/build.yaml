@@ -64,6 +64,9 @@ jobs:
       - name: Build
         shell: bash
         run: npm run compile && npm run package
+      - name: Cleanup dependencies # makes sure the bundle can run standalone
+        shell: bash
+        run: git clean -xdf
       - name: Report to Check
         uses: ./.
         with:
