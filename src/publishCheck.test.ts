@@ -1,12 +1,12 @@
-import { jest, describe, test, expect } from "@jest/globals";
+import { vi, describe, test, expect } from "vitest";
 import { Config, ParseResults } from "./types";
 
-const listForRef = jest.fn<(params: object) => Promise<object>>();
-const create = jest
+const listForRef = vi.fn<(params: object) => Promise<object>>();
+const create = vi
     .fn<(params: object) => Promise<object>>()
     .mockResolvedValue({ data: { id: 456, html_url: "aUrl" } });
-const update = jest.fn<(params: object) => Promise<object>>().mockResolvedValue({ data: { html_url: "aUrl" } });
-const getOctokit = jest.fn().mockReturnValue({
+const update = vi.fn<(params: object) => Promise<object>>().mockResolvedValue({ data: { html_url: "aUrl" } });
+const getOctokit = vi.fn().mockReturnValue({
     rest: {
         checks: {
             listForRef,
@@ -15,22 +15,22 @@ const getOctokit = jest.fn().mockReturnValue({
         },
     },
 });
-const coreInfo = jest.fn();
-const coreWarning = jest.fn();
-const summaryOf = jest.fn().mockReturnValue("aSummary");
-const summaryTableOf = jest.fn().mockReturnValue("aSummaryTable");
+const coreInfo = vi.fn();
+const coreWarning = vi.fn();
+const summaryOf = vi.fn().mockReturnValue("aSummary");
+const summaryTableOf = vi.fn().mockReturnValue("aSummaryTable");
 
 const config = {
     githubToken: "aToken",
     checkName: "aCheckName",
 } as Config;
 
-jest.unstable_mockModule("./summary", () => ({
+vi.doMock("./summary", () => ({
     summaryOf,
     summaryTableOf,
 }));
 
-jest.unstable_mockModule("@actions/github", () => ({
+vi.doMock("@actions/github", () => ({
     context: {
         repo: { owner: "anOwner", repo: "aRepo" },
         sha: "aCommit",
@@ -38,12 +38,12 @@ jest.unstable_mockModule("@actions/github", () => ({
     getOctokit,
 }));
 
-jest.unstable_mockModule("@actions/core", () => ({
+vi.doMock("@actions/core", () => ({
     info: coreInfo,
     warning: coreWarning,
 }));
 
-jest.unstable_mockModule("@octokit/request-error", () => ({
+vi.doMock("@octokit/request-error", () => ({
     RequestError: RequestErrorMock,
 }));
 
@@ -242,7 +242,7 @@ describe("publishCheck", () => {
         [504, false, null],
         [504, true, null],
     ])("when HTTP failure publishing a check, it should retry [http=%p]", async (httpCode, alwaysFail, retryAfter) => {
-        jest.useFakeTimers({ advanceTimers: 2 });
+        vi.useFakeTimers({ advanceTimers: 2 });
 
         const retryableError = httpCode != 500;
         const error = new RequestErrorMock(httpCode, retryAfter ? { "retry-after": retryAfter } : undefined);
@@ -261,7 +261,7 @@ describe("publishCheck", () => {
 
             const promise = publishCheck(new ParseResults({}), config, false);
             // noinspection ES6MissingAwait
-            jest.runAllTimersAsync();
+            vi.runAllTimersAsync();
             if (alwaysFail) {
                 await expect(promise).rejects.toEqual(error);
             } else {
@@ -276,7 +276,7 @@ describe("publishCheck", () => {
                 expect(create).toHaveBeenCalledTimes(1);
             }
         } finally {
-            jest.useRealTimers();
+            vi.useRealTimers();
         }
     });
 });

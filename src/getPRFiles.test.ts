@@ -1,8 +1,8 @@
-import { jest, describe, test, expect } from "@jest/globals";
+import { vi, describe, test, expect } from "vitest";
 
 import { type components } from "@octokit/openapi-types";
 
-const listFiles = jest.fn().mockReturnValue([
+const listFiles = vi.fn().mockReturnValue([
     { filename: "file1", status: "added" },
     { filename: "file2", status: "removed" },
     { filename: "file3", status: "changed" },
@@ -10,8 +10,8 @@ const listFiles = jest.fn().mockReturnValue([
     { filename: "file5", status: "modified" },
 ] as components["schemas"]["diff-entry"][]);
 
-const getOctokit = jest.fn().mockReturnValue({
-    paginate: jest.fn(async <P>(fn: (it: P) => P, params: P) => fn(params)),
+const getOctokit = vi.fn().mockReturnValue({
+    paginate: vi.fn(async <P>(fn: (it: P) => P, params: P) => fn(params)),
     rest: {
         pulls: {
             listFiles,
@@ -19,7 +19,7 @@ const getOctokit = jest.fn().mockReturnValue({
     },
 });
 
-jest.unstable_mockModule("@actions/github", () => {
+vi.doMock("@actions/github", () => {
     return {
         getOctokit,
         context: {

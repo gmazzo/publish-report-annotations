@@ -1,18 +1,18 @@
-import { jest, describe, test, expect, beforeEach } from "@jest/globals";
+import { vi, describe, test, expect, beforeEach } from "vitest";
 import * as fs from "node:fs";
 import * as globImpl from "@actions/glob";
 import { execSync as execSyncImpl } from "node:child_process";
 import { cwd } from "process";
 import { dirname } from "path";
 
-const globCreate = jest.fn(globImpl.create);
-const execSync = jest.fn(execSyncImpl);
+const globCreate = vi.fn(globImpl.create);
+const execSync = vi.fn(execSyncImpl);
 
-jest.unstable_mockModule("@actions/glob", () => ({
+vi.doMock("@actions/glob", () => ({
     create: globCreate,
 }));
 
-jest.unstable_mockModule("node:child_process", () => ({
+vi.doMock("node:child_process", () => ({
     execSync,
 }));
 

@@ -1,4 +1,4 @@
-import { describe, expect, test } from "@jest/globals";
+import { describe, expect, test } from "vitest";
 import { Config, ParseResults } from "./types";
 
 const config = {} as unknown as Config;

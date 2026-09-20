@@ -1,11 +1,11 @@
-import { jest, describe, test, expect } from "@jest/globals";
+import { vi, describe, test, expect } from "vitest";
 import { Config, ParseResults } from "../types";
 import { readFile } from "../readFile";
 import { XCResultData } from "./xcresultParser";
 
-const resolveFile = jest.fn((file: string) => `<projectTestSrc>/${file}`);
+const resolveFile = vi.fn((file: string) => `<projectTestSrc>/${file}`);
 
-jest.unstable_mockModule("./resolveFile", () => ({
+vi.doMock("./resolveFile", () => ({
     resolveFile,
 }));
 
