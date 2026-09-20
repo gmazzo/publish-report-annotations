@@ -23,7 +23,7 @@ function summaryOfTests(totals: AggregatedResults["tests"]["totals"], simplified
     const heading = entry({ amount: totals.count, type: "test" });
     if (totals.count == totals.passed) {
         let content = heading + ` ✅ passed`;
-        if (totals.flaky || 0 > 0) {
+        if ((totals.flaky || 0) > 0) {
             content += ` (${totals.flaky} ❗flaky)`;
         }
         return content;
@@ -270,6 +270,6 @@ class AnchorGenerator {
     }
     next() {
         const id = `${this.prefix}${++this.index}`;
-        return `<sup id=\"${id}\"><a href="#${id}">#</a></sup>`;
+        return `<sup id="${id}"><a href="#${id}">#</a></sup>`;
     }
 }

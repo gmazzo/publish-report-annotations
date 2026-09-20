@@ -86,8 +86,7 @@ function isGitFile(path: string) {
         const { byteLength } = execSync(`git ls-files --recurse-submodules -- ${path}`);
         return byteLength > 0;
 
-        // eslint-disable-next-line  @typescript-eslint/no-unused-vars
-    } catch (e) {
+    } catch {
         return false;
     }
 }
