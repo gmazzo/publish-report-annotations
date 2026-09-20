@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "compile": "tsc",
-    "package": "tsup src/index.ts --format esm --out-dir dist --clean --minify",
+    "package": "tsup src/index.ts --format esm --platform node --target node24 --out-dir dist --clean --minify",
     "lint": "oxlint --deny-warnings src",
     "lint:fix": "oxlint --fix --deny-warnings src",
     "test": "./test.sh --coverage",
