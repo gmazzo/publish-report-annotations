@@ -3,6 +3,9 @@
   "version": "1.21.3",
   "type": "module",
   "private": true,
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "compile": "tsc",
     "package": "tsdown src/index.ts -d dist --format esm --minify && mv dist/index.mjs dist/index.js && node --input-type=module -e \"import { writeFileSync } from 'node:fs'; writeFileSync('dist/package.json', JSON.stringify({ type: 'module' }, null, 2) + '\\n');\"",
