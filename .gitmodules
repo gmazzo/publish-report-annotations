@@ -2,4 +2,3 @@
 	path = samples
 	url = ./
 	branch = samples
-	shallow = true
