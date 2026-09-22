@@ -11,7 +11,7 @@
   <testsuite name="main" errors="0" failures="0" skipped="0" timestamp="2024-05-06T15:18:58" time="1.651" tests="3">
     <testcase classname="main delegates to parsers and reports results" name="main delegates to parsers and reports results" time="0.047">
     </testcase>
-    <testcase classname="main if error and should fail, expect to fail" name="main if error and should fail, expect to fail" time="0">
+    <testcase name="main if error and should fail, expect to fail" time="0">
     </testcase>
     <testcase classname="main if warnings and should fail, expect to fail" name="main if warnings and should fail, expect to fail" time="0.001">
     </testcase>
