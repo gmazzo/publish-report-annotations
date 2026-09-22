@@ -7,7 +7,7 @@ import { dirname, extname } from "path";
 type JUnitTest = {
     _attributes: {
         name: string;
-        classname: string;
+        classname?: string;
         time?: string;
         file?: string;
         line?: string;
@@ -149,7 +149,7 @@ export const junitParser: Parser<JUnitData> = {
 
                     cases.push({
                         name: testCase._attributes.name,
-                        className: testCase._attributes.classname,
+                        className: testCase._attributes.classname || testCase._attributes.name,
                         took: testCase._attributes.time,
                         outcome: testCase.flaky
                             ? "flaky"
@@ -185,6 +185,7 @@ function flatten(suite: JUnitSuite): JUnitSuite[] {
 
 async function resolveFileAndLine(testCase: JUnitTest, stackTrace: string) {
     let fileName = testCase._attributes.file;
+    let className = testCase._attributes.classname || testCase._attributes.name;
     let line = testCase._attributes.line ? Number(testCase._attributes.line) : undefined;
 
     if (!fileName || !line) {
@@ -196,7 +197,7 @@ async function resolveFileAndLine(testCase: JUnitTest, stackTrace: string) {
 
     const file = fileName
         ? await resolveFile(fileName)
-        : await resolveFile(testCase._attributes.classname.replace(/\./g, "/"), ...possibleExtensions, "*");
+        : await resolveFile(className.replace(/\./g, "/"), ...possibleExtensions, "*");
 
     if (file && !fileName) {
         // looked by class name
