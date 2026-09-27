@@ -85,7 +85,6 @@ function isGitFile(path: string) {
     try {
         const { byteLength } = execSync(`git ls-files --recurse-submodules -- ${path}`);
         return byteLength > 0;
-
     } catch {
         return false;
     }

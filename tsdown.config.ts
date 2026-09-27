@@ -1,9 +1,10 @@
-import { defineConfig } from 'tsdown';
+import { defineConfig } from "tsdown";
+
 export default defineConfig({
-    entry: ['src/index.ts'],
-    format: ['esm'],
+    entry: ["src/index.ts"],
+    format: ["esm"],
     minify: true,
-    outDir: './dist',
+    outDir: "./dist",
     deps: {
         alwaysBundle: [/.*/],
     },
