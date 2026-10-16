@@ -3,6 +3,7 @@ import { FileFilter } from "./parsers/parser";
 
 export interface Config {
     githubToken: string;
+    revokeToken?: () => void;
     checkName: string;
     reports: string[];
     workflowSummary: boolean;

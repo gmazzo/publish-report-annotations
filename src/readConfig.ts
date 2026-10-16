@@ -6,17 +6,18 @@ import { createFileFilter } from "./createFileFilter";
 
 export async function readConfig(): Promise<Config> {
     const appId = core.getInput("appId");
-    const githubToken = appId
+    const { token, revokeToken } = appId
         ? await getAppToken(appId, core.getInput("appSecret", { required: true }))
-        : core.getInput("token", { required: true });
+        : { token: core.getInput("token", { required: true }), revokeToken: undefined };
 
     const checkName = core.getInput("checkName");
     const hasWorkflowSummary = !!core.getInput("workflowSummary");
     const filterChecks = core.getBooleanInput("filterChecks");
-    const prFilesFilter = filterChecks ? await createFileFilter(githubToken) : () => true;
+    const prFilesFilter = filterChecks ? await createFileFilter(token) : () => true;
 
     return {
-        githubToken,
+        githubToken: token,
+        revokeToken: revokeToken,
         checkName: checkName,
         reports: core.getMultilineInput("reports", { required: true }),
         workflowSummary: hasWorkflowSummary ? core.getBooleanInput("workflowSummary") : !checkName,

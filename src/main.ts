@@ -2,7 +2,7 @@ import * as core from "@actions/core";
 import * as glob from "@actions/glob";
 import { processFile } from "./processFile";
 import { relative } from "path";
-import { ParseResults } from "./types";
+import { Config, ParseResults } from "./types";
 import { MAX_ANNOTATIONS_PER_API_CALL, publishCheck } from "./publishCheck";
 import { hasErrors } from "./utils";
 import { summaryOf, summaryTableOf } from "./summary";
@@ -11,6 +11,17 @@ import { readFile } from "./readFile";
 
 export default async function main() {
     const config = await readConfig();
+
+    try {
+        await runReport(config);
+    } finally {
+        if (config.revokeToken) {
+            config.revokeToken();
+        }
+    }
+}
+
+async function runReport(config: Config) {
     const globber = await glob.create(config.reports.join("\n"), { implicitDescendants: true, matchDirectories: true });
 
     const files = (await globber.glob()).map((it) => relative(process.cwd(), it));
