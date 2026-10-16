@@ -11,5 +11,16 @@ export async function getAppToken(appId: string, appSecret: string) {
     const octokit = await app.getInstallationOctokit(installation.id);
     const { token } = (await octokit.auth({ type: "installation" })) as { token: string };
     core.setSecret(token);
-    return token;
+
+    const revokeToken = async () => {
+        await octokit
+            .request("DELETE /installation/token", {
+                headers: {
+                    authorization: `token ${token}`,
+                },
+            })
+            .catch(() => {});
+    };
+
+    return { token, revokeToken };
 }

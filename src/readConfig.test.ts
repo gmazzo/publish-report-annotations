@@ -4,7 +4,8 @@ const getInput = vi.fn<(name: string, options?: object) => string>();
 const getMultilineInput = vi.fn<(name: string, options?: object) => string>();
 const getBooleanInput = vi.fn<(name: string, options?: object) => string | boolean>();
 const createFileFilter = vi.fn().mockReturnValue("aFileFilter");
-const getAppToken = vi.fn().mockReturnValue("anAppToken");
+const revokeToken = vi.fn().mockResolvedValue(true);
+const getAppToken = vi.fn().mockReturnValue({ token: "anAppToken", revokeToken });
 const bytes = vi.fn().mockReturnValue(1234);
 
 vi.doMock("@actions/core", () => ({

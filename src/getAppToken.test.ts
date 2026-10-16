@@ -32,7 +32,7 @@ const { getAppToken } = await import("./getAppToken");
 
 describe("getAppToken", () => {
     test("given an github app, should retrieve an installation token", async () => {
-        const token = await getAppToken("anAppId", "anAppSecret");
+        const { token } = await getAppToken("anAppId", "anAppSecret");
 
         expect(App).toHaveBeenCalledWith({ appId: "anAppId", privateKey: "anAppSecret" });
         expect(request).toHaveBeenCalledWith("GET /repos/{owner}/{repo}/installation", {
