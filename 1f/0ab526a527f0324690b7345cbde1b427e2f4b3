@@ -1,0 +1,9 @@
+src/readConfig.test.ts
+  c820188b7adcfe11 7-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "1f0ab526a527f0324690b7345cbde1b427e2f4b3",
+  "prompts": {}
+}
