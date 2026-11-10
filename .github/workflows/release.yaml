@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          token: ${{ secrets.RELEASE_TOKEN || github.token }}
+          token: ${{ secrets.AUTOMERGE_TOKEN || github.token }}
           fetch-depth: 0
           submodules: true
       - name: Setup host
