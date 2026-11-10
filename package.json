@@ -30,7 +30,7 @@
     "@types/bytes": "^3.1.6",
     "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^5.0.4",
-    "oxfmt": "^0.74.0",
+    "oxfmt": "^0.77.0",
     "oxlint": "^1.92.0",
     "semantic-release": "^25.0.9",
     "semantic-release-major-tag": "^0.3.2",
