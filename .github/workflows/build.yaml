@@ -21,7 +21,6 @@ jobs:
     name: Build
     runs-on: macos-latest # for xcresultParser tests to be able to extract a json from .xcresult folder
     needs: sample-checks
-    if: ${{ !cancelled() }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
