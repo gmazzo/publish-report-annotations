@@ -32,7 +32,7 @@
     "@vitest/coverage-v8": "^5.1.1",
     "oxfmt": "^0.79.0",
     "oxlint": "^1.94.0",
-    "semantic-release": "^25.0.9",
+    "semantic-release": "^26.0.1",
     "semantic-release-major-tag": "^0.3.2",
     "tsdown": "^0.23.7",
     "typescript": "^7.0.2",
